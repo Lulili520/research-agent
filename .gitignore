@@ -1,0 +1,10 @@
+# Local research inputs and generated task artifacts
+research/**/sources/*
+research/**/downloads/*
+
+# Codex local session output
+.codex-log/
+
+# Keep directory placeholders and source manifests if added
+!research/**/sources/.gitkeep
+!research/**/sources/manifest.md
