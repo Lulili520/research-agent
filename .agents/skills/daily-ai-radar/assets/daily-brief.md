@@ -1,49 +1,51 @@
-# AI Research Radar — YYYY-MM-DD
+# AI 研究热点日报 — YYYY-MM-DD
 
-- Window: <start timestamp> to <end timestamp>
-- Timezone: Asia/Shanghai
-- Generated/updated: <timestamp>
-- Sources checked: <list>
-- Sources failed or delayed: <list>
-- Tracked topics: <list>
+- 主要窗口：<开始时间> 至 <结束时间>
+- 延迟索引回看：<开始时间> 至 <结束时间>
+- 时区：Asia/Shanghai
+- 生成/更新时间：<时间戳>
+- 已检查来源：<列表>
+- 失败或延迟来源：<列表>
+- 跟踪主题：<列表>
 
-## Executive signal
+## 今日信号
 
-<2–5 sentences: what genuinely changed, or state that no high-confidence hotspot emerged.>
+<用2–5句话说明真正发生了什么变化；没有高置信热点时明确说明。>
 
-## Lead items
+## 核心条目
 
-### 1. <title>
+### 1. <论文或项目官方标题>
 
-- Type/status: paper / benchmark / dataset / model-system / artifact / policy; proceedings / accepted / submission / preprint / release
-- State: new / rising / continuing / corrected
-- Identity: <authors/organization, stable IDs and links>
-- First public / updated: <timestamps>
-- Access: metadata / abstract / partial / full text / primary announcement
-- What is reported: <source-grounded summary>
-- Why it is on the radar: <separate relevance, freshness, independent attention, uptake, artifact, and evidence-quality signals>
-- Caveats: <validation, status, access, conflicts>
-- Recommended action: ignore / watch / search-chain / full-text analysis
+- 类型/状态：论文 / benchmark / 数据集 / 模型系统 / artifact / 政策；正式发表 / 已接收 / 投稿中 / 预印本 / 发布
+- 变化状态：新增 / 延迟发现 / 实质更新 / 持续 / 更正
+- 身份：<作者或机构、稳定标识符与链接>
+- 首次公开/更新：<时间戳>
+- 访问级别：元数据 / 摘要 / 部分全文 / 全文 / 官方发布
+- 中文概述：<基于已访问来源的中文概述；自动采集器不能可靠翻译时省略>
+- 原文摘要：<可选；明确保留来源语言>
+- 入选原因：<分别说明相关性、新鲜度、独立来源、传播、artifact和证据质量>
+- 限制：<验证、状态、访问和冲突>
+- 建议动作：忽略 / 观察 / 引文扩展 / 全文精读
 
-## Topic clusters
+## 主题聚类
 
-| Cluster | New items | Change from recent radar | Confidence | Why it matters |
-|---|---|---|---|---|
-| | | | high / medium / exploratory | |
+| 主题 | 新条目 | 相比近期变化 | 置信度 | 意义 |
+|---|---:|---|---|---|
+| | | | 高 / 中 / 探索性 | |
 
-## Watchlist
+## 观察列表
 
-| Signal | Why promising | Why not promoted | Recheck trigger |
+| 条目 | 潜力 | 未进入核心的原因 | 重新检查条件 |
 |---|---|---|---|
 | | | | |
 
-## Query and provenance log
+## 查询与来源记录
 
-| Source/platform | Exact query/filter | Window/sort/cap/pages | Run time | Results observed | Failure/notes |
+| 来源/平台 | 完整查询/筛选 | 窗口/排序/上限/分页 | 执行时间 | 观察结果数 | 失败/说明 |
 |---|---|---|---|---:|---|
 | | | | | | |
 
-## Limitations
+## 限制
 
-- This is a daily discovery snapshot, not an exhaustive review or paper-quality certification.
-- Indexing delays, API failures, time-zone boundaries, version duplication, and early attention bias may change later conclusions.
+- 这是每日发现快照，不是穷尽性综述或论文质量认证。
+- 索引延迟、API失败、时区边界、版本重复和早期关注偏差可能改变后续判断。

@@ -1,17 +1,19 @@
 {
   "timezone": "Asia/Shanghai",
+  "outputLanguage": "zh-CN",
   "primaryWindowHours": 24,
   "lateIndexLookbackHours": 72,
   "maxLeadItems": 10,
   "maxWatchItems": 15,
   "arxivCategories": ["cs.AI", "cs.CL", "cs.LG", "cs.CV", "cs.RO", "stat.ML"],
+  "aiContextTerms": ["llm", "language model", "neural", "transformer", "machine learning", "artificial intelligence", "agent", "vision-language", "foundation model"],
   "topics": [
     {"name": "LLM Agent", "terms": ["llm agent", "language model agent", "agentic"]},
-    {"name": "Quantization", "terms": ["quantization", "low-bit", "low precision", "model compression"]},
-    {"name": "Long Context", "terms": ["long context", "context length", "long-context"]},
-    {"name": "Memory", "terms": ["agent memory", "memory-augmented", "long-term memory"]},
-    {"name": "Reasoning", "terms": ["reasoning model", "chain-of-thought", "test-time compute"]},
-    {"name": "Agent Evaluation", "terms": ["agent evaluation", "agent benchmark", "agent reliability", "trajectory evaluation", "tool use"]}
+    {"name": "模型量化", "terms": ["quantization", "low-bit", "low precision", "model compression"]},
+    {"name": "长上下文", "terms": ["long context", "context length", "long-context"]},
+    {"name": "Agent 记忆", "terms": ["agent memory", "memory-augmented", "long-term memory"]},
+    {"name": "模型推理", "terms": ["reasoning model", "chain-of-thought", "test-time compute"]},
+    {"name": "Agent 评测", "terms": ["agent evaluation", "agent benchmark", "agent reliability", "trajectory evaluation", "tool use"]}
   ],
   "selection": {
     "minimumRelevance": 1,

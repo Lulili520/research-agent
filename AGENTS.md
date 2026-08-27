@@ -2,6 +2,8 @@
 
 This repository is a Codex workspace for researching and summarizing computer-science papers, with emphasis on conferences in the current CCF recommended venue catalog. The agent maps a technical direction, retrieves conference papers, inspects methods and experiments, and produces traceable Chinese-language summaries unless the user requests another language.
 
+Use Simplified Chinese for report titles, section headings, synthesis, explanations, limitations, and recommendations by default. Preserve official paper titles, identifiers, metric names, code symbols, and short source excerpts in their original language when translation could change meaning. If an automated collector cannot translate faithfully, label the original-language text instead of presenting it as a Chinese summary.
+
 ## Operating principles
 
 - Match effort to the request. Do not impose a systematic-review process on a narrow lookup.

@@ -4,13 +4,14 @@
   "primaryStart": "2026-08-26T08:30:00.000Z",
   "lookbackStart": "2026-08-24T08:30:00.000Z",
   "timezone": "Asia/Shanghai",
+  "outputLanguage": "zh-CN",
   "topics": [
     "LLM Agent",
-    "Quantization",
-    "Long Context",
-    "Memory",
-    "Reasoning",
-    "Agent Evaluation"
+    "模型量化",
+    "长上下文",
+    "Agent 记忆",
+    "模型推理",
+    "Agent 评测"
   ],
   "leads": [
     {
@@ -38,68 +39,17 @@
       "citedByCount": 0,
       "matchedTopics": [
         "LLM Agent",
-        "Agent Evaluation"
+        "Agent 评测"
       ],
       "relevance": 2,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": true
     }
   ],
   "watch": [
-    {
-      "stableId": "doi:10.5281/zenodo.19518628",
-      "openAlexId": "W7153726391",
-      "doi": "10.5281/zenodo.19518628",
-      "title": "Time Quantization in UWCM: Resolution of Quantum Paradoxes",
-      "abstract": "AbstractWithin the framework of the Unified Wave Cosmological Model (UWCM), spacetime (theStratum) is a discrete quantized network, and its active boundary (the SGW) is the carrier ofinformation and the source of energy. In previous works (Slavutsky, 2026e, DOI: 10.5281/zenodo.19516683; Slavutsky, 2026f, DOI: 10.5281/zenodo.19518042), it was shown that the massof black holes is quantized: M = N · mP, and the energy transfer between the SGW and theStratum occurs in portions that are multiples of the Planck energy EP.In the present work, these results are extended to time. It is shown that the quantization ofenergy transfer and the discreteness of the Stratum entail the quantization of time: any changesin the system occur in discrete “ticks” with a minimal interval tP = ℏG/c5 ≈ 5.4 × 10−44s. This means that all physical processes, including the evolution of quantum states, occur insteps rather than continuously.On this basis, a new explanation is proposed for key quantum paradoxes:• Wave function collapse is not an instantaneous process but a sequence of Planck “ticks”during which the system transitions from a superposition to a definite state.• Entanglement is a synchronization of Stratum nodes occurring in its proper time; to anexternal observer, the effect appears instantaneous but actually has a minimal delay tP.• Schr¨odinger’s cat — the transition from superposition to a definite state takes a finitenumber of “ticks,” during which the system is in a transitional state.• The observer problem — “measurement” is recognized as a process in which the numberof coordinated “ticks” between the observer-node and the object-node exceeds a thresholdM, providing an objective criterion without invoking consciousness.The work demonstrates that time quantization not only does not contradict quantum mechanics but also resolves its fundamental paradoxes, offering a physically grounded alternativeto “instantaneous” and “nonlocal” interpretations.",
-      "authors": [
-        "Gleb Slavutskiy"
-      ],
-      "published": "2026-12-04",
-      "updated": "2026-07-01T06:00:48.157686",
-      "url": "https://doi.org/10.5281/zenodo.19518628",
-      "status": "indexed-work",
-      "sources": [
-        "OpenAlex"
-      ],
-      "citedByCount": 2,
-      "matchedTopics": [
-        "Quantization"
-      ],
-      "relevance": 1,
-      "sourceCount": 1,
-      "state": "new",
-      "inWindow": true,
-      "lead": false
-    },
-    {
-      "stableId": "doi:10.5281/zenodo.20060666",
-      "openAlexId": "W7160554370",
-      "doi": "10.5281/zenodo.20060666",
-      "title": "Maxwell Dynamics from the Monadic Real-J Address Dial: A QTT Axiom-to-Field Theorem with Source-Derived Photon Stiffness",
-      "abstract": "From a compact internal dial to Maxwell's equations and a frozen photon stiffness The QTT source packet fixes the leading electromagnetic stiffness before the fine-structure comparator is opened: \\[ \\frac{\\kappa}{\\hbar c}=8+\\frac{\\rho}{2}+D_\\lambda^{\\mathsf T}G_\\lambda D_\\lambda,\\qquad \\alpha_{\\rm QTT}^{-1}=4\\pi\\left(8+\\frac{\\rho}{2}+D_\\lambda^{\\mathsf T}G_\\lambda D_\\lambda\\right). \\] Combined with the real-J local dial, connected U(1) transport, curvature f=da, the unique leading gauge action, integer circle characters, and worldline holonomy, the same source theorem yields both Maxwell pairs, Coulomb's law, charge quantization, the Aharonov-Bohm phase, and the Lorentz force. Scientific result: a QTT zero-fit source-explanatory victory for leading electromagnetism. Differential forms, U(1) gauge calculus, Bianchi identity, and Euler-Lagrange variation are standard. Their ordering by a finite real-J address packet and the source-derived absolute stiffness are QTT-native. The frozen result αQTT-1=137.035999165998 lies -0.524σ from CODATA 2022. That is one downstream no-retune audit of the source word, not an input and not multiplied into several independent confirmations.",
-      "authors": [
-        "Ali Attar"
-      ],
-      "published": "2026-08-25",
-      "updated": "2026-08-26T07:47:46.906454",
-      "url": "https://doi.org/10.5281/zenodo.20060666",
-      "status": "indexed-work",
-      "sources": [
-        "OpenAlex"
-      ],
-      "citedByCount": 2,
-      "matchedTopics": [
-        "Quantization"
-      ],
-      "relevance": 1,
-      "sourceCount": 1,
-      "state": "late-indexed",
-      "inWindow": true,
-      "lead": false
-    },
     {
       "stableId": "arxiv:2608.26093",
       "arxivId": "2608.26093v1",
@@ -127,6 +77,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -156,6 +107,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -184,6 +136,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -221,12 +174,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Reasoning"
+        "模型推理"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -253,12 +207,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Reasoning"
+        "模型推理"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -292,6 +247,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -320,6 +276,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -345,12 +302,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Quantization"
+        "模型量化"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -373,12 +331,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Quantization"
+        "模型量化"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -412,6 +371,7 @@
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -433,12 +393,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Reasoning"
+        "模型推理"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -463,12 +424,13 @@
       ],
       "citedByCount": 0,
       "matchedTopics": [
-        "Reasoning"
+        "模型推理"
       ],
       "relevance": 1,
       "sourceCount": 1,
       "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
       "lead": false
     },
     {
@@ -495,8 +457,64 @@
       ],
       "relevance": 1,
       "sourceCount": 1,
-      "state": "new",
+      "state": "continuing",
       "inWindow": true,
+      "aiContext": true,
+      "lead": false
+    },
+    {
+      "stableId": "doi:10.5281/zenodo.21494139",
+      "openAlexId": "W7203635481",
+      "doi": "10.5281/zenodo.21494139",
+      "title": "Two Surfaces of Ambiguity: Complementary Detection for Text-to-SQL",
+      "abstract": "Natural-language interfaces to relational databases increasingly rely on LLMs, but real-world queries are routinely ambiguous, admitting multiple valid SQL interpretations. In interactive deployment, the system should detect this ambiguity and ask for clarification rather than commit to a plausible but wrong query. Two black-box strategies are typically treated as alternatives: prompting the model to flag ambiguous terms in the question (introspection), or sampling candidate SQLs and using their disagreement as an ambiguity signal (sampling-based detection). We show that they are complementary but not disjoint on BIRD-Interact-Lite, a Text-to-SQL benchmark with 300 tasks, annotated ambiguities, and an LLM-based user simulator. Introspection catches what is visible in the prompt: vague terms, missing formulas, and unclear schema references. Sampling, by contrast, exposes choices the model silently commits to during SQL generation, such as null handling and join type. A union of both strategies' clarification questions raises recall by at least 6 pp over either method across three open-weight models, and by 4.8 pp on one proprietary model, using only three LLM calls. In the downstream agentic setting, the same union improves normalized reward across all three open-weight models; on the non-interactive AMBROSIA benchmark, it also improves coverage of valid SQL interpretations. As a byproduct, we trace an apparent recall gap on masked-knowledge ambiguities to the single-label limitation in BIRD-Interact's user-simulator encoder.",
+      "authors": [
+        "Leonhard Liu",
+        "Patrick K. Erdelt"
+      ],
+      "published": "2026-08-31",
+      "updated": "2026-08-18T07:49:30.821534",
+      "url": "https://doi.org/10.5281/zenodo.21494139",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "aiContext": true,
+      "lead": false
+    },
+    {
+      "stableId": "doi:10.5281/zenodo.22103340",
+      "openAlexId": "W7204167363",
+      "doi": "10.5281/zenodo.22103340",
+      "title": "Beyond Accuracy: Measuring Reasoning Consistency Under Quantization in Small Language Models",
+      "abstract": "Quantization enables large language models to run on consumer hardware, but evaluation has focused almost exclusively on mean accuracy, leaving output consistency largely unexamined. We address this gap by evaluating Phi-3.5-mini-instruct at three precision levels, FP16, 4-bit, and 2-bit, across 50 GSM8k questions with N = 15 repeated runs per question to measure whether compressed models produce consistent answers. We find that accuracy, consistency, and answer entropy all degrade monotonically with compression. Most notably, the correct-but-inconsistent rate, questions the model answers correctly on some runs but fails on others, rises from 42% at FP16 to 58% at 2-bit. These results suggest that mean accuracy substantially understates the reliability cost of aggressive quantization, demonstrating that consistency metrics should be reported alongside standard accuracy in edge deployment evaluations.",
+      "authors": [
+        "Ansh Thakar"
+      ],
+      "published": "2026-08-26",
+      "updated": "2026-08-26T07:47:46.906454",
+      "url": "https://doi.org/10.5281/zenodo.22103340",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "模型量化"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "aiContext": true,
       "lead": false
     }
   ],

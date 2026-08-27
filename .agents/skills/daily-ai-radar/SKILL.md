@@ -7,6 +7,8 @@ description: Discover, verify, rank, and summarize current AI research developme
 
 Produce a reproducible daily snapshot of emerging AI research without treating popularity as scientific validity.
 
+Write the report narrative, headings, signal explanations, caveats, and recommendations in Simplified Chinese unless the user requests another language. Preserve official titles and identifiers. The deterministic collector may retain the source abstract in its original language, but must label it `原文摘要`; a Chinese technical summary requires Codex or another authorized model to inspect the source.
+
 ## Workflow
 
 1. Resolve the time window and timezone. Default to a 24-hour primary window in `Asia/Shanghai` plus a 72-hour lookback used only to catch delayed indexing. Distinguish `new`, `late-indexed`, and materially `updated` items. If no items pass the lead gate, publish a quiet-day report rather than recycling old items.

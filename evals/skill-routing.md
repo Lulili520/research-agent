@@ -54,6 +54,7 @@ Run these cases after changing `AGENTS.md` or a research Skill. Evaluate behavio
 25. Hotness, relevance, publication status, and evidence quality remain separate; no raw citation/star/download count certifies importance or validity.
 26. The primary window is 24 hours; the 72-hour lookback only catches delayed indexing and must label those records `late-indexed`.
 27. A radar run updates `radar/index.json` and `radar/queue.md`, and passes `audit-radar.ps1` before completion.
+28. User-facing report narrative and headings default to Simplified Chinese; official titles, identifiers and clearly labeled source-language excerpts may remain untranslated.
 
 ## Artifact checks
 
