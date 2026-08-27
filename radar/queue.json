@@ -1,0 +1,15 @@
+{
+  "arxiv:2608.26004": {
+    "stableId": "arxiv:2608.26004",
+    "title": "AsymSpec: Context-Asymmetric Speculative Decoding for Agentic LLMs",
+    "url": "http://arxiv.org/abs/2608.26004v1",
+    "topics": [
+      "LLM Agent",
+      "Agent Evaluation"
+    ],
+    "addedAt": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "action": "scholarly-search identity/citation chain",
+    "status": "pending"
+  }
+}

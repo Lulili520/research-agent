@@ -63,9 +63,9 @@
 
 ## Evidence statements
 
-| Source-supported statement | Locator | Interpretation level |
-|---|---|---|
-| | | reported / author interpretation / agent inference |
+| Evidence ID | Source-supported statement | Locator | Access level | Interpretation level | Verification |
+|---|---|---|---|---|---|
+| E1 | | | | reported / derived / inference | pending / checked |
 
 ## Critical appraisal and applicability
 

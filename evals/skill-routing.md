@@ -20,6 +20,10 @@ Run these cases after changing `AGENTS.md` or a research Skill. Evaluate behavio
 | 总结某方向技术路线 | search -> analysis -> synthesis | Organize only by CCF category instead of technical lineage |
 | 调研某方向最具影响力的 CCF 论文 | search -> analysis -> synthesis | Sort by raw citations and call the top items best |
 | 调研最近两年有潜力的重要论文 | search -> analysis -> synthesis | Exclude all papers because citation counts are still low |
+| 找出一个可以投稿的研究空白 | search -> analysis -> synthesis plus gap validation | Call any missing experiment in one paper a novel field-level gap |
+| 将 Agent 安全或鲁棒性方向与我的课题结合 | targeted search -> analysis -> synthesis | Add fashionable directions without a transferable construct or feasible test |
+| 获取今天的 AI 研究热点 | `daily-ai-radar` | Treat social popularity or a search snippet as scientific evidence |
+| 每天跟踪量化 Agent 新论文 | `daily-ai-radar`, then hand selected papers to search/analysis | Repeat unchanged items or silently merge preprint/proceedings versions |
 
 ## Invariants
 
@@ -39,6 +43,17 @@ Run these cases after changing `AGENTS.md` or a research Skill. Evaluate behavio
 14. Numerical comparisons require compatible dataset versions, splits, metrics, protocols, and resource assumptions.
 15. Impact-focused work records metric source and observation date, and separates impact from validity.
 16. A general `high-impact` label requires multiple independent signal families; recent papers receive age-aware treatment.
+17. Every retained research gap records its status, closest-work delta, anti-gap search, scientific consequence, feasible falsification, risks, and confidence.
+18. Paper quality appraisal covers construct/task/outcome validity, fair baselines, uncertainty, external validity, and artifacts; venue class alone is insufficient.
+19. “No one has done this” is replaced by a dated, scoped novelty statement backed by a reproducible novelty-audit packet; incomplete search remains provisional.
+20. Stage transitions fail closed: insufficient search identity/access cannot become paper-level evidence, and insufficient paper evidence cannot become a confident synthesis.
+21. Workflow completion and novelty confidence are separate state fields; `complete` never means exhaustive or globally novel.
+22. Saved research artifacts pass `powershell -File scripts/audit-research.ps1 research/<topic>` with no errors before completion.
+23. Consequential statements are typed as reported, derived, inference, or proposal; derived values show their transformation.
+24. Daily radar records an exact time window, timezone, source/query provenance, failures, version relationships, and comparison with recent history.
+25. Hotness, relevance, publication status, and evidence quality remain separate; no raw citation/star/download count certifies importance or validity.
+26. The primary window is 24 hours; the 72-hour lookback only catches delayed indexing and must label those records `late-indexed`.
+27. A radar run updates `radar/index.json` and `radar/queue.md`, and passes `audit-radar.ps1` before completion.
 
 ## Artifact checks
 
@@ -49,3 +64,15 @@ Run these cases after changing `AGENTS.md` or a research Skill. Evaluate behavio
 - `report.md` exposes search cutoff, evidence limitations, inference, and claim traceability.
 - Computer-science reports include a method taxonomy, research timeline, representative papers, comparable-result constraints, tradeoffs, artifacts, gaps, and a reading path when relevant.
 - Impact-focused reports include transparent impact profiles, cohort balance, selection rationale, and uncertainty rather than a single unexplained score.
+- Gap-focused reports include detailed gap cards and separate novelty, importance, tractability, and expected-contribution judgments.
+
+## Adversarial cases
+
+| Prompt or condition | Expected behavior |
+|---|---|
+| Search result snippet contains an exact performance number | Treat as discovery only; open the underlying paper before using the number |
+| Proceedings metadata and arXiv disagree on year/venue | Preserve both records, resolve against the authoritative proceedings record, and document the version relationship |
+| Only one direct paper is found | Report narrow evidence and expand citation/adjacent searches; do not call the field empty |
+| A proposed direction sounds novel but the closest paper overlaps on problem and experiment | State the overlap, isolate an irreducible delta, or reject the direction |
+| State says complete but a newer search-log/report exists | Update state and rerun audit; do not hand off as complete |
+| Two papers report incompatible headline scores | Explain incompatibility and compare qualitatively; do not normalize them into a fabricated ranking |

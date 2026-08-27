@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "stableId": "arxiv:2608.00001",
+      "arxivId": "2608.00001v1",
+      "title": "Evaluating Quantized LLM Agents with Long Context and Memory",
+      "abstract": "We study quantization and agent evaluation across long context, agent memory, trajectory evaluation, and tool use.",
+      "authors": ["A. Researcher"],
+      "published": "2026-08-27T00:00:00Z",
+      "updated": "2026-08-27T00:00:00Z",
+      "url": "https://arxiv.org/abs/2608.00001",
+      "status": "preprint",
+      "sources": ["arXiv"],
+      "citedByCount": 0
+    },
+    {
+      "stableId": "openalex:W1",
+      "title": "Evaluating Quantized LLM Agents with Long Context and Memory",
+      "abstract": "Duplicate indexed record.",
+      "authors": ["A. Researcher"],
+      "published": "2026-08-27",
+      "updated": "2026-08-27",
+      "url": "https://openalex.org/W1",
+      "status": "indexed-work",
+      "sources": ["OpenAlex"],
+      "citedByCount": 1
+    },
+    {
+      "stableId": "arxiv:2608.00002",
+      "title": "A Narrow Tool Use Observation",
+      "abstract": "A tool use note for language model systems.",
+      "authors": ["B. Researcher"],
+      "published": "2026-08-25T12:00:00Z",
+      "updated": "2026-08-25T12:00:00Z",
+      "url": "https://arxiv.org/abs/2608.00002",
+      "status": "preprint",
+      "sources": ["arXiv"],
+      "citedByCount": 0
+    }
+  ],
+  "provenance": [
+    {"source": "fixture/arXiv", "query": "fixture", "results": 2, "status": "ok"},
+    {"source": "fixture/OpenAlex", "query": "fixture", "results": 1, "status": "ok"}
+  ],
+  "failures": []
+}

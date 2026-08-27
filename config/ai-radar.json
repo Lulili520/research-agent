@@ -1,0 +1,22 @@
+{
+  "timezone": "Asia/Shanghai",
+  "primaryWindowHours": 24,
+  "lateIndexLookbackHours": 72,
+  "maxLeadItems": 10,
+  "maxWatchItems": 15,
+  "arxivCategories": ["cs.AI", "cs.CL", "cs.LG", "cs.CV", "cs.RO", "stat.ML"],
+  "topics": [
+    {"name": "LLM Agent", "terms": ["llm agent", "language model agent", "agentic"]},
+    {"name": "Quantization", "terms": ["quantization", "low-bit", "low precision", "model compression"]},
+    {"name": "Long Context", "terms": ["long context", "context length", "long-context"]},
+    {"name": "Memory", "terms": ["agent memory", "memory-augmented", "long-term memory"]},
+    {"name": "Reasoning", "terms": ["reasoning model", "chain-of-thought", "test-time compute"]},
+    {"name": "Agent Evaluation", "terms": ["agent evaluation", "agent benchmark", "agent reliability", "trajectory evaluation", "tool use"]}
+  ],
+  "selection": {
+    "minimumRelevance": 1,
+    "leadIfIndependentSources": 2,
+    "leadIfRelevance": 2,
+    "leadIfEarlyCitations": 3
+  }
+}

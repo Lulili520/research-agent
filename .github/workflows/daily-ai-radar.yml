@@ -1,0 +1,41 @@
+name: Daily AI research radar
+
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-ai-radar
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test deterministic radar logic
+        run: node tests/test-ai-radar.mjs
+      - name: Collect and render radar
+        run: node scripts/collect-ai-radar.mjs
+      - name: Audit radar artifacts
+        shell: pwsh
+        run: ./scripts/audit-radar.ps1 radar
+      - name: Commit changed radar artifacts
+        run: |
+          if [ -z "$(git status --porcelain -- radar)" ]; then
+            echo "No radar changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add radar
+          git commit -m "Update daily AI research radar"
+          git push

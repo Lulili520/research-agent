@@ -9,11 +9,20 @@ Research-Agent/
 ├── AGENTS.md
 ├── README.md
 ├── .gitignore
+├── scripts/audit-research.ps1
+├── scripts/audit-radar.ps1
+├── scripts/collect-ai-radar.mjs
+├── config/ai-radar.json
+├── .github/workflows/daily-ai-radar.yml
 ├── evals/skill-routing.md
 └── .agents/skills/
     ├── review-protocol/
     │   ├── SKILL.md
     │   └── assets/protocol.md
+    ├── daily-ai-radar/
+    │   ├── SKILL.md
+    │   ├── references/source-and-ranking-policy.md
+    │   └── assets/daily-brief.md
     ├── scholarly-search/
     │   ├── SKILL.md
     │   └── assets/search-output.md
@@ -34,6 +43,7 @@ Research-Agent/
 | `scholarly-search` | CCF 会议检索、venue/year/track 核验、版本关联和方向图谱 | 全文方法结论和跨论文综合 |
 | `paper-analysis` | 创新点、方法、基准、结果、消融、计算成本和代码精读 | 宣称方向覆盖全面 |
 | `evidence-synthesis` | 方法分类、发展脉络、可比实验、权衡、空白和阅读路线 | 用不兼容实验拼排行榜 |
+| `daily-ai-radar` | 每日 AI 论文、benchmark、artifact 和研究发布的增量发现与热点画像 | 用热度替代论文精读或科学有效性 |
 
 ## 优化后的流程
 
@@ -95,6 +105,16 @@ $evidence-synthesis 根据 papers/ 中的论文卡片生成方法分类、发展
 调研 2023 年以来 CCF-A/B 会议中 RAG 用于代码生成的方法，区分主会与 Workshop/Findings，精读代表论文并总结方法谱系、基准结果、效率和研究空白。
 ```
 
+每日研究热点能力与调度建议见 [docs/daily-ai-radar.md](docs/daily-ai-radar.md)。
+
+本地生成并审计日报：
+
+```text
+node tests/test-ai-radar.mjs
+node scripts/collect-ai-radar.mjs
+powershell -File scripts/audit-radar.ps1 radar
+```
+
 ## CCF 使用规则
 
 - 每次需要 CCF 分类时查询 CCF 官方当前目录，记录目录版本和访问日期。
@@ -106,6 +126,14 @@ $evidence-synthesis 根据 papers/ 中的论文卡片生成方法分类、发展
 ## 回归检查
 
 [evals/skill-routing.md](evals/skill-routing.md) 定义 Skill 路由场景、证据不变量和产物检查项。修改 `AGENTS.md` 或任何科研 Skill 后，应使用这些场景检查真实行为，而不是只检查文件格式。
+
+保存长期调研后运行：
+
+```text
+powershell -File scripts/audit-research.ps1 research/<topic>
+```
+
+该门禁检查阶段产物、状态时效、检索日志、claim ledger 和研究方向的新颖性限定。它只能发现结构性问题，不能替代论文精读、同行评审或人工新颖性判断。
 
 ## 加载机制
 

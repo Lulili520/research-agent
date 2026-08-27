@@ -9,9 +9,9 @@ CCF catalog edition/access date: <text>
 Venue/year/track coverage: <text>
 Impact metric sources/observation date: <text>
 
-| Claim ID | Exact claim | Source ID | Locator | Relation | Directness | Inference? | Appraisal | Verification |
-|---|---|---|---|---|---|---|---|---|
-| C1 | | | | supports/contradicts/context | direct/indirect | yes/no | | pending/checked |
+| Claim ID | Exact claim | Statement type | Source ID / Evidence ID | Locator | Access level | Relation | Directness | Appraisal | Verification |
+|---|---|---|---|---|---|---|---|---|---|
+| C1 | | reported/derived/inference/proposal | | | | supports/contradicts/context | direct/indirect | | pending/checked |
 
 ## Claim-level conclusions
 
@@ -69,7 +69,28 @@ Search cutoff: YYYY-MM-DD
 
 ## Research gaps
 
-<Include only gaps tested against adjacent terminology and existing evidence.>
+<Include only gaps tested against alternate terminology, adjacent fields, recent work, and citation networks.>
+
+### Gap card: <precise title>
+
+- Status: author-stated / coverage / contradiction / validity / translation / emerging
+- Precise proposition:
+- Closest work and delta:
+- Evidence and source-quality appraisal:
+- Anti-gap search and remaining uncertainty:
+- Why it matters:
+- Research questions/hypotheses:
+- Feasible direction (variables, baselines, measurements, analysis):
+- Contribution if positive:
+- Contribution if null/negative:
+- Risks/confounders/resources:
+- Confidence: high / medium / exploratory
+
+## Gap prioritization
+
+| Gap | Novelty confidence | Scientific importance | Tractability | Expected contribution | Main reason |
+|---|---|---|---|---|---|
+| | | | | | |
 
 ## Recommended reading path
 

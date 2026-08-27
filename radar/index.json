@@ -1,0 +1,288 @@
+{
+  "arxiv:2608.26004": {
+    "stableId": "arxiv:2608.26004",
+    "title": "AsymSpec: Context-Asymmetric Speculative Decoding for Agentic LLMs",
+    "url": "http://arxiv.org/abs/2608.26004v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T16:50:02Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26093": {
+    "stableId": "arxiv:2608.26093",
+    "title": "Agentic Autoresearch for Cell-Edge Power Control: Radically Redefining the Researcher's Role",
+    "url": "http://arxiv.org/abs/2608.26093v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T17:56:00Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26091": {
+    "stableId": "arxiv:2608.26091",
+    "title": "PlanSightRAG: A Visual-First Multimodal RAG for Automating Question Answering and Compliance Checking for Civil Standard Plans",
+    "url": "http://arxiv.org/abs/2608.26091v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T17:54:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26081": {
+    "stableId": "arxiv:2608.26081",
+    "title": "SwarmWorld: Stigmergic technological evolution in societies of language-model agents",
+    "url": "http://arxiv.org/abs/2608.26081v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T17:45:34Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26070": {
+    "stableId": "arxiv:2608.26070",
+    "title": "Prefix Sliding for efficient test-time scaling",
+    "url": "http://arxiv.org/abs/2608.26070v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T17:37:15Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26053": {
+    "stableId": "arxiv:2608.26053",
+    "title": "$R^3$: Training Robots to Reason in Natural Language via Reinforcement Learning",
+    "url": "http://arxiv.org/abs/2608.26053v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T17:25:10Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.26013": {
+    "stableId": "arxiv:2608.26013",
+    "title": "VISA: Agentic Self-Evolving Data Synthesis for Multimodal Instruction Following",
+    "url": "http://arxiv.org/abs/2608.26013v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T16:55:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25992": {
+    "stableId": "arxiv:2608.25992",
+    "title": "ProgRouter: Online Progress-Guided Orchestration for Multi-Agent LLM Workflows under Quality-Cost Tradeoffs",
+    "url": "http://arxiv.org/abs/2608.25992v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T16:42:02Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25977": {
+    "stableId": "arxiv:2608.25977",
+    "title": "When Personality Meets Quantization: A Layer-wise MBTI Analysis of Quantized LLMs",
+    "url": "http://arxiv.org/abs/2608.25977v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T16:32:50Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25941": {
+    "stableId": "arxiv:2608.25941",
+    "title": "When Pruning Meets Interpretability: Preserving Sparse Autoencoder Robustness in LLMs",
+    "url": "http://arxiv.org/abs/2608.25941v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T15:57:42Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25935": {
+    "stableId": "arxiv:2608.25935",
+    "title": "TAU-Agent: An Agentic Retrieval-Augmented Framework for Traffic Anomaly Understanding",
+    "url": "http://arxiv.org/abs/2608.25935v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T15:50:38Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25922": {
+    "stableId": "arxiv:2608.25922",
+    "title": "Query-Side Attacks on GNN-Based KGQA: Tracing Failures from Entity Linking to Answer Generation",
+    "url": "http://arxiv.org/abs/2608.25922v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T15:34:29Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.25869": {
+    "stableId": "arxiv:2608.25869",
+    "title": "Anchoring Bias in LLM-as-a-Judge Systems: Prior Scores Compromise Evaluation Independence",
+    "url": "http://arxiv.org/abs/2608.25869v1",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T14:41:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "doi:10.5281/zenodo.19518628": {
+    "stableId": "doi:10.5281/zenodo.19518628",
+    "title": "Time Quantization in UWCM: Resolution of Quantum Paradoxes",
+    "url": "https://doi.org/10.5281/zenodo.19518628",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-07-01T06:00:48.157686",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.20060666": {
+    "stableId": "doi:10.5281/zenodo.20060666",
+    "title": "Maxwell Dynamics from the Monadic Real-J Address Dial: A QTT Axiom-to-Field Theorem with Source-Derived Photon Stiffness",
+    "url": "https://doi.org/10.5281/zenodo.20060666",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.20111113": {
+    "stableId": "doi:10.5281/zenodo.20111113",
+    "title": "Automated SOLID Violation Detection and Refactoring on Real Life Repositories",
+    "url": "https://doi.org/10.5281/zenodo.20111113",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-07-01T06:00:48.157686",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.21494139": {
+    "stableId": "doi:10.5281/zenodo.21494139",
+    "title": "Two Surfaces of Ambiguity: Complementary Detection for Text-to-SQL",
+    "url": "https://doi.org/10.5281/zenodo.21494139",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-18T07:49:30.821534",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.22103340": {
+    "stableId": "doi:10.5281/zenodo.22103340",
+    "title": "Beyond Accuracy: Measuring Reasoning Consistency Under Quantization in Small Language Models",
+    "url": "https://doi.org/10.5281/zenodo.22103340",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.1142/s2010326326500115": {
+    "stableId": "doi:10.1142/s2010326326500115",
+    "title": "The limiting spectral distribution of various matrix ensembles under the anticommutator operation",
+    "url": "https://doi.org/10.1142/s2010326326500115",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.1007/s11633-025-1624-x": {
+    "stableId": "doi:10.1007/s11633-025-1624-x",
+    "title": "Quantization Meets dLLMs: A Systematic Study of Post-training Quantization for Diffusion LLMs",
+    "url": "https://doi.org/10.1007/s11633-025-1624-x",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.20647294": {
+    "stableId": "doi:10.5281/zenodo.20647294",
+    "title": "VeloxQuant-MLX: Fast KV-Cache Quantization for Apple Silicon",
+    "url": "https://doi.org/10.5281/zenodo.20647294",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.21262994": {
+    "stableId": "doi:10.5281/zenodo.21262994",
+    "title": "A Unified Digital Physics Framework: Unifying Relativity and Quantum Mechanics via Discrete Computational Latency",
+    "url": "https://doi.org/10.5281/zenodo.21262994",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-26T07:47:46.906454",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.22087584": {
+    "stableId": "doi:10.5281/zenodo.22087584",
+    "title": "Agentic AI for Manufacturing Data: Building Intelligent Systems That Query, Reason, and Act",
+    "url": "https://doi.org/10.5281/zenodo.22087584",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-25T07:29:55.448023",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.17613/xd840-6v157": {
+    "stableId": "doi:10.17613/xd840-6v157",
+    "title": "Moral Consistency Variance: A Pilot Benchmark for Decision Stability under Moral Prompt Perturbations in Large Language Models",
+    "url": "https://doi.org/10.17613/xd840-6v157",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-07-01T06:00:48.157686",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.19508817": {
+    "stableId": "doi:10.5281/zenodo.19508817",
+    "title": "Orchestrating Agentic AI in Program Management: Governance Frameworks for Autonomous Project Workflows",
+    "url": "https://doi.org/10.5281/zenodo.19508817",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-07-01T06:00:48.157686",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.19838006": {
+    "stableId": "doi:10.5281/zenodo.19838006",
+    "title": "IDEAFix: An Evaluation Framework for Creative Defixation Prompting in LLMs",
+    "url": "https://doi.org/10.5281/zenodo.19838006",
+    "firstSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastUpdated": "2026-08-21T09:56:20.448147",
+    "sources": [
+      "OpenAlex"
+    ]
+  }
+}

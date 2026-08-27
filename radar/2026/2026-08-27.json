@@ -1,0 +1,548 @@
+{
+  "date": "2026-08-27",
+  "generatedAt": "2026-08-27T08:30:00.000Z",
+  "primaryStart": "2026-08-26T08:30:00.000Z",
+  "lookbackStart": "2026-08-24T08:30:00.000Z",
+  "timezone": "Asia/Shanghai",
+  "topics": [
+    "LLM Agent",
+    "Quantization",
+    "Long Context",
+    "Memory",
+    "Reasoning",
+    "Agent Evaluation"
+  ],
+  "leads": [
+    {
+      "stableId": "arxiv:2608.26004",
+      "arxivId": "2608.26004v1",
+      "doi": null,
+      "title": "AsymSpec: Context-Asymmetric Speculative Decoding for Agentic LLMs",
+      "abstract": "Agentic LLM pipelines face escalating inference costs as context accumulates across retrieval, tool use, and multi-turn interactions. To control latency, deployments routinely compress inputs, but this degrades task accuracy. Speculative decoding (SD) accelerates generation losslessly, yet it assumes the drafter and verifier share an identical context, preventing SD from resolving the accuracy-overhead trade-off. We propose AsymSpec, an asymmetric speculative decoding framework that breaks this symmetry: a lightweight drafter reads the full input while the large verifier operates on the compressed view. The drafter steers the verifier via a contrastive $δ$-fusion of logits, modulated by a divergence-aware acceptance gate that preserves verification stability and high draft acceptance rates. Evaluated across four agentic capabilities and two end-to-end agent benchmarks, AsymSpec reaches $\\approx 90\\%$ of full-context accuracy on average, delivering $1.3$--$1.7\\times$ throughput speedups at $0.2$--$0.3\\times$ the compute cost on isolated text capabilities. These results show that asymmetric context access yields substantial gains precisely when compression discards critical reasoning signals.",
+      "authors": [
+        "Sheng Liang",
+        "Yongyue Zhang",
+        "Nathanael Brian",
+        "Hang Lv",
+        "Hao Wang",
+        "Chen Zhang",
+        "Yong Liu"
+      ],
+      "published": "2026-08-26T16:50:02Z",
+      "updated": "2026-08-26T16:50:02Z",
+      "url": "http://arxiv.org/abs/2608.26004v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent",
+        "Agent Evaluation"
+      ],
+      "relevance": 2,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": true
+    }
+  ],
+  "watch": [
+    {
+      "stableId": "doi:10.5281/zenodo.19518628",
+      "openAlexId": "W7153726391",
+      "doi": "10.5281/zenodo.19518628",
+      "title": "Time Quantization in UWCM: Resolution of Quantum Paradoxes",
+      "abstract": "AbstractWithin the framework of the Unified Wave Cosmological Model (UWCM), spacetime (theStratum) is a discrete quantized network, and its active boundary (the SGW) is the carrier ofinformation and the source of energy. In previous works (Slavutsky, 2026e, DOI: 10.5281/zenodo.19516683; Slavutsky, 2026f, DOI: 10.5281/zenodo.19518042), it was shown that the massof black holes is quantized: M = N · mP, and the energy transfer between the SGW and theStratum occurs in portions that are multiples of the Planck energy EP.In the present work, these results are extended to time. It is shown that the quantization ofenergy transfer and the discreteness of the Stratum entail the quantization of time: any changesin the system occur in discrete “ticks” with a minimal interval tP = ℏG/c5 ≈ 5.4 × 10−44s. This means that all physical processes, including the evolution of quantum states, occur insteps rather than continuously.On this basis, a new explanation is proposed for key quantum paradoxes:• Wave function collapse is not an instantaneous process but a sequence of Planck “ticks”during which the system transitions from a superposition to a definite state.• Entanglement is a synchronization of Stratum nodes occurring in its proper time; to anexternal observer, the effect appears instantaneous but actually has a minimal delay tP.• Schr¨odinger’s cat — the transition from superposition to a definite state takes a finitenumber of “ticks,” during which the system is in a transitional state.• The observer problem — “measurement” is recognized as a process in which the numberof coordinated “ticks” between the observer-node and the object-node exceeds a thresholdM, providing an objective criterion without invoking consciousness.The work demonstrates that time quantization not only does not contradict quantum mechanics but also resolves its fundamental paradoxes, offering a physically grounded alternativeto “instantaneous” and “nonlocal” interpretations.",
+      "authors": [
+        "Gleb Slavutskiy"
+      ],
+      "published": "2026-12-04",
+      "updated": "2026-07-01T06:00:48.157686",
+      "url": "https://doi.org/10.5281/zenodo.19518628",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 2,
+      "matchedTopics": [
+        "Quantization"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "new",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "doi:10.5281/zenodo.20060666",
+      "openAlexId": "W7160554370",
+      "doi": "10.5281/zenodo.20060666",
+      "title": "Maxwell Dynamics from the Monadic Real-J Address Dial: A QTT Axiom-to-Field Theorem with Source-Derived Photon Stiffness",
+      "abstract": "From a compact internal dial to Maxwell's equations and a frozen photon stiffness The QTT source packet fixes the leading electromagnetic stiffness before the fine-structure comparator is opened: \\[ \\frac{\\kappa}{\\hbar c}=8+\\frac{\\rho}{2}+D_\\lambda^{\\mathsf T}G_\\lambda D_\\lambda,\\qquad \\alpha_{\\rm QTT}^{-1}=4\\pi\\left(8+\\frac{\\rho}{2}+D_\\lambda^{\\mathsf T}G_\\lambda D_\\lambda\\right). \\] Combined with the real-J local dial, connected U(1) transport, curvature f=da, the unique leading gauge action, integer circle characters, and worldline holonomy, the same source theorem yields both Maxwell pairs, Coulomb's law, charge quantization, the Aharonov-Bohm phase, and the Lorentz force. Scientific result: a QTT zero-fit source-explanatory victory for leading electromagnetism. Differential forms, U(1) gauge calculus, Bianchi identity, and Euler-Lagrange variation are standard. Their ordering by a finite real-J address packet and the source-derived absolute stiffness are QTT-native. The frozen result αQTT-1=137.035999165998 lies -0.524σ from CODATA 2022. That is one downstream no-retune audit of the source word, not an input and not multiplied into several independent confirmations.",
+      "authors": [
+        "Ali Attar"
+      ],
+      "published": "2026-08-25",
+      "updated": "2026-08-26T07:47:46.906454",
+      "url": "https://doi.org/10.5281/zenodo.20060666",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 2,
+      "matchedTopics": [
+        "Quantization"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26093",
+      "arxivId": "2608.26093v1",
+      "doi": null,
+      "title": "Agentic Autoresearch for Cell-Edge Power Control: Radically Redefining the Researcher's Role",
+      "abstract": "Designing machine learning algorithms for wireless resource management is labour-intensive: the architecture, the loss function and the training recipe are all specified by hand. We demonstrate that this design layer can be surrendered to an autonomous agent in its entirety. We adopt the autoresearch protocol, in which an AI coding agent edits a training script, runs a fixed-budget experiment, and retains or discards the change according to a single immutable metric. We grant the agent authority over the architecture family, the input representation, the output parameterization, the loss function and the task-sampling law, and set it a target chosen for its difficulty: sum-least-percentile-rate power control across a multicell network. The formulation targets cell-edge throughput and is non-convex, non-smooth and strongly NP-hard away from its max-min vertex. Safeguards render the results trustworthy: a hash-pinned evaluator, an enforced inference contract and a pre-registered falsifier per experiment. In eighty-one unattended experiments over twenty-six hours, the agent reached $99.5\\%$ of a converged minorization-maximization reference in one fixed-cost inference pass, at roughly $600\\times$ lower inference cost, closing $94\\%$ of the gap from its first working architecture, with one parameter set serving every network size and percentile target. It recovered provable structure rather than tuned constants: the output parameterization it discovered reproduces the exact max-min-optimal allocation at the minimum percentile, for every value of the trained weights.",
+      "authors": [
+        "Ahmad Khan",
+        "Akram Bin Sediq",
+        "Sara Azadegi Naeini",
+        "Raviraj S. Adve"
+      ],
+      "published": "2026-08-26T17:56:00Z",
+      "updated": "2026-08-26T17:56:00Z",
+      "url": "http://arxiv.org/abs/2608.26093v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26091",
+      "arxivId": "2608.26091v1",
+      "doi": null,
+      "title": "PlanSightRAG: A Visual-First Multimodal RAG for Automating Question Answering and Compliance Checking for Civil Standard Plans",
+      "abstract": "Civil infrastructure compliance checking has long relied on engineers manually reading legacy 2D plans; however, OCR-based automation strips away the geometry and layout essential for interpreting these plans. We present a Visual-First Multimodal Retrieval-Augmented Generation (RAG) framework called PlanSightRAG. It indexes and reasons directly over plan imagery, integrates a ColNomic-3B multi-vector retrieval, an agentic Planner-Retriever-Auditor-Synthesizer, and MaxSim heatmaps as an evidence trail. We introduce a 4,056-pair benchmark from five state Departments of Transportation (DOT) standard plans (1,898 pages). PlanSightRAG achieves 91.47% Recall@5 on zero-shot retrieval, while on a held-out Michigan DOT corpus, it achieves 91.40%. On synthetic, parametrically-generated compliance drawings, our Qwen2.5-VL-72B pipeline reaches 100% verdict accuracy only when supplied a pre-resolved rule threshold, a controlled ceiling that a non-VLM OCR baseline already reaches at 76.4%. Finally, we demonstrate autonomous visual rule-grounding by extracting numeric limits directly from a specification corpus without any human-supplied rules.",
+      "authors": [
+        "Nabaraj Subedi",
+        "Shuvo Dip Datta",
+        "Ahmed Abdelaty",
+        "Shivanand Venkanna Sheshappanavar"
+      ],
+      "published": "2026-08-26T17:54:24Z",
+      "updated": "2026-08-26T17:54:24Z",
+      "url": "http://arxiv.org/abs/2608.26091v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26081",
+      "arxivId": "2608.26081v1",
+      "doi": null,
+      "title": "SwarmWorld: Stigmergic technological evolution in societies of language-model agents",
+      "abstract": "Collective intelligence can emerge when individuals coordinate through a shared environment, allowing local actions to accumulate into durable social organization. Language-model agents offer a new substrate for this process, yet most multi-agent systems rely on direct conversation, predefined roles, or centralized workflows. It remains unclear whether decentralized agents can build functional technologies and outperform independent search. Here, initially homogeneous LLM agents in SwarmWorld self-organize without assigned roles or recipes into evolving technological societies. Agents explore a spatial environment, process resources, test materials, construct persistent artifacts, and write executable controllers evaluated by a deterministic simulator under unseen disturbances after the agents are removed. SwarmWorld splits cognition from consequence: agents propose architectures and controllers within fixed action and material schemas, while the simulated world determines function. Shared societies develop broader, more resilient technological portfolios than a strong best-of-N isolated-search baseline, although isolated search remains competitive for the strongest artifact. Agents differentiate into exploration, construction, maintenance, and coordination behaviors, transitioning as the world matures. Technologies accumulate through collaborative construction, executable inheritance, and persistent agent-artifact networks, with most reuse beginning through physical observation rather than communication. Explicit cultural mechanisms amplify collaboration and organization, but functional benefits depend on outcome and timescale. Physical stigmergy alone supports capable societies, while interaction drives persistent technological ecologies rather than universally superior individual inventions.",
+      "authors": [
+        "Subhadeep Pal",
+        "Fiona Y. Wang",
+        "Markus J. Buehler"
+      ],
+      "published": "2026-08-26T17:45:34Z",
+      "updated": "2026-08-26T17:45:34Z",
+      "url": "http://arxiv.org/abs/2608.26081v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26070",
+      "arxivId": "2608.26070v1",
+      "doi": null,
+      "title": "Prefix Sliding for efficient test-time scaling",
+      "abstract": "Test-time scaling uses extra test-time compute to improve performance, such as letting language models reason longer when solving a problem. As models keep the entire reasoning trace in memory via full attention, hard tasks that need long thinking can be prohibitively expensive. However, we find most intermediate reasoning tokens lose importance as the model continues reasoning. This calls into question whether retaining them is worth the cost. Based on this insight, we propose Prefix Sliding, which discards tokens during reasoning that are not part of the prefix or the window of the last few thousand tokens. The prefix has key instructions and tools available to the model, while the most recent tokens are the current reasoning the model is working on. This caps the total memory requirement regardless of how long the model reasons, allowing for efficient long-horizon test-time scaling. Without training, Prefix Sliding can make existing models 3x faster while maintaining performance. Training with Prefix Sliding using reinforcement learning can achieve better performance by enabling scaling to reasoning traces beyond a hundred thousand tokens. Ablations show Prefix Sliding outperforms summarizing intermediate tokens or vanilla sliding window. Our code is at https://github.com/Muennighoff/prefix-sliding",
+      "authors": [
+        "Niklas Muennighoff",
+        "Zhengyang Wang",
+        "Zeyi Chen",
+        "Weijia Shi",
+        "Binyuan Hui",
+        "John Yang",
+        "Dapeng Jiang",
+        "Mika Senghaas",
+        "Fares Obeid",
+        "Johannes Hagemann",
+        "Sami Jaghouar",
+        "Ludwig Schmidt",
+        "Percy Liang",
+        "Jason Wei",
+        "Andrew Y. Ng",
+        "Luke Zettlemoyer",
+        "Yejin Choi",
+        "Mike Lewis"
+      ],
+      "published": "2026-08-26T17:37:15Z",
+      "updated": "2026-08-26T17:37:15Z",
+      "url": "http://arxiv.org/abs/2608.26070v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Reasoning"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26053",
+      "arxivId": "2608.26053v1",
+      "doi": null,
+      "title": "$R^3$: Training Robots to Reason in Natural Language via Reinforcement Learning",
+      "abstract": "Reasoning in language allows foundation models to spend more test-time compute on hard problems, such as those requiring decomposition, constraint tracking, and prediction of future consequences. Whether this mechanism can improve robotic manipulation remains unclear, where long-horizon tasks require tracking partial progress, reasoning about object relations, recovering from mistakes, and steering noisy low-level policies. In this paper, we study whether VLMs can be trained to reason directly in natural language to guide low-level manipulation policies. We introduce $R^3$, a simple post-training recipe that turns off-the-shelf VLMs into robotic reasoners: it first mid-trains a VLM on expert-generated reasoning traces to initialize the desired reasoning style, then improves the reasoner with single-step rubric-based RL from offline action data. Unlike prior robotic reasoning methods that mostly use structured traces as auxiliary supervision, $R^3$ trains free-form language reasoning to produce test-time guidance for action. We instantiate $R^3$ on Language Table and simulated bimanual grocery packing, two controlled testbeds for studying robotic reasoning and long-horizon manipulation. $R^3$ improves exploration and generalization across unseen tasks and significantly outperforms instruction-only imitation learning baselines on both benchmarks. Our analyses suggest that free-form language reasoning can function as a test-time compute mechanism for steering low-level policies. Our project page is available at https://robotic-reasoner.github.io/.",
+      "authors": [
+        "Lehong Wu",
+        "Yuxiao Qu",
+        "Zheyuan Hu",
+        "Ivan Zhang",
+        "Limin Wei",
+        "Zackory Erickson",
+        "Aviral Kumar"
+      ],
+      "published": "2026-08-26T17:25:10Z",
+      "updated": "2026-08-26T17:25:10Z",
+      "url": "http://arxiv.org/abs/2608.26053v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Reasoning"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.26013",
+      "arxivId": "2608.26013v1",
+      "doi": null,
+      "title": "VISA: Agentic Self-Evolving Data Synthesis for Multimodal Instruction Following",
+      "abstract": "Multimodal instruction-following models require training data that is accurate, diverse, verifiable, and challenging. Existing synthesis pipelines typically follow a one-pass generate-and-filter paradigm, discarding feedback from failed samples, verifier outcomes, and target-model errors. We present VISA (Visual Instruction Synthesis Agent), an agentic framework that reformulates multimodal instruction synthesis as a self-evolving loop. At each round, VISA analyzes an image to filter incompatible constraints and discover new verifiable ones, samples diversity- and difficulty-aware constraint sets from persistent memory, generates candidate instructions, and verifies the resulting samples with executable tools and structured large language model judges. Failed samples trigger diagnostic-guided recovery, while accepted samples are probed against the target model to estimate difficulty. The resulting verifier signals and target-model failure profiles are written back to memory, allowing subsequent rounds to adaptively expand the constraint space, reduce template repetition, and focus on unresolved model weaknesses. The same verifier contracts further provide reward signals for reinforcement learning without a separately trained reward model. Experiments on MM-IFEval show that VISA consistently improves multimodal instruction following over strong baselines, while preserving general multimodal capability across seven public benchmarks.",
+      "authors": [
+        "Min Zeng",
+        "Guanxin Tan",
+        "Libin Cen",
+        "Yawei Wen",
+        "Rui Hu",
+        "Liuyang Bian",
+        "Xiaolong Chen",
+        "Xiaoxin Chen"
+      ],
+      "published": "2026-08-26T16:55:58Z",
+      "updated": "2026-08-26T16:55:58Z",
+      "url": "http://arxiv.org/abs/2608.26013v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25992",
+      "arxivId": "2608.25992v1",
+      "doi": null,
+      "title": "ProgRouter: Online Progress-Guided Orchestration for Multi-Agent LLM Workflows under Quality-Cost Tradeoffs",
+      "abstract": "Multi-agent large language model (LLM) workflows have emerged as a powerful paradigm for solving complex, open-ended tasks through collaborative reasoning among specialized LLM agents, but they incur substantial operating costs due to repeated LLM invocations and long-horizon context accumulation. Existing cascade routing methods make one-shot, query-level decisions and cannot adapt to the dynamic, state-dependent nature of multi-step workflows, in which the right LLM at each step depends on evolving task progress, remaining task difficulty, and cost-efficiency requirements. We present ProgRouter, an online progress-guided routing framework that adaptively selects LLM agents across workflow steps to preserve task-solving quality while adhering to time and cost budgets. ProgRouter introduces a multi-view task progress scorer that combines coarse workflow outcome regimes with fine-grained signals on subtask completion, progress trends, and workflow state quality. Then, a dual-path task progress predictor and an adaptive meta-gating mechanism estimate the progress gain for each candidate routed LLM. ProgRouter makes online step-wise routing decisions that balance progress gain, task time budgets, and long-term operating cost efficiency. Experiments on HumanEval Plus, MBPP, MATH-500, and ASQA, spanning agentic code generation, mathematical reasoning, and retrieval-augmented long-form question answering, demonstrate that ProgRouter reduces the operating cost relative to key baselines while maintaining strong task-solving performance.",
+      "authors": [
+        "Somgyuan Li",
+        "Ahmed M. Abdelmoniem",
+        "Shiqiang Wang"
+      ],
+      "published": "2026-08-26T16:42:02Z",
+      "updated": "2026-08-26T16:42:02Z",
+      "url": "http://arxiv.org/abs/2608.25992v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25977",
+      "arxivId": "2608.25977v1",
+      "doi": null,
+      "title": "When Personality Meets Quantization: A Layer-wise MBTI Analysis of Quantized LLMs",
+      "abstract": "Personality is increasingly important in large language models (LLMs), as it shapes users' trust, engagement, and emotional experiences. While the Myers--Briggs Type Indicator (MBTI) has emerged as a common framework for assessing LLMs' personality, existing studies focus primarily on full-precision models and evaluate only final outputs. They overlook the widespread deployment of quantized LLMs requiring low memory footprints, whose personality traits remain underexplored. In this work, we present a systematic MBTI analysis of open-source LLMs across multiple precisions, including mainstream 4-bit methods (GPTQ, AWQ) and extreme 2-bit settings (AQLM variants). Beyond output-level evaluation, we examine how personality emerges across layers through option-level entropy and confidence-gap dynamics, and introduce Uncertainty-Amplified Layer Decoding (UALD) to study decoding-induced personality drift at inference time. Our results reveal a key insight: LLMs' personality is not a static property, but an emergent, layer-dependent decision process sensitive to quantization, prompting, and decoding. Specifically, we find that (1) ENFJ remains dominant across model families and precisions; (2) 4-bit quantization largely preserves coarse personality structure, while 2-bit quantization disrupts fine-grained prompt consistency and cross-precision agreement; (3) personality decisions emerges in upper layers, following substantial ambiguity in early layers; and (4) inference decoding can shift personality, while personality-aligned conditioning improves robustness. These findings provide a new perspective on the behavioral reliability of quantized LLMs and highlight the importance of considering internal dynamics and inference strategies in personality-sensitive chatbot applications.",
+      "authors": [
+        "Yao Fu",
+        "Lijia Huang",
+        "Xiaomin Li",
+        "Runchao Li",
+        "Yu Yin",
+        "Kenneth A. Loparo"
+      ],
+      "published": "2026-08-26T16:32:50Z",
+      "updated": "2026-08-26T16:32:50Z",
+      "url": "http://arxiv.org/abs/2608.25977v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Quantization"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25941",
+      "arxivId": "2608.25941v1",
+      "doi": null,
+      "title": "When Pruning Meets Interpretability: Preserving Sparse Autoencoder Robustness in LLMs",
+      "abstract": "Sparse autoencoders (SAEs) are widely used to interpret the internal representations of large language models (LLMs), yet their reliability under post-hoc model compression remains poorly understood. We present a systematic study of how pruning affects SAE behavior and theoretically show that, for a fixed SAE, its impact is governed by perturbation energy, a covariance-weighted norm. This perspective exposes a key limitation of magnitude pruning: by ignoring activation geometry, it distorts the learned representation space and degrades SAE functionality. Activation-aware methods such as Wanda and SparseGPT, in contrast, implicitly control perturbation energy and are therefore substantially more robust at preserving SAE behavior. We further reveal a consistent structural vulnerability across all pruning methods: middle layers are significantly more sensitive to pruning than early or late layers. Guided by this insight, we propose a layer-wise sparsity allocation strategy, achieving lower perplexity under the same average pruning sparsity. Experiments across four model architectures validate our theoretical findings. Code is publicly available at https://github.com/osu-srml/sae-robustness-under-pruning/tree/main.",
+      "authors": [
+        "Suchit Gupte",
+        "Xueru Zhang",
+        "Mohammad Mahdi Khalili"
+      ],
+      "published": "2026-08-26T15:57:42Z",
+      "updated": "2026-08-26T15:57:42Z",
+      "url": "http://arxiv.org/abs/2608.25941v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Quantization"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25935",
+      "arxivId": "2608.25935v1",
+      "doi": null,
+      "title": "TAU-Agent: An Agentic Retrieval-Augmented Framework for Traffic Anomaly Understanding",
+      "abstract": "Traffic Anomaly Understanding (TAU) requires models and systems to detect, reason about, and explain anomalous events in transportation videos. To address this challenge, we propose TAU-Agent, an agentic retrieval-augmented framework for traffic anomaly understanding. Given a task query, a central retrieval agent orchestrates two visual perception tools, namely a Video Captioning Tool and an Open-Vocabulary Tracking Tool, to retrieve and select query-relevant evidence, including captions, temporal intervals, and object trajectories. The selected evidence, together with sampled video frames and the input query, is provided to a supervised fine-tuned vision-language model for final reasoning and answer generation. We evaluate TAU-Agent on both the in-domain and the out-of-domain benchmarks from the AI City Challenge 2026. TAU-Agent achieves scores of 0.6779 on Track 3, 0.3998 on Track 7, and 67.9275 on Track 8, ranking second, twelfth, and fifth, respectively. Code is available at: https://github.com/siri-rouser/TAU-Agent.",
+      "authors": [
+        "Yuqiang Lin",
+        "Yan Shi",
+        "Sam Lockyer",
+        "Harish Tayyar Madabushi",
+        "Adrian Evans",
+        "Wenbin Li",
+        "Yinhai Wang",
+        "Nic Zhang"
+      ],
+      "published": "2026-08-26T15:50:38Z",
+      "updated": "2026-08-26T15:50:38Z",
+      "url": "http://arxiv.org/abs/2608.25935v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25922",
+      "arxivId": "2608.25922v1",
+      "doi": null,
+      "title": "Query-Side Attacks on GNN-Based KGQA: Tracing Failures from Entity Linking to Answer Generation",
+      "abstract": "GNN-based Knowledge Graph Question Answering (KGQA) pipelines process queries through four discrete stages: entity linking, subgraph retrieval, GNN reasoning, and answer generation. Standard robustness evaluations conflate stage-level failures into a single end-to-end metric, obscuring both the source of brittleness and the appropriate mitigation target. We ask which stage fails, and why, when the pipeline is subjected to adversarial perturbations on the input question. We introduce a stage-isolation protocol with two answer-preserving adversarial perturbations verified against the knowledge graph: Compositional Restructuring (CR) and Relation Synonym Swap (RS) target distinct stages while leaving entity seeds intact. Evaluated across ComplexWebQuestions and WebQSP, the results run counter to prevailing assumptions: the GNN reasoning stage retains near-baseline accuracy when the subgraph is intact, while subgraph construction accounts for over 99\\% of the end-to-end collapse under CR, occurring even when the gold answer is present in 74\\% of retrieved subgraphs. This exposes a fundamental distinction between answer presence and answer reachability that end-to-end metrics cannot detect, and places the mitigation target firmly at the subgraph construction stage rather than the reasoning model. Perturbed datasets and evaluation infrastructure are released at https://anonymous.4open.science/r/atkgrag-E85C .",
+      "authors": [
+        "Pankaj Kumar",
+        "Subhankar Mishra"
+      ],
+      "published": "2026-08-26T15:34:29Z",
+      "updated": "2026-08-26T15:34:29Z",
+      "url": "http://arxiv.org/abs/2608.25922v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Reasoning"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.25869",
+      "arxivId": "2608.25869v1",
+      "doi": null,
+      "title": "Anchoring Bias in LLM-as-a-Judge Systems: Prior Scores Compromise Evaluation Independence",
+      "abstract": "Large language models (LLMs) increasingly assess generated content, giving rise to the LLM-as-a-Judge paradigm. These systems now score outputs, filter content, and gate iterative refinement in production pipelines, where each judgment is often assumed to be independent of earlier evaluations. We test this assumption using three prompt conditions: no metadata, revision framing, and anchored metadata containing revision, attempt, and prior-score fields. We show that prior scores, even when included only as context metadata, anchor judgments and systematically shift ratings toward their values. Across 192,000 attempted evaluations (185,271 successful), seven out of the eight evaluated models have 95% task-stratified bootstrap intervals below zero for the total anchored-metadata effect on 20 fixed texts. Cohen's $d$, a standardized measure of the difference between score distributions, reaches an absolute value of 0.71. Token-level analysis of selected model-task probes suggests a threshold-like response pattern: introducing anchored metadata produces a marked redistribution of output-score probabilities, while changing the anchor value within the tested below-threshold range produces comparatively little additional variation. On categorical industry data with human-labeled ground truth, anchored metadata blocks 48% of error corrections and flips 10.18% of correct judgments toward an assigned wrong label, demonstrating the bias extends beyond numerical scoring to categorical decisions. Neither Chain-of-Thought nor a metadata-disregard warning reduces the total effect, although the warning improves the paired accuracy effect relative to baseline in the industry experiment. Reliable LLM evaluation demands careful context engineering rather than an assumption of impartiality. Effective mitigation must be validated for the intended model and task or domain.",
+      "authors": [
+        "Ante Kapetanovic",
+        "Kemal Altwlkany",
+        "Andro Mercep",
+        "Tomislav Duricic",
+        "Emanuel Lacic"
+      ],
+      "published": "2026-08-26T14:41:24Z",
+      "updated": "2026-08-26T14:41:24Z",
+      "url": "http://arxiv.org/abs/2608.25869v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "Reasoning"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "continuing",
+      "inWindow": true,
+      "lead": false
+    },
+    {
+      "stableId": "doi:10.5281/zenodo.20111113",
+      "openAlexId": "W7160764131",
+      "doi": "10.5281/zenodo.20111113",
+      "title": "Automated SOLID Violation Detection and Refactoring on Real Life Repositories",
+      "abstract": "This paper presents an automated framework for detecting and refactoring SOLID design principle violations in real-world software repositories using Large Language Model (LLM) agents. Recognizing that architectural issues often span multiple files, we implement a dynamic agentic detection system that utilizes Abstract Syntax Tree (AST) summaries and repository navigation tools to identify violations with high accuracy. The framework further attempts to resolve these issues through atomic full-file refactoring in isolated workspaces, validated by native test suites and quantitative code quality metrics. We evaluated our pipeline using the DeepSeek model on nine open-source repositories across Java, Python, and Kotlin. Our experimental results show that while the detection agent achieves up to 73\\% accuracy, the refactoring component remains prone to syntactic errors, particularly in compiled languages like Java and Kotlin. Consequently, while the system provides a robust basis for automated design analysis, we conclude that it currently serves best as a semi-automated assistant within a developer-in-the-loop workflow rather than a fully autonomous maintenance tool.",
+      "authors": [
+        "Yağız Özkarahan",
+        "Omid Feizi",
+        "Mohammed Husein Pour"
+      ],
+      "published": "2026-10-05",
+      "updated": "2026-07-01T06:00:48.157686",
+      "url": "https://doi.org/10.5281/zenodo.20111113",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "LLM Agent"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "new",
+      "inWindow": true,
+      "lead": false
+    }
+  ],
+  "provenance": [
+    {
+      "source": "arXiv API",
+      "query": "cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.CV OR cat:cs.RO OR cat:stat.ML",
+      "results": 100,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "llm agent",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "quantization",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "long context",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "agent memory",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "reasoning model",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "agent evaluation",
+      "results": 25,
+      "status": "ok"
+    }
+  ],
+  "failures": []
+}

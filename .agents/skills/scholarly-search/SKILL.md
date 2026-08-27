@@ -12,7 +12,7 @@ Build a relevant, reproducible computer-science literature set without overstati
 1. Frame the technical direction, subproblems, time range, target CCF domains/categories, conference or journal scope, paper types, and desired breadth. State material assumptions.
 2. Create concept groups with synonyms, abbreviations, spelling variants, and useful exclusions. Use multiple queries when one cannot cover the topic.
 3. Search complementary sources. Prefer official conference proceedings or submission portals for status and paper type; use DBLP for normalized computer-science metadata; use ACM Digital Library, IEEE Xplore, USENIX, Springer, AAAI/IJCAI proceedings, ACL Anthology, CVF Open Access, PMLR, or field-equivalent proceedings as applicable; use OpenReview for review-era metadata; use arXiv for discovery and accessible manuscripts.
-4. Record the database and platform, exact query, searched fields, controlled vocabulary, filters, sort, result cap, pagination status, search date, and observable count when reproducibility matters.
+4. Record the database and platform, exact query, searched fields, controlled vocabulary, filters, sort, result cap, pagination status, search date, and observable count. If a field or count is unavailable, record `unavailable`; do not omit it or imply complete pagination.
 5. Read [references/ccf-venue-rules.md](references/ccf-venue-rules.md) whenever filtering, labeling, or comparing CCF venues. Separate three operations:
    - deduplicate identical records by DOI/stable ID, then normalized title and author/year;
    - link versions or reports such as preprint, conference abstract, accepted manuscript, and version of record;
@@ -20,7 +20,8 @@ Build a relevant, reproducible computer-science literature set without overstati
 6. Screen with predeclared criteria when a protocol exists. Record a concrete exclusion reason for full-text candidates when coverage matters, using the protocol vocabulary.
 7. Expand strong seed papers through backward references, forward citations, and related-paper links when the requested breadth requires it.
 8. When the user prioritizes influential or representative work, read [references/impact-prioritization.md](references/impact-prioritization.md). Build dated, source-attributed impact profiles and select across foundational, recent-influential, and emerging cohorts. Otherwise rank using topical directness, study type, recency, and likely methodological value.
-9. Verify title, authors, venue, conference edition/year, track, paper type, pages or paper ID, DOI/DBLP key/OpenReview forum ID where available, version relationship, and stable link from authoritative records.
+9. Verify title, authors, venue, conference edition/year, track, paper type, pages or paper ID, DOI/DBLP key/OpenReview forum ID where available, version relationship, and stable link from authoritative records. Record the authoritative record used and the verification date.
+10. Before handoff, apply the search gate in the repository `AGENTS.md`. Mark unresolved identities, inaccessible text, incomplete pagination, failed queries, and update needs explicitly; do not silently discard them.
 
 ## Output contract
 

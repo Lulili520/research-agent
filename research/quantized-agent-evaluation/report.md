@@ -1,99 +1,144 @@
-# 量化模型的 Agent 性能变化：评测方法文献调研
+# 如何评测量化导致的 LLM Agent 性能变化？
 
-检索截止：2026-08-25  
-调研性质：结构化叙述性综述，不宣称系统综述或穷尽覆盖。
+检索截止：2026-08-26
 
-## 核心结论
+调研性质：问题导向的结构化文献调研，不是注册、双人筛选或穷尽性的系统综述。
 
-这个问题已经有一项高度直接的正式工作，但研究空间没有被封闭。ICML 2025 的 ACBench 是目前本次检索中最核心的论文：它首次系统比较压缩模型在动作执行、工作流生成、长上下文和真实 Agent 应用中的能力。其重要发现是，4-bit 量化在工作流和工具使用子任务上的平均下降可能只有约 1%-3%，但在真实应用任务上可达到 10%-15%。因此，“静态能力基本保持”不能推出“Agent 闭环能力基本保持”。[ACBench official record](https://proceedings.mlr.press/v267/dong25k.html)
+新颖性状态：**provisional**。所有“未发现”均限于 [search-log.md](search-log.md) 记录的范围。
 
-现有证据进一步表明，评测不能只看最终成功率和每 token 延迟。2026 年的 *Quantization Inflates Reasoning* 显示 INT4/INT3 可能在准确率不变时增加推理 token 与重复步骤，从而抵消速度收益；Mix-Quant 则显示量化 prefill 与量化 decoding 的风险不同，说明“4-bit 模型”这一粗标签不足以描述 Agent 的实际精度配置。[Token Inflation](https://arxiv.org/abs/2606.25519)；[Mix-Quant](https://arxiv.org/abs/2605.20315)
+## 核心回答
 
-综合来看，最明确的文献缺口是：缺少一套对同一模型进行配对、能定位首次轨迹分歧、考虑重复运行可靠性、并以“每个成功任务的端到端成本”衡量收益的量化 Agent 评测方法（C1-C8）。
+评测量化模型的 Agent 性能，不能只比较静态准确率、最终成功率或 tokens/s。可靠方案应覆盖四层：
 
-## 研究版图
+1. **模型层**：基础推理、对话、长上下文和量化对象；
+2. **动作层**：工具选择、参数/schema、调用执行和无效动作；
+3. **轨迹层**：首次语义分歧、计划/状态变化、错误传播和恢复；
+4. **任务与系统层**：最终环境状态、重复 rollout 分布、总 token/延迟/重试和每成功 episode 成本。
 
-### 1. 传统量化评测
+直接证据已表明，静态能力保持不能直接外推为闭环 Agent 能力保持（C1）。ACBench 在其设置中报告，4-bit 量化在工作流/工具类任务上的平均损失约 1%–3%，在真实应用任务上约 10%–15%（C2）。但现有研究仍不能联合回答“量化首先改变哪个语义决策、如何传播、Agent 是否恢复、验证器是否正确判分”（C6、C8）。
 
-ICML 2024 的 QLLM-Eval 广泛评测了权重、激活和 KV Cache 量化，覆盖 11 个模型家族以及基础 NLP、涌现能力、可信性、对话和长上下文任务。它奠定了“不能只测困惑度”的方法论基础，但仍然没有环境动作、工具执行、恢复和完整 episode 状态。[QLLM-Eval](https://proceedings.mlr.press/v235/li24bb.html)
+因此，当前最值得研究的不是再造综合排行榜，而是建立一种**有效性校准的全精度—量化配对轨迹评测方法**（C9–C10）。
 
-### 2. 直接的压缩 Agent 评测
+## 文献版图
 
-ACBench 将问题推进到 Agent 层面：
+### 一般量化评测
 
-- T-Eval：规划、推理、检索、理解、指令跟随、复核；
-- WorfBench：函数调用、具身、问题求解和开放场景的工作流生成；
-- LongBench、LongGenBench、Needle-in-the-Haystack：长上下文；
-- AgentBoard：ScienceWorld、Jericho、PDDL、工具查询和操作。
+[QLLM-Eval（ICML 2024）](https://proceedings.mlr.press/v235/li24bb.html)系统比较权重、激活和 KV cache 量化，覆盖基础 NLP、涌现能力、可信性、对话和长上下文。它说明量化效果需要跨模型、精度和任务评估，但没有环境动作、工具执行、恢复或完整 episode 状态，因而不能单独证明 Agent 可用（C1、C5）。
 
-论文还发现 JSON 结构化输出比字符串输出更容易因压缩退化，量化通常比剪枝更能保留工具能力，不同模型架构的敏感度差异显著。其局限包括未测试 QAT、只覆盖兼容 vLLM 的方法、使用默认量化配置且未探索 group size；对完整轨迹中误差如何累积的归因也仍然不足。[ACBench full text](https://arxiv.org/abs/2505.19433)
+### 直接的压缩 Agent 评测
 
-### 3. 隐藏成本和阶段敏感性
+[ACBench（ICML 2025）](https://proceedings.mlr.press/v267/dong25k.html)是本次检索中最直接的正式论文。它将 action execution、workflow generation、long context 和 AgentBoard 应用纳入评测，并显示闭环应用可能比工具/工作流子任务更敏感（C2）。其不足是聚合分数尚不能给出稳定的首次语义分歧、错误传播与恢复机制（C3、C6）。
 
-*Quantization Inflates Reasoning* 提出 CTIR，用量化模型相对全精度模型的推理 token 增量描述隐藏成本。其意义在于：量化模型即使答对，也可能因为更长、更重复的推理而使单个成功任务更慢、更贵。该工作包含 agentic tool-use，但主要分析推理轨迹长度，并非完整的 Agent 动作错误分类。[paper](https://arxiv.org/abs/2606.25519)
+### 隐藏成本与量化位置
 
-Mix-Quant 把 Agent 的输入密集型工作负载拆成 prefill 与 decode：仅对 prefill 使用 NVFP4、decode 保持 BF16，在其设置下可获得最高 3 倍 prefill 加速并基本保留任务能力。它提醒后续调研和实验必须报告量化位置；峰值 prefill 加速也不能被直接写成端到端 Agent 加速。[paper](https://arxiv.org/abs/2605.20315)
+[Quantization Inflates Reasoning（2026 预印本）](https://arxiv.org/abs/2606.25519)报告低比特模型可能在最终准确率保持时产生更多、更重复的推理 token；单 token 更快因此不必然意味着每次任务成本更低（C4）。
 
-## Agent 评价方法提供的补充
+[Mix-Quant（2026 预印本）](https://arxiv.org/abs/2605.20315)区分 prefill 与 decode 精度，说明“4-bit 模型”是过粗的实验标签。评测必须明确量化对象和阶段，并区分 prefill 峰值加速与完整 Agent episode 加速（C5）。两篇均为预印本，不能表述为已经得到长期复现。
 
-量化研究应吸收而不是重新发明成熟的 Agent 评价思想：
+### 可迁移的 Agent 评测方法
 
-- T-Eval 将工具利用拆成多个阶段，可用于定位量化后哪个能力先退化。[ACL 2024 paper](https://aclanthology.org/2024.acl-long.515/)
-- AgentBoard 不仅报告成功率，还报告任务进度，适合发现“没有完成但接近完成”的变化；它是 ICLR 2024 正式论文。[OpenReview](https://openreview.net/forum?id=09Y7J22N9c)
-- τ-bench 使用最终数据库状态验证任务，并用 pass^k 衡量多次运行的一致可靠性；论文在 ICLR 2025 发表。量化差异可能小于随机 rollout 方差，因此这个指标尤其关键。[τ-bench](https://openreview.net/forum?id=roNSXZpUDN)
-- BFCL 覆盖 AST、可执行调用、拒绝不合适工具以及后续多轮版本，适合作为结构化调用层指标，但不能单独代表完整 Agent。[BFCL](https://gorilla.cs.berkeley.edu/blogs/8_berkeley_function_calling_leaderboard.html)
-- 2026 年 Agent 评测综述指出领域正转向更真实、持续更新的评测，并仍缺少成本效率、安全、鲁棒性和细粒度可扩展方法。这与量化 Agent 的缺口高度一致。[ACL Findings survey](https://aclanthology.org/2026.findings-acl.1330/)
+- [T-Eval（ACL 2024）](https://aclanthology.org/2024.acl-long.515/)提供工具能力的阶段化分解；
+- [AgentBoard（NeurIPS 2024 Datasets and Benchmarks）](https://proceedings.neurips.cc/paper_files/paper/2024/hash/877b40688e330a0e2a3fc24084208dfa-Abstract-Datasets_and_Benchmarks_Track.html)用 progress rate 补充最终成功率；
+- [τ-bench（ICLR 2025）](https://openreview.net/forum?id=roNSXZpUDN)强调最终状态检查和重复运行一致性；
+- ReliabilityBench 等近期工作已研究通用 Agent 的随机性、扰动和工具故障。
 
-## 方法分类
+这些方法说明量化评测应加入过程诊断和重复 rollout，但它们没有直接证明量化效应。“多运行几次”不是新贡献；可研究的是量化与随机性、任务长度或工具故障的交互（C6–C7）。
 
-现有文献可以组织为四层：
+## 当前证据边界
 
-1. **模型层**：困惑度、静态推理、对话、长上下文；适合筛除明显失效的量化配置，不能证明 Agent 可用。
-2. **动作层**：工具选择、参数/schema、调用执行、拒绝无效工具；能定位结构化输出退化。
-3. **轨迹层**：计划、进度、状态保持、重复、首次分歧、错误恢复；目前在量化文献中覆盖最弱。
-4. **任务与系统层**：最终环境状态、pass^k、总 token、总延迟、能耗和成功任务成本；现有工作通常只覆盖其中一部分。
+| 结论 | 证据状态 | 合理表述 |
+|---|---|---|
+| 静态指标不足以证明 Agent 能力保持 | 较强 | 可作为研究动机（C1） |
+| 闭环任务可能有更大损失 | 单篇直接正式证据 | 限定为 ACBench 设置（C2） |
+| 表示形式和架构存在异质性 | 直接但待补精确定位 | 作为待验证机制（C3） |
+| token 膨胀会削弱效率收益 | 新兴直接证据 | 限定为预印本结果（C4） |
+| 量化位置/阶段是必要控制变量 | 正式相邻 + 新兴证据 | 作为实验原则（C5） |
+| 配对轨迹归因无直接等价工作 | 初步反缺口检索 | 仅作日期/范围受限的 provisional 判断（C9） |
 
-## 当前可以成立的研究空白
+## 主方向：有效性校准的配对轨迹归因
 
-### 缺口一：缺少配对轨迹归因
+### 精确研究空白
 
-ACBench 能说明某类任务下降，却较少回答全精度与量化模型从哪一步开始分歧，以及该分歧属于选错工具、参数错误、环境误读、计划偏移还是恢复失败。逐步 T-Eval 与 AgentBoard progress 提供组件，但尚未形成量化专用的配对归因框架。
+在同一基础模型、任务初态、Agent scaffold 和受控解码条件下，现有证据尚不能可靠识别：量化首先改变了哪个**语义动作**，该变化是否被环境反馈放大或被 Agent 恢复，以及 benchmark 验证器是否对量化输出产生差异性误判（C6、C8–C9）。
 
-### 缺口二：缺少可靠性统计
+这属于“机制 + 测量有效性”问题，而不是“某篇论文少测一个指标”。它将科学推断从“量化后掉多少分”推进到“为什么掉分，以及观测差异是否真实”。
 
-Agent 是随机闭环系统。单次成功率差异可能来自采样、环境或用户模拟器，而非量化。τ-bench 已证明重复运行一致性本身是关键能力，但 ACBench 的主要结论没有形成以配对重复 rollout 和置信区间为中心的方法。
+### 最近工作与不可约差异
 
-### 缺口三：成本定义仍不完整
+| 最近工作 | 已经解决 | 仍需解决 |
+|---|---|---|
+| ACBench | 证明压缩会影响多层 Agent 能力 | 配对首次语义分歧、传播和恢复 |
+| T-Eval / AgentBoard | 阶段能力与过程进度 | 把量化作为受控干预并连接最终环境状态 |
+| Agentic Benchmark Checklist | task/outcome validity 审计思想 | 量化/全精度条件下的差异性误判 |
+| Token Inflation | 推理长度和隐藏成本 | 完整 action–tool–state 轨迹及成功 episode 成本 |
 
-每 token 加速不等于每任务加速。Token Inflation 揭示推理 token 可能增加；Agent 还会产生额外工具调用、重试和无效步骤。文献尚未统一报告“完成一个成功 episode 的显存、时间、能耗和调用成本”。
+不可约差异不是增加更多模型或指标，而是把**受控量化干预、语义轨迹对齐、失败传播和验证器校准**放在同一个可证伪设计中。
 
-### 缺口四：量化轴没有被统一控制
+### 可证伪假设
 
-权重、激活、KV Cache、prefill 和 decoding 的敏感性不同。现有论文分散地研究这些轴，缺少在同一模型、Agent scaffold、任务和资源预算下的统一比较。
+- H1：控制基础模型、任务和 scaffold 后，首次语义分歧集中于少数动作类型，而非均匀出现。
+- H2：首次分歧的位置和类型，比静态指标或总 token 数更能预测最终失败。
+- H3：部分表面退化来自验证器的差异性误判；校准后效应量或排序会改变。
+- H4：局部分歧并不必然导致失败，错误恢复是连接量化干预与最终结果的中介变量。
 
-### 缺口五：benchmark 外推不足
+### 最小可行实验
 
-静态函数调用、工作流生成和真实交互的退化幅度不同。一个量化配置在 BFCL 或 T-Eval 上稳定，不代表在长周期 web、软件工程或数据库状态任务中稳定。现有直接证据集中于有限模型家族和环境。
+1. 选择 2–3 个可本地复现、具有确定性最终状态检查的 Agent benchmark，先审计 task/outcome validity。
+2. 固定基础模型、prompt/scaffold、工具版本与硬件，比较 BF16 和至少两个 PTQ 条件；明确记录量化对象和阶段。
+3. 对相同任务实例进行多种子 rollout，保存 observation、原始输出、解析动作、工具结果、环境状态、错误和恢复事件。
+4. 以环境状态和“语义动作等价类”而非 token 严格相等对齐轨迹；用盲法人工复核校准自动错误分类器。
+5. 报告配对效应及置信区间、首次分歧时间、分歧类型、失败传播/恢复概率，以及验证器修复前后的变化。
+6. 将 token、prefill/decode 时间、重试和工具调用汇总为“每成功 episode 成本”，但不构造不透明总分。
 
-## 代表论文阅读顺序
+### 结果价值与风险
 
-1. [ACBench / ICML 2025](https://proceedings.mlr.press/v267/dong25k.html)：与你的问题最直接，先理解它覆盖什么以及没有覆盖什么。
-2. [QLLM-Eval / ICML 2024](https://proceedings.mlr.press/v235/li24bb.html)：理解量化评测变量和传统任务版图。
-3. [T-Eval / ACL 2024](https://aclanthology.org/2024.acl-long.515/)：学习工具能力的逐步分解。
-4. [AgentBoard / ICLR 2024](https://openreview.net/forum?id=09Y7J22N9c)：学习闭环进度分析。
-5. [τ-bench / ICLR 2025](https://openreview.net/forum?id=roNSXZpUDN)：学习最终状态验证和重复运行可靠性。
-6. [Quantization Inflates Reasoning / 2026 preprint](https://arxiv.org/abs/2606.25519)：理解准确率以外的隐藏成本。
-7. [Mix-Quant / 2026 preprint](https://arxiv.org/abs/2605.20315)：理解推理阶段和量化位置的差异。
+- 若存在稳定敏感动作，可为选择性精度保护或量化感知训练提供目标。
+- 若分歧不集中，可否定“修复单一模块即可恢复 Agent”的假设。
+- 若验证器偏差显著，可纠正 benchmark 推断；若不显著，则提供有效性证据。
+- 主要风险是 token 轨迹快速失配、自动 judge 偏差和实验因子爆炸；应用语义/状态对齐、人工校准和功效导向设计控制。
 
-## 影响力与证据说明
+## 两个备选方向
 
-本交叉方向形成时间很短，因此没有把原始引用数作为排序依据。ACBench 和 QLLM-Eval 的优先级来自正式 ICML 主会发表、公开代码和对问题的直接性；T-Eval、AgentBoard、τ-bench 的优先级来自正式会议发表及其指标被后续 Agent 评测采用；两个 2026 年预印本被标为“新兴高潜力”，不称为已经建立长期影响的论文。
+### 量化条件下的可靠性响应面
 
-按照 CCF 第七版目录，本报告中的 ICML、ICLR、ACL 主会论文属于相应人工智能方向的 A 类会议范围；ACL Findings 与 arXiv 预印本没有沿用主会 CCF 标签。CCF 类别仅用于 venue 元数据，不代表单篇论文质量。[CCF official catalog](https://www.ccf.org.cn/Academic_Evaluation/By_category/)
+研究量化方法/位宽与 rollout 随机性、提示扰动、工具故障和任务 horizon 的交互，报告方差、尾部失败、worst-group 或 CVaR。通用 Agent 可靠性已经有人研究，贡献必须来自量化条件及交互效应（C7）。新颖性：**中等、provisional**。
 
-## 调研限制
+### 成功任务成本与阶段精度配置
 
-- 本次为问题导向的结构化调研，不是注册或双人筛选的系统综述。
-- 对 2026 年预印本只能做新兴证据判断，不能宣称长期影响或稳定复现。
-- 没有把不同论文的数字拼成排行榜，因为模型、量化方法、任务、解码和硬件条件不兼容。
-- 社区量化排行榜和个人测试仅用于发现线索，没有作为核心科研结论依据。
+在统一硬件和成功约束下，比较权重/KV/prefill/decode 精度对完整成功 episode 的能力—成本 Pareto，并用轨迹失败与重试解释成本来源。若只是画 Pareto 曲线，新意较弱；只有导出可复现规律或自适应精度策略时，才适合作为系统向主贡献（C4–C5）。新颖性：**中等偏低至中等、provisional**。
+
+## 不建议独立立项
+
+- **笼统的安全 + 鲁棒性评测**：相邻工作密集且构念不同；目前只适合作为高后果子集验证。
+- **统一多测几种量化位置**：与 QLLM-Eval、Mix-Quant 重叠；除非解释轨迹机制或产生新策略，否则只是实验扩展。
+- **新综合总分或排行榜**：容易掩盖成功率、可靠性、成本和有效性之间的权衡。
+
+## 新颖性边界与立项门槛
+
+截至 2026-08-26，在已记录查询中未发现与主方向直接等价的工作（C9）。这不是“无人做过”的保证。正式立项前必须：
+
+1. 完成 DBLP、Semantic Scholar/OpenAlex、arXiv、OpenReview 和目标会议 proceedings 的查询、分页与结果计数；
+2. 完成 ACBench 等最近工作的前向/后向引文链、作者/项目/代码检索；
+3. 建立至少 10 篇 closest-work 的 overlap/delta 表，并让独立研究者尝试推翻新颖性；
+4. 用小规模实验验证轨迹记录、语义对齐和验证器校准的可靠性；
+5. 在投入大规模实验和投稿前分别刷新检索。
+
+完成前不能使用“首次”“从未研究”或“填补空白”等绝对表述。
+
+## 阅读顺序
+
+1. [ACBench / ICML 2025](https://proceedings.mlr.press/v267/dong25k.html)：直接基线。
+2. [QLLM-Eval / ICML 2024](https://proceedings.mlr.press/v235/li24bb.html)：量化变量基础。
+3. [T-Eval](https://aclanthology.org/2024.acl-long.515/)与 [AgentBoard](https://proceedings.neurips.cc/paper_files/paper/2024/hash/877b40688e330a0e2a3fc24084208dfa-Abstract-Datasets_and_Benchmarks_Track.html)：过程分解。
+4. [τ-bench / ICLR 2025](https://openreview.net/forum?id=roNSXZpUDN)：最终状态与可靠性。
+5. [Token Inflation](https://arxiv.org/abs/2606.25519)与 [Mix-Quant](https://arxiv.org/abs/2605.20315)：新兴成本和阶段精度证据。
+
+## 限制
+
+- 本调研没有执行注册协议、双人筛选或 PRISMA 流程。
+- 部分关键细节尚缺页码/表格级 locator，已标记为 `partial`，没有伪造定位。
+- 2026 年工作是预印本，正式发表、独立复现与长期影响尚不确定。
+- 不同论文的模型、量化实现、任务和硬件不可直接比较，故不制作跨论文数值排行榜。
+- CCF 类别仅用于 venue 元数据，不代表单篇论文质量。
+
+完整证据见 [evidence.md](evidence.md)，检索与反缺口记录见 [search-log.md](search-log.md)，实验化方向卡见 [research-directions.md](research-directions.md)。
