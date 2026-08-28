@@ -169,7 +169,7 @@
     "title": "Automated SOLID Violation Detection and Refactoring on Real Life Repositories",
     "url": "https://doi.org/10.5281/zenodo.20111113",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-07-01T06:00:48.157686",
     "sources": [
       "OpenAlex"
@@ -180,7 +180,7 @@
     "title": "Two Surfaces of Ambiguity: Complementary Detection for Text-to-SQL",
     "url": "https://doi.org/10.5281/zenodo.21494139",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-08-18T07:49:30.821534",
     "sources": [
       "OpenAlex"
@@ -191,7 +191,7 @@
     "title": "Beyond Accuracy: Measuring Reasoning Consistency Under Quantization in Small Language Models",
     "url": "https://doi.org/10.5281/zenodo.22103340",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-08-26T07:47:46.906454",
     "sources": [
       "OpenAlex"
@@ -257,7 +257,7 @@
     "title": "Moral Consistency Variance: A Pilot Benchmark for Decision Stability under Moral Prompt Perturbations in Large Language Models",
     "url": "https://doi.org/10.17613/xd840-6v157",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-07-01T06:00:48.157686",
     "sources": [
       "OpenAlex"
@@ -268,7 +268,7 @@
     "title": "Orchestrating Agentic AI in Program Management: Governance Frameworks for Autonomous Project Workflows",
     "url": "https://doi.org/10.5281/zenodo.19508817",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-07-01T06:00:48.157686",
     "sources": [
       "OpenAlex"
@@ -279,8 +279,162 @@
     "title": "IDEAFix: An Evaluation Framework for Creative Defixation Prompting in LLMs",
     "url": "https://doi.org/10.5281/zenodo.19838006",
     "firstSeen": "2026-08-27T08:30:00.000Z",
-    "lastSeen": "2026-08-27T08:30:00.000Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
     "lastUpdated": "2026-08-21T09:56:20.448147",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "arxiv:2608.27439": {
+    "stableId": "arxiv:2608.27439",
+    "title": "RedEvoAgent: Automatic Red-Teaming Agent with Experience-Driven Skill Evolution",
+    "url": "http://arxiv.org/abs/2608.27439v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T17:55:33Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27348": {
+    "stableId": "arxiv:2608.27348",
+    "title": "INTENT-AS-A-TOOL Makes it Easy to Track Agentic Misalignment",
+    "url": "http://arxiv.org/abs/2608.27348v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T16:47:19Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27219": {
+    "stableId": "arxiv:2608.27219",
+    "title": "BALMS: Benchmarking Agentic LLMs for Longitudinal Mental Health Sensing",
+    "url": "http://arxiv.org/abs/2608.27219v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T15:00:17Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27176": {
+    "stableId": "arxiv:2608.27176",
+    "title": "When Text Misleads: Inconsistent-Aware Reasoning for Audio-Grounded Dialogue",
+    "url": "http://arxiv.org/abs/2608.27176v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T14:26:46Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27456": {
+    "stableId": "arxiv:2608.27456",
+    "title": "UrbanGround: From Local Perception to Spatial Agency in a Real-Scale City",
+    "url": "http://arxiv.org/abs/2608.27456v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T17:59:33Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27427": {
+    "stableId": "arxiv:2608.27427",
+    "title": "Persona-Execution Separation: An Architecture Pattern for Evolving LLM Agents under Execution Audit",
+    "url": "http://arxiv.org/abs/2608.27427v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T17:50:07Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27340": {
+    "stableId": "arxiv:2608.27340",
+    "title": "Not All Eval-Awareness Is Equal: Capabilities Framing Predicts Compliance",
+    "url": "http://arxiv.org/abs/2608.27340v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T16:41:48Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27334": {
+    "stableId": "arxiv:2608.27334",
+    "title": "BTS-AgentBench: A Deterministic, Replayable Pipeline from Read-Only Telemetry Logs to Agent Benchmarks",
+    "url": "http://arxiv.org/abs/2608.27334v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T16:35:52Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27266": {
+    "stableId": "arxiv:2608.27266",
+    "title": "Naive Prompt Optimization: Rethinking the Need for Complex Prompt Search",
+    "url": "http://arxiv.org/abs/2608.27266v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T15:47:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27265": {
+    "stableId": "arxiv:2608.27265",
+    "title": "SCIT: Testing Causal Cache Carriers in Latent Chain-of-Thought Models",
+    "url": "http://arxiv.org/abs/2608.27265v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T15:47:48Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27260": {
+    "stableId": "arxiv:2608.27260",
+    "title": "What Makes Good Agentic Data? An ACE Lens on Data Generation for LLM Agents",
+    "url": "http://arxiv.org/abs/2608.27260v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T15:43:50Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27182": {
+    "stableId": "arxiv:2608.27182",
+    "title": "TraceBench: Controlled Evaluation of LLM Agents for Time-Series Root-Cause Attribution",
+    "url": "http://arxiv.org/abs/2608.27182v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T14:29:13Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27167": {
+    "stableId": "arxiv:2608.27167",
+    "title": "Calibrated Enough to Know, Not Calibrated to Act: Fabricated Evidence Makes LLM Agents Commit to the Unknowable",
+    "url": "http://arxiv.org/abs/2608.27167v1",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T14:20:08Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "openalex:W7167874103": {
+    "stableId": "openalex:W7167874103",
+    "title": "Arguing the Safety of Agentic AI using LLM-as-Judge Evaluations",
+    "url": "https://orcid.org/0000-0002-4484-3291>,",
+    "firstSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastUpdated": "2026-08-27T14:10:00.468798",
     "sources": [
       "OpenAlex"
     ]

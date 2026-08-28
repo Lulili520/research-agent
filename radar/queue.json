@@ -11,5 +11,57 @@
     "lastSeen": "2026-08-27T08:30:00.000Z",
     "action": "scholarly-search identity/citation chain",
     "status": "pending"
+  },
+  "arxiv:2608.27439": {
+    "stableId": "arxiv:2608.27439",
+    "title": "RedEvoAgent: Automatic Red-Teaming Agent with Experience-Driven Skill Evolution",
+    "url": "http://arxiv.org/abs/2608.27439v1",
+    "topics": [
+      "LLM Agent",
+      "Agent 评测"
+    ],
+    "addedAt": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "action": "scholarly-search identity/citation chain",
+    "status": "pending"
+  },
+  "arxiv:2608.27348": {
+    "stableId": "arxiv:2608.27348",
+    "title": "INTENT-AS-A-TOOL Makes it Easy to Track Agentic Misalignment",
+    "url": "http://arxiv.org/abs/2608.27348v1",
+    "topics": [
+      "LLM Agent",
+      "模型推理"
+    ],
+    "addedAt": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "action": "scholarly-search identity/citation chain",
+    "status": "pending"
+  },
+  "arxiv:2608.27219": {
+    "stableId": "arxiv:2608.27219",
+    "title": "BALMS: Benchmarking Agentic LLMs for Longitudinal Mental Health Sensing",
+    "url": "http://arxiv.org/abs/2608.27219v1",
+    "topics": [
+      "LLM Agent",
+      "模型推理"
+    ],
+    "addedAt": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "action": "scholarly-search identity/citation chain",
+    "status": "pending"
+  },
+  "arxiv:2608.27176": {
+    "stableId": "arxiv:2608.27176",
+    "title": "When Text Misleads: Inconsistent-Aware Reasoning for Audio-Grounded Dialogue",
+    "url": "http://arxiv.org/abs/2608.27176v1",
+    "topics": [
+      "LLM Agent",
+      "模型推理"
+    ],
+    "addedAt": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "action": "scholarly-search identity/citation chain",
+    "status": "pending"
   }
 }
