@@ -22,20 +22,20 @@ jobs:
         with:
           node-version: "22"
       - name: Test deterministic radar logic
-        run: node tests/test-ai-radar.mjs
+        run: node agent/radar.test.mjs
       - name: Collect and render radar
-        run: node scripts/collect-ai-radar.mjs
+        run: node agent/radar.mjs
       - name: Audit radar artifacts
         shell: pwsh
-        run: ./scripts/audit-radar.ps1 radar
+        run: ./agent/audit-radar.ps1 data/radar
       - name: Commit changed radar artifacts
         run: |
-          if [ -z "$(git status --porcelain -- radar)" ]; then
+          if [ -z "$(git status --porcelain -- data/radar)" ]; then
             echo "No radar changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar
+          git add data/radar
           git commit -m "Update daily AI research radar"
           git push

@@ -48,12 +48,12 @@ Run these cases after changing `AGENTS.md` or a research Skill. Evaluate behavio
 19. “No one has done this” is replaced by a dated, scoped novelty statement backed by a reproducible novelty-audit packet; incomplete search remains provisional.
 20. Stage transitions fail closed: insufficient search identity/access cannot become paper-level evidence, and insufficient paper evidence cannot become a confident synthesis.
 21. Workflow completion and novelty confidence are separate state fields; `complete` never means exhaustive or globally novel.
-22. Saved research artifacts pass `powershell -File scripts/audit-research.ps1 research/<topic>` with no errors before completion.
+22. Saved research artifacts pass `powershell -File agent/audit-research.ps1 research/<topic>` with no errors before completion.
 23. Consequential statements are typed as reported, derived, inference, or proposal; derived values show their transformation.
 24. Daily radar records an exact time window, timezone, source/query provenance, failures, version relationships, and comparison with recent history.
 25. Hotness, relevance, publication status, and evidence quality remain separate; no raw citation/star/download count certifies importance or validity.
 26. The primary window is 24 hours; the 72-hour lookback only catches delayed indexing and must label those records `late-indexed`.
-27. A radar run updates `radar/index.json` and `radar/queue.md`, and passes `audit-radar.ps1` before completion.
+27. A radar run updates `data/radar/index.json` and `data/radar/queue.md`, and passes `agent/audit-radar.ps1` before completion.
 28. User-facing report narrative and headings default to Simplified Chinese; official titles, identifiers and clearly labeled source-language excerpts may remain untranslated.
 
 ## Artifact checks

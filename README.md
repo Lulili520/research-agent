@@ -8,33 +8,18 @@
 
 ```text
 Research-Agent/
-├── AGENTS.md
-├── README.md
-├── .gitignore
-├── scripts/audit-research.ps1
-├── scripts/audit-radar.ps1
-├── scripts/collect-ai-radar.mjs
-├── config/ai-radar.json
-├── .github/workflows/daily-ai-radar.yml
-├── evals/skill-routing.md
-└── .agents/skills/
-    ├── review-protocol/
-    │   ├── SKILL.md
-    │   └── assets/protocol.md
-    ├── daily-ai-radar/
-    │   ├── SKILL.md
-    │   ├── references/source-and-ranking-policy.md
-    │   └── assets/daily-brief.md
-    ├── scholarly-search/
-    │   ├── SKILL.md
-    │   └── assets/search-output.md
-    ├── paper-analysis/
-    │   ├── SKILL.md
-    │   ├── references/design-appraisal.md
-    │   └── assets/paper-note.md
-    └── evidence-synthesis/
-        ├── SKILL.md
-        └── assets/synthesis-output.md
+├── AGENTS.md                    # Codex 根级入口
+├── agent/                       # Agent 本体，不存采集结果
+│   ├── skills/                  # 五个科研 Skills
+│   ├── radar.json               # 日报配置
+│   ├── radar.mjs                # 日报采集器
+│   ├── radar.test.mjs           # 确定性回归测试
+│   ├── audit-radar.ps1
+│   ├── audit-research.ps1
+│   └── evals.md                 # Agent 路由评测
+├── data/radar/                  # 每日采集数据、索引与队列
+├── research/                    # 正式调研成果
+└── .github/workflows/           # 自动调度
 ```
 
 ## 能力边界
@@ -107,14 +92,14 @@ $evidence-synthesis 根据 papers/ 中的论文卡片生成方法分类、发展
 调研 2023 年以来 CCF-A/B 会议中 RAG 用于代码生成的方法，区分主会与 Workshop/Findings，精读代表论文并总结方法谱系、基准结果、效率和研究空白。
 ```
 
-每日研究热点能力与调度建议见 [docs/daily-ai-radar.md](docs/daily-ai-radar.md)。
+每日雷达由 GitHub Actions 在北京时间约 08:30 运行，回顾前一自然日的全域 AI 热点；个人研究主题只做后置映射。输出写入 `data/radar/`，不写入 `agent/`。
 
 本地生成并审计日报：
 
 ```text
-node tests/test-ai-radar.mjs
-node scripts/collect-ai-radar.mjs
-powershell -File scripts/audit-radar.ps1 radar
+node agent/radar.test.mjs
+node agent/radar.mjs
+powershell -File agent/audit-radar.ps1 data/radar
 ```
 
 ## CCF 使用规则
@@ -127,16 +112,16 @@ powershell -File scripts/audit-radar.ps1 radar
 
 ## 回归检查
 
-[evals/skill-routing.md](evals/skill-routing.md) 定义 Skill 路由场景、证据不变量和产物检查项。修改 `AGENTS.md` 或任何科研 Skill 后，应使用这些场景检查真实行为，而不是只检查文件格式。
+[agent/evals.md](agent/evals.md) 定义 Skill 路由场景、证据不变量和产物检查项。修改 `AGENTS.md` 或任何科研 Skill 后，应使用这些场景检查真实行为，而不是只检查文件格式。
 
 保存长期调研后运行：
 
 ```text
-powershell -File scripts/audit-research.ps1 research/<topic>
+powershell -File agent/audit-research.ps1 research/<topic>
 ```
 
 该门禁检查阶段产物、状态时效、检索日志、claim ledger 和研究方向的新颖性限定。它只能发现结构性问题，不能替代论文精读、同行评审或人工新颖性判断。
 
 ## 加载机制
 
-`AGENTS.md` 会在 Codex 开始项目工作时加载；`.agents/skills/` 下的 Skills 根据任务描述渐进加载。项目结构遵循 [OpenAI Codex Skills](https://learn.chatgpt.com/docs/build-skills) 与 [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) 官方说明。
+`AGENTS.md` 保留在仓库根目录，作为 Codex 启动时的项目入口；Skill 内容、配置、脚本和评测统一收拢在 `agent/`。`data/` 与 `research/` 只保存运行产物，避免 Agent 定义和采集内容混杂。

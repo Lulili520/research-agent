@@ -6,6 +6,14 @@
   "maxLeadItems": 10,
   "maxWatchItems": 15,
   "arxivCategories": ["cs.AI", "cs.CL", "cs.LG", "cs.CV", "cs.RO", "stat.ML"],
+  "discoveryQueries": [
+    "artificial intelligence",
+    "machine learning",
+    "large language model",
+    "natural language processing",
+    "computer vision",
+    "robotics"
+  ],
   "aiContextTerms": ["llm", "language model", "neural", "transformer", "machine learning", "artificial intelligence", "agent", "vision-language", "foundation model"],
   "topics": [
     {"name": "LLM Agent", "terms": ["llm agent", "language model agent", "agentic"]},
@@ -16,9 +24,8 @@
     {"name": "Agent 评测", "terms": ["agent evaluation", "agent benchmark", "agent reliability", "trajectory evaluation", "tool use"]}
   ],
   "selection": {
-    "minimumRelevance": 1,
     "leadIfIndependentSources": 2,
-    "leadIfRelevance": 2,
-    "leadIfEarlyCitations": 3
+    "leadIfEarlyCitations": 3,
+    "leadIfCitationVelocityPerDay": 1
   }
 }

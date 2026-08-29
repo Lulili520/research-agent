@@ -1,4 +1,4 @@
-param([string]$RadarRoot = 'radar')
+param([string]$RadarRoot = 'data/radar')
 
 $ErrorActionPreference = 'Stop'
 $errors = [System.Collections.Generic.List[string]]::new()
@@ -15,17 +15,23 @@ $reports = @(Get-ChildItem -LiteralPath $RadarRoot -Recurse -File -Filter '*.jso
 if ($reports.Count -eq 0) { $errors.Add('no dated radar JSON report found') }
 foreach ($file in $reports) {
     try { $report = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName | ConvertFrom-Json } catch { $errors.Add("invalid JSON: $($file.FullName)"); continue }
-    foreach ($field in @('date', 'generatedAt', 'primaryStart', 'lookbackStart', 'timezone', 'outputLanguage', 'provenance', 'failures', 'leads', 'watch')) {
+    $isCurrentSchema = $report.schemaVersion -ge 2
+    $requiredFields = @('date', 'generatedAt', 'primaryStart', 'lookbackStart', 'timezone', 'outputLanguage', 'provenance', 'failures', 'leads', 'watch')
+    if ($isCurrentSchema) { $requiredFields += @('primaryEnd', 'clusters') }
+    else { $warnings.Add("$($file.Name) uses legacy radar schema; preserved as historical output") }
+    foreach ($field in $requiredFields) {
         if ($null -eq $report.$field) { $errors.Add("$($file.Name) missing field: $field") }
     }
     if ($report.timezone -ne 'Asia/Shanghai') { $warnings.Add("$($file.Name) uses unexpected timezone") }
     if ($report.outputLanguage -ne 'zh-CN') { $errors.Add("$($file.Name) output language is not zh-CN") }
-    $primaryHours = ([datetime]$report.generatedAt - [datetime]$report.primaryStart).TotalHours
-    $lookbackHours = ([datetime]$report.generatedAt - [datetime]$report.lookbackStart).TotalHours
+    $windowEnd = if ($isCurrentSchema) { [datetime]$report.primaryEnd } else { [datetime]$report.generatedAt }
+    $primaryHours = ($windowEnd - [datetime]$report.primaryStart).TotalHours
+    $lookbackHours = ($windowEnd - [datetime]$report.lookbackStart).TotalHours
     if ([math]::Abs($primaryHours - 24) -gt 0.1) { $errors.Add("$($file.Name) primary window is not 24h") }
     if ([math]::Abs($lookbackHours - 72) -gt 0.1) { $errors.Add("$($file.Name) lookback window is not 72h") }
     foreach ($item in @($report.leads)) {
-        if (-not $item.stableId -or -not $item.url -or -not $item.abstract -or $item.relevance -lt 1) { $errors.Add("$($file.Name) has an invalid lead item") }
+        if (-not $item.stableId -or -not $item.url -or -not $item.abstract) { $errors.Add("$($file.Name) has an invalid lead item") }
+        if ($isCurrentSchema -and @($item.hotspotSignals).Count -lt 1) { $errors.Add("$($file.Name) lead item has no hotspot signal") }
     }
     if (@($report.provenance).Count -eq 0) { $errors.Add("$($file.Name) has no provenance") }
     $markdownPath = [System.IO.Path]::ChangeExtension($file.FullName, '.md')

@@ -28,6 +28,8 @@ Use Simplified Chinese for report titles, section headings, synthesis, explanati
 
 Use the narrowest applicable Skill:
 
+Project Skill definitions and their supporting references/assets are stored under `agent/skills/`. The remaining files directly under `agent/` are the minimal radar configuration, automation, audits, and evaluation. Never write collected papers, radar entries, or research outputs into `agent/`.
+
 - `scholarly-search`: discover, expand, deduplicate, screen, or update a literature set.
 - `paper-analysis`: inspect selected computer-science papers and extract novelty, method, benchmarks, results, cost, artifacts, and source-located evidence.
 - `evidence-synthesis`: build a method taxonomy and research timeline, compare results and tradeoffs, identify defensible gaps, and write a cited direction survey.
@@ -76,7 +78,7 @@ Treat each transition as a gate, not merely a suggested order:
 - **Analysis -> synthesis:** every claim used downstream has an inspected source, a page/section/table/figure locator when full text is available, an interpretation level, and a design-specific appraisal. Abstract-only evidence may support only abstract-level claims.
 - **Synthesis -> direction:** every consequential conclusion maps to a stable claim ID; contradictions and incompatible settings remain visible; every candidate direction has a closest-work delta and an anti-gap search.
 - **Direction -> novelty claim:** the novelty-audit packet is current and records databases, exact queries, dates, observable counts, citation chains, closest work, invalidation criteria, and unresolved coverage. Otherwise label novelty `provisional` or `exploratory`.
-- **Any stage -> complete:** requested deliverables exist, state agrees with artifact dates and limitations, links/metadata were rechecked, and `powershell -File scripts/audit-research.ps1 research/<topic-slug>` reports no errors.
+- **Any stage -> complete:** requested deliverables exist, state agrees with artifact dates and limitations, links/metadata were rechecked, and `powershell -File agent/audit-research.ps1 research/<topic-slug>` reports no errors.
 
 Do not promote a weak upstream artifact by adding confident prose downstream. Record the failed gate, return to the responsible stage, or narrow the claim.
 

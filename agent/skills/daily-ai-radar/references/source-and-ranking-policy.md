@@ -16,7 +16,7 @@ Respect API terms, rate limits, and access restrictions. Record failures and do 
 
 Record dimensions separately:
 
-- **Relevance:** match to tracked topics and user research questions.
+- **Research mapping:** match to tracked topics and user research questions after field-wide hotspot selection; this must not determine admission or rank in the daily hotspot list.
 - **Freshness:** first public appearance and material update time, not merely index ingestion time.
 - **Independent attention:** appearance across independent scholarly/artifact sources; syndicated copies count once.
 - **Uptake velocity:** age-normalized early citations, references, recommendations, downloads, forks, or follow-on discussion when verifiable.
@@ -26,6 +26,8 @@ Record dimensions separately:
 - **Novelty signal:** credible difference from closest recent work; this remains exploratory until anti-gap search and full-text analysis.
 
 Do not use a universal weighted sum by default. Report why an item is selected and where the signals disagree. A highly discussed preprint can be hot but weakly validated; a rigorous paper can be important without trending socially.
+
+Daily hotspot selection is field-first: identify what gained verifiable attention across AI during the previous calendar day, cluster retained items into emerging directions, and only then map those clusters and items to the user's tracked research themes.
 
 ## Corrections
 
