@@ -290,7 +290,7 @@
     "title": "RedEvoAgent: Automatic Red-Teaming Agent with Experience-Driven Skill Evolution",
     "url": "http://arxiv.org/abs/2608.27439v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T17:55:33Z",
     "sources": [
       "arXiv"
@@ -301,7 +301,7 @@
     "title": "INTENT-AS-A-TOOL Makes it Easy to Track Agentic Misalignment",
     "url": "http://arxiv.org/abs/2608.27348v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T16:47:19Z",
     "sources": [
       "arXiv"
@@ -334,7 +334,7 @@
     "title": "UrbanGround: From Local Perception to Spatial Agency in a Real-Scale City",
     "url": "http://arxiv.org/abs/2608.27456v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T17:59:33Z",
     "sources": [
       "arXiv"
@@ -345,7 +345,7 @@
     "title": "Persona-Execution Separation: An Architecture Pattern for Evolving LLM Agents under Execution Audit",
     "url": "http://arxiv.org/abs/2608.27427v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T17:50:07Z",
     "sources": [
       "arXiv"
@@ -356,7 +356,7 @@
     "title": "Not All Eval-Awareness Is Equal: Capabilities Framing Predicts Compliance",
     "url": "http://arxiv.org/abs/2608.27340v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T16:41:48Z",
     "sources": [
       "arXiv"
@@ -367,7 +367,7 @@
     "title": "BTS-AgentBench: A Deterministic, Replayable Pipeline from Read-Only Telemetry Logs to Agent Benchmarks",
     "url": "http://arxiv.org/abs/2608.27334v1",
     "firstSeen": "2026-08-28T11:36:17.573Z",
-    "lastSeen": "2026-08-28T11:36:17.573Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
     "lastUpdated": "2026-08-27T16:35:52Z",
     "sources": [
       "arXiv"
@@ -437,6 +437,996 @@
     "lastUpdated": "2026-08-27T14:10:00.468798",
     "sources": [
       "OpenAlex"
+    ]
+  },
+  "arxiv:2608.27455": {
+    "stableId": "arxiv:2608.27455",
+    "title": "CritICL: Inference-Time Weak-to-Strong Generalization from Small Language Model Failure Modes",
+    "url": "http://arxiv.org/abs/2608.27455v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:59:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27454": {
+    "stableId": "arxiv:2608.27454",
+    "title": "WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution",
+    "url": "http://arxiv.org/abs/2608.27454v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:59:11Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27449": {
+    "stableId": "arxiv:2608.27449",
+    "title": "SWE-Prime: Fewer Trajectories, Better Performance",
+    "url": "http://arxiv.org/abs/2608.27449v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:58:10Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27448": {
+    "stableId": "arxiv:2608.27448",
+    "title": "TTPO: Test-Time Policy Optimization",
+    "url": "http://arxiv.org/abs/2608.27448v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:58:10Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27442": {
+    "stableId": "arxiv:2608.27442",
+    "title": "From Static to Dynamic: Benchmarking Real-World Code Review with MCR-Bench",
+    "url": "http://arxiv.org/abs/2608.27442v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:56:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27429": {
+    "stableId": "arxiv:2608.27429",
+    "title": "Mechanistic Reaction Prediction via Discrete Flow Matching on Graph-Structured Electron Occupation",
+    "url": "http://arxiv.org/abs/2608.27429v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:50:44Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27428": {
+    "stableId": "arxiv:2608.27428",
+    "title": "Stochastic Estimation of Transduced Language Models",
+    "url": "http://arxiv.org/abs/2608.27428v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:50:21Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27424": {
+    "stableId": "arxiv:2608.27424",
+    "title": "Beyond F1: Evaluating Coverage and Failure Recovery in AI Model Security Scanners",
+    "url": "http://arxiv.org/abs/2608.27424v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:49:28Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27421": {
+    "stableId": "arxiv:2608.27421",
+    "title": "Learning a Continuous Sepsis Severity Score Without Hour-by-Hour Supervision: A Two-Site Retrospective Study",
+    "url": "http://arxiv.org/abs/2608.27421v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:46:21Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27420": {
+    "stableId": "arxiv:2608.27420",
+    "title": "Boosting LLM Exploration via Weak-Model Guidance in RLVR",
+    "url": "http://arxiv.org/abs/2608.27420v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:45:50Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27417": {
+    "stableId": "arxiv:2608.27417",
+    "title": "Retrieval Heads Meet Vision: Uncovering How VLMs Locate and Extract Visual Information",
+    "url": "http://arxiv.org/abs/2608.27417v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:43:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27413": {
+    "stableId": "arxiv:2608.27413",
+    "title": "Scaling Graph Neural Networks for Friend Recommendation: Multi-Hash User Embeddings and Temporal Neighbor Sampling",
+    "url": "http://arxiv.org/abs/2608.27413v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:41:33Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27409": {
+    "stableId": "arxiv:2608.27409",
+    "title": "Consolidating RLVR Capabilities Across Domains: A Deep Dive into Fusion Paradigms",
+    "url": "http://arxiv.org/abs/2608.27409v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:38:04Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27407": {
+    "stableId": "arxiv:2608.27407",
+    "title": "Reconstructing Humans and Objects in Interaction using Large Reconstruction Models",
+    "url": "http://arxiv.org/abs/2608.27407v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:35:46Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27406": {
+    "stableId": "arxiv:2608.27406",
+    "title": "CLAP: Cross-Embodiment Video World Models are Zero-Shot Physical Simulators",
+    "url": "http://arxiv.org/abs/2608.27406v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:35:10Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27402": {
+    "stableId": "arxiv:2608.27402",
+    "title": "How Language Models Organize and Structure Moral Knowledge",
+    "url": "http://arxiv.org/abs/2608.27402v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:30:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27397": {
+    "stableId": "arxiv:2608.27397",
+    "title": "Making Clinical Language Models Auditable: Concept-Guided Fine-Tuning for Robust Prediction",
+    "url": "http://arxiv.org/abs/2608.27397v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:28:35Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27395": {
+    "stableId": "arxiv:2608.27395",
+    "title": "LeVJEPA: Efficient &amp; Scalable Video Pretraining without the Heuristics",
+    "url": "http://arxiv.org/abs/2608.27395v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:26:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27394": {
+    "stableId": "arxiv:2608.27394",
+    "title": "RATIO: A Benchmark for Retrieval Across Typed Ideation Operations in Scientific Literature",
+    "url": "http://arxiv.org/abs/2608.27394v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:24:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27392": {
+    "stableId": "arxiv:2608.27392",
+    "title": "Property-Specific Recoverability from Contact PPG to Camera rPPG under Heterogeneous Observation Conditions",
+    "url": "http://arxiv.org/abs/2608.27392v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:23:14Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27391": {
+    "stableId": "arxiv:2608.27391",
+    "title": "CorporateBench: Large-Scale Q&amp;A Benchmarking with Temporal Knowledge Bases",
+    "url": "http://arxiv.org/abs/2608.27391v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:23:04Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27384": {
+    "stableId": "arxiv:2608.27384",
+    "title": "FlashVLA: Streaming Action Decoding for Fast and Asynchronous VLA Inference",
+    "url": "http://arxiv.org/abs/2608.27384v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:19:29Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27382": {
+    "stableId": "arxiv:2608.27382",
+    "title": "Token-Level Advertising",
+    "url": "http://arxiv.org/abs/2608.27382v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:18:27Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27380": {
+    "stableId": "arxiv:2608.27380",
+    "title": "D2C-Routing: Dimension-to-Composition Evidence Routing for Mixed-Origin AI-Generated Text Detection",
+    "url": "http://arxiv.org/abs/2608.27380v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:17:27Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27372": {
+    "stableId": "arxiv:2608.27372",
+    "title": "Universality and sharp thresholds for ellipsoid fitting",
+    "url": "http://arxiv.org/abs/2608.27372v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:09:38Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27371": {
+    "stableId": "arxiv:2608.27371",
+    "title": "Embodied Scene Rearrangement Planning",
+    "url": "http://arxiv.org/abs/2608.27371v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:08:40Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27370": {
+    "stableId": "arxiv:2608.27370",
+    "title": "Puro-2B: Poor Lab's Qwen2-1.5B Trained on RTX 5090 within $5090",
+    "url": "http://arxiv.org/abs/2608.27370v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:07:12Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27367": {
+    "stableId": "arxiv:2608.27367",
+    "title": "Successive Capacity Growth: Task-Complexity-Driven Width and Depth Expansion for Vision Transformer Encoders in JEPA World Models",
+    "url": "http://arxiv.org/abs/2608.27367v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:04:57Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27366": {
+    "stableId": "arxiv:2608.27366",
+    "title": "Stageboost: Recommending Signals Based on Counterfactual Estimation",
+    "url": "http://arxiv.org/abs/2608.27366v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:04:45Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27365": {
+    "stableId": "arxiv:2608.27365",
+    "title": "KnockGS:interaction-Grounded Calibrationof Physical Gaussian Representations",
+    "url": "http://arxiv.org/abs/2608.27365v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:03:38Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27364": {
+    "stableId": "arxiv:2608.27364",
+    "title": "Sophistication in GenAI Use: Field Evidence from a Large Firm",
+    "url": "http://arxiv.org/abs/2608.27364v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T17:03:10Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27360": {
+    "stableId": "arxiv:2608.27360",
+    "title": "Your Voice Cloning System is Secretly a Voice Anonymizer",
+    "url": "http://arxiv.org/abs/2608.27360v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:59:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27358": {
+    "stableId": "arxiv:2608.27358",
+    "title": "RCMN: Understanding Misleadingness in Influential Public Discourse",
+    "url": "http://arxiv.org/abs/2608.27358v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:57:40Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27351": {
+    "stableId": "arxiv:2608.27351",
+    "title": "Understanding Evolution Strategies for LLM Reasoning: Broader Reasoning Coverage than GRPO",
+    "url": "http://arxiv.org/abs/2608.27351v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:48:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27345": {
+    "stableId": "arxiv:2608.27345",
+    "title": "PAWBench: How Far Are We from Probabilistically Aligned World Modeling?",
+    "url": "http://arxiv.org/abs/2608.27345v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:46:38Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27343": {
+    "stableId": "arxiv:2608.27343",
+    "title": "Pair-Level Essay-Scale Republication and Reuse from Fragmented Historical Text Reuse: A Workflow Study on Eighteenth-Century Books and Newspapers",
+    "url": "http://arxiv.org/abs/2608.27343v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:43:27Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27339": {
+    "stableId": "arxiv:2608.27339",
+    "title": "Beyond Parallel Blindness: Information Floors and Model Gaps in Block Drafting",
+    "url": "http://arxiv.org/abs/2608.27339v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:40:45Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27328": {
+    "stableId": "arxiv:2608.27328",
+    "title": "R2M-Bench: Evaluating Revisit Memory via Relative Consistency in Interactive Video World Models",
+    "url": "http://arxiv.org/abs/2608.27328v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:26:29Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27313": {
+    "stableId": "arxiv:2608.27313",
+    "title": "A Finite Sample Analysis for Quantile Temporal Difference Learning in Distributional Reinforcement Learning",
+    "url": "http://arxiv.org/abs/2608.27313v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:16:09Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27311": {
+    "stableId": "arxiv:2608.27311",
+    "title": "Verify Smarter, Evolve Further: Efficient Harness Evolution through Behavior-Aware Verification",
+    "url": "http://arxiv.org/abs/2608.27311v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:12:23Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27309": {
+    "stableId": "arxiv:2608.27309",
+    "title": "Difference-in-Differences on a Censored Rating Scale Can Manufacture an Effect: Evidence from a Pre-Registered LLM-Judge Audit",
+    "url": "http://arxiv.org/abs/2608.27309v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:10:16Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27302": {
+    "stableId": "arxiv:2608.27302",
+    "title": "QuantumBoostNet: A Hybrid Classical-Quantum Architecture for Enhanced Accuracy in Cardiac Ultrasound View Identification",
+    "url": "http://arxiv.org/abs/2608.27302v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:06:09Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27301": {
+    "stableId": "arxiv:2608.27301",
+    "title": "Comparative Evaluation of 3D Reconstruction Methods for Immersive Visualization of Laboratory Objects",
+    "url": "http://arxiv.org/abs/2608.27301v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:05:33Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27296": {
+    "stableId": "arxiv:2608.27296",
+    "title": "LLMs Can Design Near-Optimal OR Algorithms",
+    "url": "http://arxiv.org/abs/2608.27296v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T16:01:11Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "doi:10.1613/jair.1.20934": {
+    "stableId": "doi:10.1613/jair.1.20934",
+    "title": "CollaFuse: Collaborative Diffusion Models",
+    "url": "https://doi.org/10.1613/jair.1.20934",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-28T12:50:07.497085",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.1038/s41598-026-67564-0": {
+    "stableId": "doi:10.1038/s41598-026-67564-0",
+    "title": "Digitized counterdiabatic quantum feature extraction",
+    "url": "https://doi.org/10.1038/s41598-026-67564-0",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-28T12:50:07.497085",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.59653/jemls.v4i03.2571": {
+    "stableId": "doi:10.59653/jemls.v4i03.2571",
+    "title": "Role of Artificial Intelligence in Managing Large Classrooms in Higher Education: A PRISMA-Based Thematic Review",
+    "url": "https://doi.org/10.59653/jemls.v4i03.2571",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-28T12:50:07.497085",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "arxiv:2608.27291": {
+    "stableId": "arxiv:2608.27291",
+    "title": "Recovering Expert Critic-Sourced Network Adjacency between Musical Artists from Acoustic Distributions: A Construct-Validity Approach",
+    "url": "http://arxiv.org/abs/2608.27291v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:59:21Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27290": {
+    "stableId": "arxiv:2608.27290",
+    "title": "Detection of Christmas tree plantations from high-resolution aerial imagery. A case study in the French Morvan",
+    "url": "http://arxiv.org/abs/2608.27290v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:58:20Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27286": {
+    "stableId": "arxiv:2608.27286",
+    "title": "MM-Spectrum: Multimodal Multi-spectral Molecular Structural Elucidation with a Stable MoE Framework",
+    "url": "http://arxiv.org/abs/2608.27286v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:55:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27282": {
+    "stableId": "arxiv:2608.27282",
+    "title": "TADP: Task-Aware Deformable Prediction for Single-Stage 3D Object Detection",
+    "url": "http://arxiv.org/abs/2608.27282v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:54:32Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27280": {
+    "stableId": "arxiv:2608.27280",
+    "title": "Sidecar: Training-Free Semantic Reuse for Character-Consistent Free-form Visual Storytelling",
+    "url": "http://arxiv.org/abs/2608.27280v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:53:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27278": {
+    "stableId": "arxiv:2608.27278",
+    "title": "Decoupled I/O-Dominant Pipelines for Large-Scale Whole-Slide Image Embedding Extraction",
+    "url": "http://arxiv.org/abs/2608.27278v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:53:16Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27271": {
+    "stableId": "arxiv:2608.27271",
+    "title": "Marine Autonomous Vehicle Fleet Scheduling to Maximise Scientific Impact",
+    "url": "http://arxiv.org/abs/2608.27271v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:49:49Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27268": {
+    "stableId": "arxiv:2608.27268",
+    "title": "BrailleBench: Investigating Multi-Criteria Braille Comprehension in Large Language Models",
+    "url": "http://arxiv.org/abs/2608.27268v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:48:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27259": {
+    "stableId": "arxiv:2608.27259",
+    "title": "Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models",
+    "url": "http://arxiv.org/abs/2608.27259v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:43:44Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27256": {
+    "stableId": "arxiv:2608.27256",
+    "title": "Enforcing Dirichlet Boundary Conditions in Operator Learning",
+    "url": "http://arxiv.org/abs/2608.27256v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:40:29Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27254": {
+    "stableId": "arxiv:2608.27254",
+    "title": "Circuit Condensation: Post-Training that Concentrates a Behavior's Causal Circuit",
+    "url": "http://arxiv.org/abs/2608.27254v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:38:58Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27244": {
+    "stableId": "arxiv:2608.27244",
+    "title": "Compositional Online Learning for Semantic Data Processing Systems",
+    "url": "http://arxiv.org/abs/2608.27244v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:25:05Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27241": {
+    "stableId": "arxiv:2608.27241",
+    "title": "Importance Scoring of Transformer Attention Heads in Learning Tabular Data",
+    "url": "http://arxiv.org/abs/2608.27241v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:22:37Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27240": {
+    "stableId": "arxiv:2608.27240",
+    "title": "UniFLM: United Segmentation and Measurement on Fetal Limb Ultrasonic Image",
+    "url": "http://arxiv.org/abs/2608.27240v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:22:07Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27239": {
+    "stableId": "arxiv:2608.27239",
+    "title": "A Point-of-Prescription Safety-Check System for Adverse Drug Reactions in Rural Bangladeshi Hospitals: A Feasibility Study",
+    "url": "http://arxiv.org/abs/2608.27239v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:21:51Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27233": {
+    "stableId": "arxiv:2608.27233",
+    "title": "HALO: A Heterogeneity-Aware Language-Aligned IMU Foundation Model for Open-Set Human Activity Recognition",
+    "url": "http://arxiv.org/abs/2608.27233v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:17:12Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27229": {
+    "stableId": "arxiv:2608.27229",
+    "title": "On the approximation of posterior laws in compound loss models by conditional Wasserstein GANs",
+    "url": "http://arxiv.org/abs/2608.27229v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:15:56Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27226": {
+    "stableId": "arxiv:2608.27226",
+    "title": "DINOcular: Self-Supervised Visuospatial Representations",
+    "url": "http://arxiv.org/abs/2608.27226v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:09:32Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27225": {
+    "stableId": "arxiv:2608.27225",
+    "title": "STEP: State-Aware Task Estimation and Planning with Multi-Modal LLMs for Human-Robot Collaboration",
+    "url": "http://arxiv.org/abs/2608.27225v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:08:36Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27221": {
+    "stableId": "arxiv:2608.27221",
+    "title": "Tensegrity Continuum Robots Enable Task-Adaptive Morphologies for Cooperative Behaviors",
+    "url": "http://arxiv.org/abs/2608.27221v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T15:05:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27214": {
+    "stableId": "arxiv:2608.27214",
+    "title": "CODE: Cross-Modal Calibration and Dynamic Suppression for Open World Object Detection",
+    "url": "http://arxiv.org/abs/2608.27214v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:56:19Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27206": {
+    "stableId": "arxiv:2608.27206",
+    "title": "PACE: A Unified Condense-and-Extract Paradigm for Fast VLM Inference",
+    "url": "http://arxiv.org/abs/2608.27206v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:52:09Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27205": {
+    "stableId": "arxiv:2608.27205",
+    "title": "Profit based evaluation of machine learning for nitrogen recommendations in winter wheat",
+    "url": "http://arxiv.org/abs/2608.27205v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:52:02Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27203": {
+    "stableId": "arxiv:2608.27203",
+    "title": "Common Geodesics Do Not Guarantee Fisher Consistency of the Structured SVM: Minimal Counterexamples and a Tree-Metric Classification",
+    "url": "http://arxiv.org/abs/2608.27203v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:47:51Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27199": {
+    "stableId": "arxiv:2608.27199",
+    "title": "Vision-centric generative AI models: A software-hardware perspective",
+    "url": "http://arxiv.org/abs/2608.27199v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:41:50Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27198": {
+    "stableId": "arxiv:2608.27198",
+    "title": "Knowledge Distillation Driven Semantic NOMA with GAN Refinement for 6G Robotic Vehicle Networks",
+    "url": "http://arxiv.org/abs/2608.27198v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:41:21Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27190": {
+    "stableId": "arxiv:2608.27190",
+    "title": "Unsupervised Adaptation of 3D CT Foundation Models for 3D CBCT Segmentation",
+    "url": "http://arxiv.org/abs/2608.27190v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:33:59Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27187": {
+    "stableId": "arxiv:2608.27187",
+    "title": "When Interference Graphs Evolve: Doubly Robust Estimation of Dynamic Peer Effects",
+    "url": "http://arxiv.org/abs/2608.27187v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:32:40Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27186": {
+    "stableId": "arxiv:2608.27186",
+    "title": "Task-space model-based control of pneumatic soft actuators",
+    "url": "http://arxiv.org/abs/2608.27186v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:32:07Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27184": {
+    "stableId": "arxiv:2608.27184",
+    "title": "LLMs in Digital EDA: A perspective on shifting roles from Generation to Orchestration",
+    "url": "http://arxiv.org/abs/2608.27184v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:29:35Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27181": {
+    "stableId": "arxiv:2608.27181",
+    "title": "SSMB: Self-Supervised Local Feature Detection under Motion Blur",
+    "url": "http://arxiv.org/abs/2608.27181v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:28:19Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27178": {
+    "stableId": "arxiv:2608.27178",
+    "title": "Parameter-Efficient pretrained-CT-to-MRI Transfer for Rectal Cancer Segmentation: Performance-Calibration Trade-offs",
+    "url": "http://arxiv.org/abs/2608.27178v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:27:49Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27175": {
+    "stableId": "arxiv:2608.27175",
+    "title": "Temporal Sensitivity Analysis of Tessera Embeddings",
+    "url": "http://arxiv.org/abs/2608.27175v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:25:34Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27169": {
+    "stableId": "arxiv:2608.27169",
+    "title": "Ancient-Bench: A Comprehensive Multi-millennial, Multi-medium, and Multi-script Benchmark for Ancient Chinese Artifact Text Recognition",
+    "url": "http://arxiv.org/abs/2608.27169v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:22:12Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27168": {
+    "stableId": "arxiv:2608.27168",
+    "title": "Magpie: Real-Time World Renderer for Interactive Games",
+    "url": "http://arxiv.org/abs/2608.27168v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:21:49Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27165": {
+    "stableId": "arxiv:2608.27165",
+    "title": "Prediction of Prediction (PoP): Inter-Layer Activation Fusion for Single-Pass Hallucination Detection in Large Language Models",
+    "url": "http://arxiv.org/abs/2608.27165v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:17:14Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27162": {
+    "stableId": "arxiv:2608.27162",
+    "title": "Data-efficient crack quantification in lithium-ion cathodes using foundation model transfer",
+    "url": "http://arxiv.org/abs/2608.27162v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:15:26Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27161": {
+    "stableId": "arxiv:2608.27161",
+    "title": "STAR : Sentence Translation Alignment Rate for Document-to-Document Machine Translation",
+    "url": "http://arxiv.org/abs/2608.27161v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:12:45Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27158": {
+    "stableId": "arxiv:2608.27158",
+    "title": "Diffusion Policies for Short-Horizon Planning in Robot Crowd Navigation",
+    "url": "http://arxiv.org/abs/2608.27158v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:10:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27154": {
+    "stableId": "arxiv:2608.27154",
+    "title": "ReViCo: Unveiling the Limitations of VLMs in Visual Text Understanding via Error Correction",
+    "url": "http://arxiv.org/abs/2608.27154v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:06:11Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27153": {
+    "stableId": "arxiv:2608.27153",
+    "title": "Inductive Correlation Clustering with Graph Neural Networks",
+    "url": "http://arxiv.org/abs/2608.27153v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:05:48Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27152": {
+    "stableId": "arxiv:2608.27152",
+    "title": "Ultra Low-Power, Lightweight, Probabilistic RSS-Based Path Reconstruction: A System for Landscape-Scale Bee Tracking",
+    "url": "http://arxiv.org/abs/2608.27152v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:05:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.27151": {
+    "stableId": "arxiv:2608.27151",
+    "title": "Planning a Shared Modular Fixture Layout Across Robotic Disassembly Stages",
+    "url": "http://arxiv.org/abs/2608.27151v1",
+    "firstSeen": "2026-08-29T07:14:31.701Z",
+    "lastSeen": "2026-08-29T07:14:31.701Z",
+    "lastUpdated": "2026-08-27T14:03:43Z",
+    "sources": [
+      "arXiv"
     ]
   }
 }
