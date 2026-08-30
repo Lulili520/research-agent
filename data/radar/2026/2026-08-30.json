@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "date": "2026-08-30",
+  "generatedAt": "2026-08-30T05:37:10.076Z",
+  "primaryStart": "2026-08-28T16:00:00.000Z",
+  "primaryEnd": "2026-08-29T16:00:00.000Z",
+  "lookbackStart": "2026-08-26T16:00:00.000Z",
+  "timezone": "Asia/Shanghai",
+  "outputLanguage": "zh-CN",
+  "topics": [
+    "LLM Agent",
+    "模型量化",
+    "长上下文",
+    "Agent 记忆",
+    "模型推理",
+    "Agent 评测"
+  ],
+  "clusters": [],
+  "leads": [],
+  "watch": [],
+  "provenance": [
+    {
+      "source": "arXiv API",
+      "query": "cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.CV OR cat:cs.RO OR cat:stat.ML",
+      "results": 100,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "artificial intelligence",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "machine learning",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "large language model",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "natural language processing",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "computer vision",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "robotics",
+      "results": 25,
+      "status": "ok"
+    }
+  ],
+  "failures": []
+}
