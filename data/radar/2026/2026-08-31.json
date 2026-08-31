@@ -1,0 +1,673 @@
+{
+  "schemaVersion": 2,
+  "date": "2026-08-31",
+  "generatedAt": "2026-08-31T05:52:32.311Z",
+  "primaryStart": "2026-08-29T16:00:00.000Z",
+  "primaryEnd": "2026-08-30T16:00:00.000Z",
+  "lookbackStart": "2026-08-27T16:00:00.000Z",
+  "timezone": "Asia/Shanghai",
+  "outputLanguage": "zh-CN",
+  "topics": [
+    "LLM Agent",
+    "模型量化",
+    "长上下文",
+    "Agent 记忆",
+    "模型推理",
+    "Agent 评测"
+  ],
+  "clusters": [
+    {
+      "name": "cs.AI",
+      "itemCount": 51,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "Aero Hand Open: A Simulation-Ready Tendon-Driven Hand for Dexterous Manipulation Learning",
+        "Learning a Size-Weight Frontier for Synthetic-Augmented Inference",
+        "Blog: Survey of Optimizers"
+      ]
+    },
+    {
+      "name": "cs.LG",
+      "itemCount": 25,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "QGPINNs: A Physics-Informed Neural Network Framework for Nonlocal Differential Equations on Quantum Graphs",
+        "On two proofs of $d^2$ mixing of weighted Dikin walks",
+        "Learning between the peaks: sharp asymptotics for kernel ridge regression under power-law anisotropy"
+      ]
+    },
+    {
+      "name": "cs.CL",
+      "itemCount": 23,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "A Formal Limitation on Learning Human Language From Textual Corpora",
+        "When Robots Mishear Us: Mapping the Safety Risks of Voice-Controlled Embodied AI",
+        "Phoneme- and Word-Level Metrics Using Self-Supervised Speech Representations for Forced Alignment Evaluation"
+      ]
+    },
+    {
+      "name": "cs.CV",
+      "itemCount": 22,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "SignRR: Retrieve and Refine Real Motion for Sign Language Production",
+        "GeBDA: Building Damage Assessment as Text-Based Sequence Prediction",
+        "Video Generative Models as Geometry Learner"
+      ]
+    },
+    {
+      "name": "cs.RO",
+      "itemCount": 9,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "Aero Hand Open: A Simulation-Ready Tendon-Driven Hand for Dexterous Manipulation Learning",
+        "ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos",
+        "AcrossVAM1.0: Particle World Modeling for Text-Assisted Robot Video Prediction"
+      ]
+    },
+    {
+      "name": "cs.CR",
+      "itemCount": 7,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "REPLICANT: Learning Policies for Evading and Hardening Malware Detectors",
+        "LLM-Based Agents for Software and Systems Security: Approaches, Applications, and Assessment",
+        "LongPIBench: A Long-Context Benchmark for Prompt Injection"
+      ]
+    },
+    {
+      "name": "math.NA",
+      "itemCount": 2,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "QGPINNs: A Physics-Informed Neural Network Framework for Nonlocal Differential Equations on Quantum Graphs",
+        "Conformal Uncertainty Quantification Guarantees for Neural Operators"
+      ]
+    },
+    {
+      "name": "stat.ML",
+      "itemCount": 2,
+      "leadCount": 0,
+      "citations": 0,
+      "examples": [
+        "Learning between the peaks: sharp asymptotics for kernel ridge regression under power-law anisotropy",
+        "Localizing Global Discrepancies: Marginal Contributions and Contextual Anomaly Detection"
+      ]
+    }
+  ],
+  "leads": [],
+  "watch": [
+    {
+      "stableId": "doi:10.33022/ijcs.v15i4.5204",
+      "openAlexId": "W7204635612",
+      "doi": "10.33022/ijcs.v15i4.5204",
+      "title": "Lightweight AI-Driven Real-Time Swahili Sign Language Recognition: A Way to Empower Hearing-Impaired Individuals",
+      "abstract": "Hearing impairment is a growing global health challenge that disproportionately affects people in resource-constrained countries such as Tanzania, where access to assistive technologies remains limited. Conventional solutions, including hearing aids, cochlear implants, and interpreters, are often costly and inaccessible. This study proposes an AI-driven real-time Swahili Sign Language Recognition system designed to bridge communication gaps between the hearing-impaired community and the general population. The system integrates Convolutional Neural Networks (CNNs), Scale-Invariant Feature Transform (SIFT), and Long Short-Term Memory (LSTM) with computer vision techniques to recognize and interpret sign gestures. SIFT extracts key features from images captured via webcam, while CNN performs classification and LSTM models temporal dependencies for improved accuracy. Experimental results reveals high recognition accuracy of 98.5% and a low error rate of 0.1345%, outperforming several existing models. The system offers an effective, affordable solution for enhancing communication among Swahili-speaking communities.",
+      "authors": [
+        "Stanley Leonard",
+        "Joseph Shagina"
+      ],
+      "researchAreas": [
+        "Hand Gesture Recognition Systems",
+        "Human-Computer Interaction"
+      ],
+      "published": "2026-08-30",
+      "updated": "2026-08-30T07:30:35.949966",
+      "url": "https://doi.org/10.33022/ijcs.v15i4.5204",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "new",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": true,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "doi:10.1016/j.isprsjprs.2026.08.035",
+      "openAlexId": "W4403754457",
+      "doi": "10.1016/j.isprsjprs.2026.08.035",
+      "title": "MRIo3DS-Net: a mutually reinforcing images to 3D surface RNN-like framework for model-adaptation indoor 3D reconstruction",
+      "abstract": "Currently, deep neural networks (DNNs) have made some progresses in local region feature extraction, image matching under difficult conditions and point cloud surface optimization in photogrammetry and computer vision. However, there have been being no reports on an end-to-end high-accuracy 3D reconstruction network that integrated point cloud generation (i.e., dense image matching) and 3D surface optimization. Moreover, deep-learning-based 3D reconstruction networks are often difficult to apply to new dataset tasks. Therefore, this paper is the first to propose an end-to-end framework of mutually reinforcing images to 3D surface recurrent neural network (RNN)-like (MRIo3DS-Net) for model-adaptation indoor 3D reconstruction, where multi-view dense matching and point cloud surface optimization are mutually reinforced by a RNN-like structure rather than being treated as a separate issue. The characteristics and advantages of this framework are as follows: (1) In the multi-view dense matching module (MVDMM), the model-adaptation strategy is used to fine-tune and optimize a Transformer-based multi-view dense matching DNN, so that it has the higher image feature for matching and detail expression capabilities; (2) In the point cloud surface optimization module (PCSOM), the 3D surface reconstruction network based on 3D implicit field is optimized by using model-adaptation strategy, which solves the problem of point cloud surface optimization without knowing normal vector of 3D surface. Especially, to improve and finely reconstruct 3D surfaces from point cloud, smooth loss function with an edge-preserving strategy is proposed and added to this module; (3) The proposed MRIo3DS-Net is a RNN-like framework, which utilizes the finely optimized 3D surface obtained by PCSOM to recursively reinforce the differentiable warping for optimizing MVDMM. This refinement leads to achieving better dense matching results, and better dense matching results leads to achieving better 3D surface results recursively and mutually. Hence, model-adaptation strategy can better collaborate the differences between the two network modules, so that they complement each other to achieve the better effect; (4) To accelerate the transfer learning and training convergence from source domain to target domain, a multi-task loss function based on Bayesian uncertainty is used to adaptively adjust the weights between the two networks loss functions of MVDMM and PCSOM; (5) In this multi-task cascade network framework, theoretically, the two aforementioned modules possess the inherent potential to be replaced by arbitrary corresponding state-of-the-art (SOTA) networks to achieve better 3D reconstruction results. We tested performance of MRIo3DS-Net in the DTU, Tanks and Temples datasets by comparison experiments and ablation experiments with SOTA networks. The results show that MRIo3DS-Net has achieved the best performance and can reconstruct various indoor scenes reliably, completely and accurately. MRIo3DS-Net can provide a new end-to-end framework for high-accuracy indoor 3D reconstruction and has certain potential for the new target domain task.",
+      "authors": [
+        "Chang Li",
+        "Jiao Guo",
+        "Yufei Zhao",
+        "Yongjun Zhang",
+        "Gang Xiong"
+      ],
+      "researchAreas": [
+        "3D Surveying and Cultural Heritage",
+        "Geology"
+      ],
+      "published": "2026-08-29",
+      "updated": "2026-08-30T07:30:35.949966",
+      "url": "https://doi.org/10.1016/j.isprsjprs.2026.08.035",
+      "status": "indexed-work",
+      "sources": [
+        "OpenAlex"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28589",
+      "arxivId": "2608.28589v1",
+      "doi": null,
+      "title": "QGPINNs: A Physics-Informed Neural Network Framework for Nonlocal Differential Equations on Quantum Graphs",
+      "abstract": "We propose QGPINNs, a physics-informed neural network framework developed in PyTorch for the numerical solution of nonlocal differential equations on quantum graphs. The framework is designed as a general computational implementation in which the solution on each edge of the graph is approximated by a neural network, while a unified graph-based loss function enforces the governing equations together with initial, boundary, and vertex transmission conditions. In particular, the formulation incorporates standard continuity and Kirchhoff-Neumann vertex conditions and Dirichlet boundary conditions into the learning process to couple the local edge-wise neural approximations into a global solution on the graph. The framework is developed for two representative classes of nonlinear models: multi-order fractional elliptic problems and time-fractional evolution equations on quantum graphs. To improve accuracy and training stability, QGPINNs integrates several graph-adapted learning strategies, including soft and hard constraint enforcement, dynamic loss balancing, Fourier feature embeddings, and a learnable singularity-capturing feature for weakly singular solutions arising in the considered problems. The framework also extends naturally to inverse problems, including the identification of the orders of fractional operators and physical parameters from noisy observational data. We validate the accuracy, computational efficiency, and physical consistency of the proposed framework through numerical experiments on benchmark graph structures and real-world networks, including the IEEE 14-bus system and an open-channel agricultural drainage network.",
+      "authors": [
+        "Vaibhav Mehandiratta",
+        "Saket Ramchandra"
+      ],
+      "researchAreas": [
+        "cs.LG",
+        "math.NA"
+      ],
+      "published": "2026-08-28T17:59:47Z",
+      "updated": "2026-08-28T17:59:47Z",
+      "url": "http://arxiv.org/abs/2608.28589v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28578",
+      "arxivId": "2608.28578v1",
+      "doi": null,
+      "title": "Aero Hand Open: A Simulation-Ready Tendon-Driven Hand for Dexterous Manipulation Learning",
+      "abstract": "Tendon-driven hands are anthropomorphic, and moving the actuators off the joints is what makes a hand of this capability affordable to build. Two effects produce that saving. Routing force through a cable removes the requirement that a motor fit inside the joint it drives, so smaller and cheaper motors suffice, and one motor can drive several joints through a single cable, so fewer motors are needed. They are also harder to learn on than a direct-drive hand. The underactuated transmission that produces the saving is itself difficult to represent in a simulator, and the joints one cable drives are not independently commandable. We present Aero Hand Open, a tendon-driven anthropomorphic hand that is released simulation-ready. Three things ship with it. A simulation model reproduces the cable transmission itself. An identified actuation map connects that model to the motor commands in both directions, including the three-way coupling of the thumb. A reinforcement learning package trains policies for the hand. Together they let a policy be trained entirely in simulation and run on the hand with no fine-tuning and no state estimation. We release the mechanical design, the simulation model, the identified mapping, the training environment and the deployment stack.",
+      "authors": [
+        "Nan Wang",
+        "Mohit Yadav",
+        "Jonathan Wulff",
+        "Aidan Rosenbaum",
+        "Kezhou Chen",
+        "Yuvan Sharma",
+        "Xu Dong",
+        "Yiwei Tao"
+      ],
+      "researchAreas": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-28T17:53:48Z",
+      "updated": "2026-08-28T17:53:48Z",
+      "url": "http://arxiv.org/abs/2608.28578v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28576",
+      "arxivId": "2608.28576v1",
+      "doi": null,
+      "title": "Learning a Size-Weight Frontier for Synthetic-Augmented Inference",
+      "abstract": "Synthetic data can improve statistical inference when real data are scarce, but naively treating synthetic samples as real data can introduce bias and lead to unreliable inference. We develop a general framework for synthetic-augmented inference across a population of related tasks. It characterizes synthetic augmentation by the number of synthetic observations and their weight. Central to our framework is a size-weight frontier that specifies, for each weight, the largest synthetic sample size for which all smaller sizes attain the target task-marginal coverage. We estimate this frontier from historical tasks, and establish a finite-sample coverage guarantee simultaneously for all size-weight configurations on or below the estimated frontier. In experiments using large language model responses to augment opinion survey data, our procedure achieves target coverage and substantially narrows confidence intervals.",
+      "authors": [
+        "Chengpiao Huang",
+        "Kaizheng Wang"
+      ],
+      "researchAreas": [
+        "stat.ME",
+        "cs.AI",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-08-28T17:52:33Z",
+      "updated": "2026-08-28T17:52:33Z",
+      "url": "http://arxiv.org/abs/2608.28576v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28570",
+      "arxivId": "2608.28570v1",
+      "doi": null,
+      "title": "ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos",
+      "abstract": "Identifying the underlying dynamics and 3D geometry of deformable linear objects (DLOs), such as cables, ropes, and hoses, is essential for accurate robotic manipulation, but remains challenging due to their high-dimensional configuration spaces and diverse behaviors arising from varying material properties. Existing methods often rely on multi-stage pipelines and auxiliary depth inputs, which are prone to errors under dynamic interactions, while their high-dimensional state representations make model-based control computationally expensive. In this paper, we introduce ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos. ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations. By integrating this formulation with Gaussian splatting, ChainSplat jointly recovers DLO dynamics, kinematics-aware 3D geometry, and appearance, while enabling high-fidelity RGB rendering from arbitrary states. Through real-world experiments, we demonstrate that ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions. ChainSplat further enables real-time state and force estimation, as well as accurate model-based trajectory optimization, highlighting its practical utility for real-world robotic manipulation of DLOs. Accompanying source code and video are available at: https://chainsplat.github.io.",
+      "authors": [
+        "Seungyeon Kim",
+        "Noémie Jaquier"
+      ],
+      "researchAreas": [
+        "cs.RO"
+      ],
+      "published": "2026-08-28T17:46:38Z",
+      "updated": "2026-08-28T17:46:38Z",
+      "url": "http://arxiv.org/abs/2608.28570v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28568",
+      "arxivId": "2608.28568v1",
+      "doi": null,
+      "title": "SignRR: Retrieve and Refine Real Motion for Sign Language Production",
+      "abstract": "Sign language production (SLP) aims to generate continuous signing motion from spoken language, often through gloss-to-pose generation. Prior work mainly follows two paradigms. Generative models synthesize motion from a learned prior or from noise, without reference to an observed signing instance, making rare hand configurations and signer-specific articulation difficult to preserve. Retrieval-based methods reuse real, well-articulated motion segments, but concatenating segments from different signers and co-articulation contexts can introduce rhythm and style inconsistencies across the full sequence, not only at segment boundaries. These limitations suggest a complementary solution: use retrieval to provide realistic articulation, and use learned refinement to impose the global coherence that retrieval alone lacks. We therefore propose retrieve-and-refine, a paradigm that starts from real retrieved motion and refines it into a globally coherent signing sequence rather than generating motion from scratch. Our framework, SignRR, initializes motion from a dictionary of real sign segments and refines the full sequence with a part-aware Residual VQ-VAE, where residual quantization preserves fine hand articulation and temporal length differences are handled in the latent space. Experiments on PHOENIX14T and CSL-Daily show that SignRR achieves state-of-the-art back-translation performance while maintaining competitive pose quality.",
+      "authors": [
+        "Fidel Omar Tito Cruz",
+        "Angie Sanchez Marquina",
+        "Summy Farfan",
+        "Gissella Bejarano"
+      ],
+      "researchAreas": [
+        "cs.CV"
+      ],
+      "published": "2026-08-28T17:45:14Z",
+      "updated": "2026-08-28T17:45:14Z",
+      "url": "http://arxiv.org/abs/2608.28568v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [
+        "模型量化"
+      ],
+      "relevance": 1,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28567",
+      "arxivId": "2608.28567v1",
+      "doi": null,
+      "title": "GeBDA: Building Damage Assessment as Text-Based Sequence Prediction",
+      "abstract": "Conventionally, Building Damage Assessment (BDA) is tackled either with dedicated network architectures or by fine-tuning geospatial image foundation models. In this work, we ask whether a general-purpose Vision-Language Model (VLM) can localize buildings and grade their damage through autoregressive sequence generation alone. We cast BDA as predicting a variable-length set of bounding boxes, each specified by its coordinates and a damage label. Our preliminary implementation, based on the open Gemma model, achieves promising damage mapping results from only bi-temporal satellite images and a suitable text prompt.",
+      "authors": [
+        "Olivier Dietrich",
+        "Krishna Sapkota",
+        "Konrad Schindler",
+        "Genady Beryozkin"
+      ],
+      "researchAreas": [
+        "cs.CV"
+      ],
+      "published": "2026-08-28T17:44:55Z",
+      "updated": "2026-08-28T17:44:55Z",
+      "url": "http://arxiv.org/abs/2608.28567v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28566",
+      "arxivId": "2608.28566v1",
+      "doi": null,
+      "title": "On two proofs of $d^2$ mixing of weighted Dikin walks",
+      "abstract": "We study the mixing time of weighted Dikin walks for sampling from exponential distributions on polytopes and truncated positive-semidefinite (PSD) cones. Our first result gives a general total-variation mixing bound under strong self-concordance, $\\barν$-symmetry, and mixed-trace regularity on the local metric. The key idea is to control the Metropolis--Hastings acceptance probability on a high-probability region rather than at every point. Applying this framework to the Lee--Sidford, Lewis-weight, and John metrics yields an $\\widetilde O(d^2)$ mixing bound for sampling from polytopes, while applying it to a hybrid barrier yields an $\\widetilde O(d^4)$ mixing bound for sampling from truncated PSD cones. Our second result establishes stronger $χ^2$-divergence guarantees and pointwise acceptance control using a new fourth-order bootstrap condition. For a suitably scaled Lee--Sidford metric, this yields an $\\widetilde O(d^2)$ mixing bound in $χ^2$-divergence, improving on the previous $\\widetilde O(d^{9/4})$ bound.",
+      "authors": [
+        "Yuansi Chen",
+        "Yunbum Kook"
+      ],
+      "researchAreas": [
+        "cs.DS",
+        "cs.LG",
+        "math.OC",
+        "math.PR",
+        "stat.CO"
+      ],
+      "published": "2026-08-28T17:43:58Z",
+      "updated": "2026-08-28T17:43:58Z",
+      "url": "http://arxiv.org/abs/2608.28566v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28564",
+      "arxivId": "2608.28564v1",
+      "doi": null,
+      "title": "Learning between the peaks: sharp asymptotics for kernel ridge regression under power-law anisotropy",
+      "abstract": "We study kernel ridge regression under anisotropic Gaussian data, where the input covariance decays as a power law with exponent $α\\geq 0$ for polynomial inner-product kernels. We derive asymptotically sharp expressions for the kernel spectrum and the generalization error in the polynomial high-dimensional regime $n=Θ(d^κ)$, revealing how anisotropy reshapes the learning curves. For weak anisotropy ($0&lt;α&lt;1$), the problem remains effectively high-dimensional and retains some features of the isotropic case, while departing from it in others: the variance still peaks at integer sample complexities $κ\\in\\mathbb{N}$, but these peaks are progressively damped as $α$ grows; meanwhile, for targets strongly aligned with the data's principal directions, the bias drops at fractional sample complexities, decoupling the bias transitions from the interpolation peaks. For strong anisotropy ($α&gt; 1$), the effective dimension of the problem is constant, and the variance stops depending on sample size altogether, plateauing under ridgeless interpolation or vanishing at an explicit rate under fixed ridge penalty. The bias undergoes a sharp transition governed by the target's decay rate: below a threshold, learning is abrupt rather than gradual; above it, the bias decays as a power law that recovers the classical source and capacity rates. We finally specialize these results to single-index targets, showing how the alignment of the index with the data's principal directions determines the effect of anisotropy on learning. Together, our results clarify how the input geometry shapes the kernel features and fundamentally impacts its generalization properties.",
+      "authors": [
+        "Lorenzo Rizzi",
+        "Arie Wortsman Zurich",
+        "Bruno Loureiro"
+      ],
+      "researchAreas": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "published": "2026-08-28T17:41:53Z",
+      "updated": "2026-08-28T17:41:53Z",
+      "url": "http://arxiv.org/abs/2608.28564v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28560",
+      "arxivId": "2608.28560v1",
+      "doi": null,
+      "title": "A Formal Limitation on Learning Human Language From Textual Corpora",
+      "abstract": "Can a listener recover what a speaker means from the form of an utterance alone? We answer this question information-theoretically, and for a listener given by any featurizer of text, including the hidden states of contemporary large language models. Modeling language use as a joint distribution over meanings, contexts, and utterances, we derive upper bounds on the probability that a decoder recovers a speaker's intended meaning from a representation of the utterance. The bounds are governed by the uncertainty that form leaves about meaning, which splits into an irreducible part and a part that only (extralinguistic) context, but never the utterance alone, can resolve. Because these quantities are intrinsic to language, no representation, however much text or supervision produced it, can surpass them; the bounds hold whether the space of meanings is discrete or continuous. Experiments on artificial languages, Mandarin zero-pronoun resolution, and color reference provide empirical evidence in support of the theory.",
+      "authors": [
+        "Emily Cheng",
+        "Ryan Cotterell"
+      ],
+      "researchAreas": [
+        "cs.CL"
+      ],
+      "published": "2026-08-28T17:38:24Z",
+      "updated": "2026-08-28T17:38:24Z",
+      "url": "http://arxiv.org/abs/2608.28560v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28557",
+      "arxivId": "2608.28557v1",
+      "doi": null,
+      "title": "Blog: Survey of Optimizers",
+      "abstract": "Neural-network optimization in 2025-2026 is no longer well described as a succession of new Adam variants. The design space has expanded from coordinates to matrices and layers, from fixed training horizons to policies over time, and from mathematical update rules to state representations that must survive sharding and low-precision computation. This survey organizes recent optimizers and training optimization methods along four largely independent axes: temporal estimation, update geometry, horizon management, and representation and systems. It connects the spectral normalization of Muon, the historical matrix statistics of Shampoo and SOAP, adaptive and hybrid matrix methods, memory-efficient optimizers, schedule-free training, small-batch corrections, and quantized optimizer states. The central empirical conclusion is deliberately non-triumphal: matrix-aware methods represent a genuine advance, but there is no context-independent replacement for AdamW. Rankings change with model scale, data-to-parameter ratio, batch size, schedule, parameter partition, tuning budget, and whether the target metric is tokens, FLOPs, wall-clock time, or memory. The practical consequence is a compositional view of optimizer design and a stricter protocol for evaluating optimizer claims.",
+      "authors": [
+        "Ruoran Xu"
+      ],
+      "researchAreas": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-08-28T17:35:11Z",
+      "updated": "2026-08-28T17:35:11Z",
+      "url": "http://arxiv.org/abs/2608.28557v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28553",
+      "arxivId": "2608.28553v1",
+      "doi": null,
+      "title": "Logos: An Agent Harness on a Cross-Process Bus",
+      "abstract": "Modern agent systems assemble capabilities at runtime, and this dynamic composition has recently received a complete formal treat ment in the spatiotemporal-composability calculus, in which a capability is a component carrying a tracked inverse, and agents are assembled as plugins. This plugin form is carried by a single process sharing one context, a carrier that places all components in one physical failure domain, a fault suspends every component at once, and process death interrupts every session the process hosts. This paper shows that neither the modeling nor the calculus binds an agent to one process, the statelessness of the language model keeps all cross-step state outside the model, and the soundness invariant is defined on the state space alone. These observations condense into four lemmas whose premises are the hypotheses of the calculus and the statelessness of language-model inference. On these lemmas this paper constructs Logos, a ROS-like cross process agent harness in which a plugin is a process and the only shared state is an append-only transcript. Eighty sessions resume with no repeated effect after kills placed at the four boundaries of the tool-call cycle, and a same-fault comparison with a single process reference configuration shows one fault interrupting every co-resident session while under the peer-process construction one fault ends at one node.",
+      "authors": [
+        "Hanzhang Jia",
+        "Liheng Zeng",
+        "Hao Cheng",
+        "Yi Gao",
+        "Bo Ma"
+      ],
+      "researchAreas": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-08-28T17:30:10Z",
+      "updated": "2026-08-28T17:30:10Z",
+      "url": "http://arxiv.org/abs/2608.28553v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28552",
+      "arxivId": "2608.28552v1",
+      "doi": null,
+      "title": "Advancing Interaction-Sensitive Feature Selection: Novel Relief-Based Algorithms, Expanded Comparisons, and Recommendations for Biomedical Data Mining",
+      "abstract": "As a precursor to high-dimensional biomedical data modeling, reliable feature selection can reduce computational expense, improve modeling performance, and yield simpler, more interpretable models. However, most filter-based feature selection methods struggle to detect feature interactions, while wrapper or embedded feature selection methods are computationally expensive. Relief-based algorithms (RBAs) are filter methods that are sensitive to feature interactions while mitigating these other limitations. This study (1) refactors, optimizes, and expands the scikit-rebate Python package with existing and newly proposed RBA variants and (2) conducts rigorous RBA benchmark comparisons across diverse genomic simulations. We expand scikit-rebate to include SWRF*, mu-Relief, and 5 novel RBA variants implementing alternative strategies for neighbor selection and feature scoring. All RBAs were evaluated to compare predictive feature ranking and runtime across simulated genomic datasets varying in sample size, number of features, heritability, and underlying association type (e.g. main effects and interactions). All RBAs, except mu-Relief, were proficient in detecting 2-way interactions in noisy data. RBAs utilizing 'far' scoring were best at detecting 2-way interactions - with MultiSWRFDB* top-performing - but were far less sensitive to main effects. SWRF, MultiSWRF, MultiSURF, and MultiSWRFDB yielded top performance across main effect and 2-way interaction datasets with MultiSWRFDB performing best when also considering 3-way interactions. Refactoring of scikit-rebate resulted in 10 to 35-fold reductions in RBA runtimes. The newly introduced RBAs were among the strongest performing, and by robustly retaining both main effects and 2-way epistatic interactions, these algorithms preserve predictive signals for downstream modeling.",
+      "authors": [
+        "Kia Kazemi-Nia",
+        "Harsh Bandhey",
+        "Philip J. Freda",
+        "Ryan J. Urbanowicz"
+      ],
+      "researchAreas": [
+        "cs.LG"
+      ],
+      "published": "2026-08-28T17:28:50Z",
+      "updated": "2026-08-28T17:28:50Z",
+      "url": "http://arxiv.org/abs/2608.28552v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    },
+    {
+      "stableId": "arxiv:2608.28549",
+      "arxivId": "2608.28549v1",
+      "doi": null,
+      "title": "Video Generative Models as Geometry Learner",
+      "abstract": "Recent generative approaches to geometry estimation adapt pretrained image diffusion models and treat the task as image-conditioned generation. Leveraging off-the-shelf image diffusion models, they either (i) train task-specific geometry models (for depth and surface normal estimation) independently, losing the opportunity of exploring the intrinsic correlation of these geometric targets, or (ii) jointly fine-tune modified image diffusion backbones (e.g., altered self-attention), which typically demands substantial labeled data. To overcome these limitations in a principled fashion, we repurpose pretrained video generative models as a unified and data-efficient framework for geometry estimation, formulated innovatively as a next-frames prediction task. Our method, GeoNeXt, inherits naturally structured knowledge and richer priors from the video model, while further adapting them for joint modeling of images and geometry targets (image &lt;-&gt; geometry), enabling more data efficient and effective learning of geometry. Extensive experiments validate our method for zero-shot monocular depth and surface normal estimation across diverse datasets, outperforming both previous task-specific and unified generative competitors while using substantially less training data. Notably, our method rivals discriminative state-of-the-art approaches trained on over 100x more data and even standouts on several benchmarks.",
+      "authors": [
+        "Haosen Yang",
+        "Jifei Song",
+        "Zhensong Zhang",
+        "Xiatian Zhu",
+        "Jiankang Deng"
+      ],
+      "researchAreas": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-08-28T17:25:31Z",
+      "updated": "2026-08-28T17:25:31Z",
+      "url": "http://arxiv.org/abs/2608.28549v1",
+      "status": "preprint",
+      "sources": [
+        "arXiv"
+      ],
+      "citedByCount": 0,
+      "matchedTopics": [],
+      "relevance": 0,
+      "sourceCount": 1,
+      "state": "late-indexed",
+      "inWindow": true,
+      "aiContext": true,
+      "publishedYesterday": false,
+      "citationVelocityPerDay": 0,
+      "hotspotSignals": [],
+      "lead": false
+    }
+  ],
+  "provenance": [
+    {
+      "source": "arXiv API",
+      "query": "cat:cs.AI OR cat:cs.CL OR cat:cs.LG OR cat:cs.CV OR cat:cs.RO OR cat:stat.ML",
+      "results": 100,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "artificial intelligence",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "machine learning",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "large language model",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "natural language processing",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "computer vision",
+      "results": 25,
+      "status": "ok"
+    },
+    {
+      "source": "OpenAlex",
+      "query": "robotics",
+      "results": 25,
+      "status": "ok"
+    }
+  ],
+  "failures": []
+}
