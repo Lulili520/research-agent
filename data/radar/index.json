@@ -2550,5 +2550,489 @@
     "sources": [
       "arXiv"
     ]
+  },
+  "arxiv:2608.31016": {
+    "stableId": "arxiv:2608.31016",
+    "title": "LLM Judges Verify Presence, Not Absence: Omission Blindness in AI Clinical Notes and What Recovers It",
+    "url": "http://arxiv.org/abs/2608.31016v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:59:54Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31014": {
+    "stableId": "arxiv:2608.31014",
+    "title": "Evidence-Bounded Mental Health Reasoning from Heterogeneous Speech Protocols",
+    "url": "http://arxiv.org/abs/2608.31014v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:58:22Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31013": {
+    "stableId": "arxiv:2608.31013",
+    "title": "TSPFN: A Temporal Tabular Foundation Model for Physiological Time Series Classification",
+    "url": "http://arxiv.org/abs/2608.31013v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:58:22Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31009": {
+    "stableId": "arxiv:2608.31009",
+    "title": "Language-Informed Flow Matching for Trend-Guided Structure-Based 3D Molecular Generation",
+    "url": "http://arxiv.org/abs/2608.31009v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:57:09Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31007": {
+    "stableId": "arxiv:2608.31007",
+    "title": "Augmenting Interviewer Judgments of Patient Experience with Automatic Language Analysis",
+    "url": "http://arxiv.org/abs/2608.31007v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:56:28Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31005": {
+    "stableId": "arxiv:2608.31005",
+    "title": "From Intent to Evidence: Policy-Steered Multi-Strategy Retrieval for Long-Video Agents",
+    "url": "http://arxiv.org/abs/2608.31005v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:55:48Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.31002": {
+    "stableId": "arxiv:2608.31002",
+    "title": "DARP: A Calibrated Dual-Arm RGB-D-IR Dataset for Multi-View Robotic Perception",
+    "url": "http://arxiv.org/abs/2608.31002v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:53:41Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30997": {
+    "stableId": "arxiv:2608.30997",
+    "title": "Multi-View Reflective Surface Inspection via Semantic-Saliency Cross-Verification",
+    "url": "http://arxiv.org/abs/2608.30997v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:48:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30996": {
+    "stableId": "arxiv:2608.30996",
+    "title": "Faithfulness Is Not Free: Auditing Offline KV-Cache Quantization in Retrieval-Augmented Generation",
+    "url": "http://arxiv.org/abs/2608.30996v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:47:23Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30987": {
+    "stableId": "arxiv:2608.30987",
+    "title": "Stick to What You Know: A Study of Knowledge-Aligned Supervised Fine-Tuning",
+    "url": "http://arxiv.org/abs/2608.30987v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:43:51Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30986": {
+    "stableId": "arxiv:2608.30986",
+    "title": "Controlling Refusal Behavior of LLMs via Stiefel-Constrained Rotation Steering",
+    "url": "http://arxiv.org/abs/2608.30986v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:43:47Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30983": {
+    "stableId": "arxiv:2608.30983",
+    "title": "Autonomously Acquiring Robot Manipulation Skills with Language-Driven Quality-Diversity",
+    "url": "http://arxiv.org/abs/2608.30983v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:42:20Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30980": {
+    "stableId": "arxiv:2608.30980",
+    "title": "Evaluating and Improving LLM Self-Modeling",
+    "url": "http://arxiv.org/abs/2608.30980v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:37:51Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30978": {
+    "stableId": "arxiv:2608.30978",
+    "title": "Sparse Competition during Training For the Emergence of Specialized Modules",
+    "url": "http://arxiv.org/abs/2608.30978v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:37:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30976": {
+    "stableId": "arxiv:2608.30976",
+    "title": "A Human-in-the-Loop Autonomous Agent for Industry Time Series Forecasting",
+    "url": "http://arxiv.org/abs/2608.30976v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:36:41Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30975": {
+    "stableId": "arxiv:2608.30975",
+    "title": "MR-JEPA: A General Purpose Video Foundation Model for Cardiac MRI",
+    "url": "http://arxiv.org/abs/2608.30975v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:36:24Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30974": {
+    "stableId": "arxiv:2608.30974",
+    "title": "CoJEPA: Combining Contrastive Learning and JEPA for Global-Local Music Representations",
+    "url": "http://arxiv.org/abs/2608.30974v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:36:13Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30971": {
+    "stableId": "arxiv:2608.30971",
+    "title": "The Hermon Moment: AI Self-Transcendence and Its Human Narration",
+    "url": "http://arxiv.org/abs/2608.30971v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:34:54Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30968": {
+    "stableId": "arxiv:2608.30968",
+    "title": "CogEvol: Towards Efficient and Reliable Learning Environment Generation",
+    "url": "http://arxiv.org/abs/2608.30968v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:33:38Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30964": {
+    "stableId": "arxiv:2608.30964",
+    "title": "Vision Models Predict Urban Scene Appraisal with Limited Neural Alignment",
+    "url": "http://arxiv.org/abs/2608.30964v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:28:39Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30963": {
+    "stableId": "arxiv:2608.30963",
+    "title": "A Universal Context-Reuse Layer for Cross-Model KV Sharing",
+    "url": "http://arxiv.org/abs/2608.30963v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:28:17Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30960": {
+    "stableId": "arxiv:2608.30960",
+    "title": "Singular Curvature in ReLU Training:Differentiation and the Gradient-Flow Limit Need Not Commute",
+    "url": "http://arxiv.org/abs/2608.30960v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:26:59Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30959": {
+    "stableId": "arxiv:2608.30959",
+    "title": "LOCI: A Locator-Critic with Refinement Loop",
+    "url": "http://arxiv.org/abs/2608.30959v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:26:00Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30956": {
+    "stableId": "arxiv:2608.30956",
+    "title": "Taking the Whys Seriously: Limitations of Counterfactual Explanations in Justification and Recourse",
+    "url": "http://arxiv.org/abs/2608.30956v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:24:19Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30955": {
+    "stableId": "arxiv:2608.30955",
+    "title": "Learning Action Models with Conditional and Quantified Effects via Uncertainty-Guided Exploration",
+    "url": "http://arxiv.org/abs/2608.30955v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:23:43Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30952": {
+    "stableId": "arxiv:2608.30952",
+    "title": "One Policy Is Enough: Single-Agent Reinforcement Learning Outperforms Tree Search for Chemistry Tool Learning",
+    "url": "http://arxiv.org/abs/2608.30952v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:22:19Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30951": {
+    "stableId": "arxiv:2608.30951",
+    "title": "Audio-Driven Adversarial Defense for 3D Talking Face Generation with totally Visual Fidelity Preservation",
+    "url": "http://arxiv.org/abs/2608.30951v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:22:05Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30948": {
+    "stableId": "arxiv:2608.30948",
+    "title": "Detecting AI Impostors: How Do Middle Schoolers Identify LLM Agents in a Live Collaborative Setting?",
+    "url": "http://arxiv.org/abs/2608.30948v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:18:01Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30946": {
+    "stableId": "arxiv:2608.30946",
+    "title": "Reproducible macroscopic dynamics in a closed-loop human-AI learning system",
+    "url": "http://arxiv.org/abs/2608.30946v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:17:01Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30944": {
+    "stableId": "arxiv:2608.30944",
+    "title": "Nonparametric Contextual Pricing and Inventory Learning under Censored Demand",
+    "url": "http://arxiv.org/abs/2608.30944v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:15:48Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30940": {
+    "stableId": "arxiv:2608.30940",
+    "title": "MusGU+: Toward a Musician-Centered Evaluation Framework and Discovery Tool for Generative Music AI",
+    "url": "http://arxiv.org/abs/2608.30940v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:12:51Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30935": {
+    "stableId": "arxiv:2608.30935",
+    "title": "LightNav-0: Eliciting VLM Spatial Intelligence for Generalist Embodied Navigation",
+    "url": "http://arxiv.org/abs/2608.30935v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:08:53Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30929": {
+    "stableId": "arxiv:2608.30929",
+    "title": "Annotated Surrogate Retrieval for Polish Statutory Law",
+    "url": "http://arxiv.org/abs/2608.30929v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:05:00Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30927": {
+    "stableId": "arxiv:2608.30927",
+    "title": "Stride-k Subsampling: Train-Free Audio Token Reduction for Whisper",
+    "url": "http://arxiv.org/abs/2608.30927v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:04:29Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30924": {
+    "stableId": "arxiv:2608.30924",
+    "title": "TRIPPULSE: Multi-Agent Travel Planning with Review-Grounded Reasoning",
+    "url": "http://arxiv.org/abs/2608.30924v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:02:37Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30923": {
+    "stableId": "arxiv:2608.30923",
+    "title": "Towards Stream Learning on Embedded Systems: Benchmarking the Memory Consumption of Stream Learning Methods",
+    "url": "http://arxiv.org/abs/2608.30923v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:01:31Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30922": {
+    "stableId": "arxiv:2608.30922",
+    "title": "CARVE: Verified Expansion for Variable-Length Generation in Diffusion Language Models",
+    "url": "http://arxiv.org/abs/2608.30922v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T15:00:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30916": {
+    "stableId": "arxiv:2608.30916",
+    "title": "Selection-Aware Stress Testing for Interactive Agents",
+    "url": "http://arxiv.org/abs/2608.30916v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T14:58:04Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30912": {
+    "stableId": "arxiv:2608.30912",
+    "title": "Responsible Integration of AI in Cancer Genomics: Barriers, Risks, and Pathways to Trustworthy Clinical Translation",
+    "url": "http://arxiv.org/abs/2608.30912v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T14:56:36Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30910": {
+    "stableId": "arxiv:2608.30910",
+    "title": "S3C-LLM: Skill-Code Guided Agentic Language Models for Spectrum-to-Structure Elucidation",
+    "url": "http://arxiv.org/abs/2608.30910v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T14:55:32Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30908": {
+    "stableId": "arxiv:2608.30908",
+    "title": "Fine-Tuning Low-Bit Models with Gradient in Quantized Code Space",
+    "url": "http://arxiv.org/abs/2608.30908v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T14:54:30Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "arxiv:2608.30903": {
+    "stableId": "arxiv:2608.30903",
+    "title": "MMDS-Bench: Benchmarking Multimodal Large Language Models on Dynamic Stance in Social Media Interactions",
+    "url": "http://arxiv.org/abs/2608.30903v1",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T14:53:08Z",
+    "sources": [
+      "arXiv"
+    ]
+  },
+  "doi:10.1177/10711813261484478": {
+    "stableId": "doi:10.1177/10711813261484478",
+    "title": "Interpretable Modeling of Driver Attention Shifts with a Vision–Language Model",
+    "url": "https://doi.org/10.1177/10711813261484478",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T07:19:18.363097",
+    "sources": [
+      "OpenAlex"
+    ]
+  },
+  "doi:10.5281/zenodo.22134814": {
+    "stableId": "doi:10.5281/zenodo.22134814",
+    "title": "AuraOS Paper X Rev.3: A Regenerative, Model-Orthogonal, Source-Bound Cognitive Operating Substrate - Relational World Compilation, Coordinate Memory, HyperScale/ HyperDrive, Runtime Arenas, Proof-Carrying Commons, Recursive Swarms, Universal Host Compilation, and Semantic-Spatial Interfaces",
+    "url": "https://doi.org/10.5281/zenodo.22134814",
+    "firstSeen": "2026-09-01T05:25:01.574Z",
+    "lastSeen": "2026-09-01T05:25:01.574Z",
+    "lastUpdated": "2026-08-31T07:19:18.363097",
+    "sources": [
+      "OpenAlex"
+    ]
   }
 }
