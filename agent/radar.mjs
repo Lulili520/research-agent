@@ -3,13 +3,23 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import {fileURLToPath} from "node:url";
 
-const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const agentRoot = scriptDir;
+const agentRoot = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(agentRoot, "..");
 
-function argValue(name, fallback = undefined) {
+const TOPICS = [
+  ["AI Agent", ["agent", "tool use", "mcp", "planning", "trajectory", "harness"]],
+  ["推理", ["reasoning", "test-time", "chain-of-thought", "verifier", "judge", "self-evolution", "self-evolving"]],
+  ["机器人", ["robot", "robotics", "embodied", "manipulation", "navigation", "vision-language-action", "vla"]],
+  ["多模态", ["multimodal", "vision-language", "vlm", "diffusion", "video", "audio", "visual"]],
+  ["模型效率", ["quantization", "low-bit", "compression", "distillation", "efficient", "sparse", "moe"]],
+  ["长上下文与记忆", ["long context", "memory", "retrieval", "continual learning", "recurrent"]],
+  ["安全与对齐", ["safety", "alignment", "jailbreak", "security", "bias", "trustworthy"]],
+  ["评测与数据", ["benchmark", "evaluation", "dataset", "leaderboard", "metric"]]
+];
+
+function argValue(name, fallback) {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : fallback;
 }
@@ -28,168 +38,172 @@ function xmlText(block, tag) {
 }
 
 function parseArxiv(xml) {
-  const entries = xml.match(/<entry>[\s\S]*?<\/entry>/gi) || [];
-  return entries.map((entry) => {
+  return (xml.match(/<entry>[\s\S]*?<\/entry>/gi) || []).map((entry) => {
     const idUrl = xmlText(entry, "id");
-    const idMatch = idUrl.match(/abs\/(.+)$/);
-    const authors = [...entry.matchAll(/<author>[\s\S]*?<name>([\s\S]*?)<\/name>[\s\S]*?<\/author>/gi)]
-      .map((match) => normalizeText(match[1]));
-    const researchAreas = [...entry.matchAll(/<category\s+term=["']([^"']+)["']/gi)].map((match) => match[1]);
+    const arxivId = idUrl.match(/abs\/(.+)$/)?.[1] || "";
     return {
-      stableId: idMatch ? `arxiv:${idMatch[1].replace(/v\d+$/, "")}` : `title:${normalizeTitle(xmlText(entry, "title"))}`,
-      arxivId: idMatch ? idMatch[1] : null,
-      doi: null,
+      stableId: `arxiv:${arxivId.replace(/v\d+$/, "")}`,
+      arxivId,
       title: xmlText(entry, "title"),
       abstract: xmlText(entry, "summary"),
-      authors,
-      researchAreas,
+      authors: [...entry.matchAll(/<author>[\s\S]*?<name>([\s\S]*?)<\/name>[\s\S]*?<\/author>/gi)].map((match) => normalizeText(match[1])),
       published: xmlText(entry, "published"),
       updated: xmlText(entry, "updated"),
       url: idUrl,
       status: "preprint",
       sources: ["arXiv"],
-      citedByCount: 0
+      researchAreas: [...entry.matchAll(/<category\s+term=["']([^"']+)["']/gi)].map((match) => match[1]),
+      citedByCount: 0,
+      hfUpvotes: 0
     };
   });
 }
 
-function decodeOpenAlexAbstract(index) {
-  if (!index) return "";
-  const words = [];
-  for (const [word, positions] of Object.entries(index)) {
-    for (const position of positions) words[position] = word;
-  }
-  return words.filter(Boolean).join(" ");
+function decodeAbstract(invertedIndex) {
+  if (!invertedIndex) return "";
+  return Object.entries(invertedIndex).flatMap(([word, positions]) => positions.map((position) => [position, word]))
+    .sort((a, b) => a[0] - b[0]).map((entry) => entry[1]).join(" ");
 }
 
 function parseOpenAlex(payload) {
-  return (payload.results || []).map((work) => {
-    const doi = work.doi ? work.doi.replace(/^https?:\/\/doi.org\//, "").toLowerCase() : null;
+  return (payload.results || []).map((work) => ({
+    stableId: work.doi ? `doi:${work.doi.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").toLowerCase()}` : `openalex:${work.id.split("/").pop()}`,
+    openAlexId: work.id,
+    doi: work.doi?.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "") || null,
+    title: work.display_name || work.title || "",
+    abstract: decodeAbstract(work.abstract_inverted_index),
+    authors: (work.authorships || []).map((entry) => entry.author?.display_name).filter(Boolean),
+    published: work.publication_date || work.created_date,
+    updated: work.updated_date || work.publication_date,
+    url: work.doi || work.id,
+    status: "indexed-work",
+    sources: ["OpenAlex"],
+    researchAreas: (work.topics || []).map((topic) => topic.display_name).filter(Boolean),
+    citedByCount: work.cited_by_count || 0,
+    hfUpvotes: 0
+  }));
+}
+
+function parseHuggingFace(payload) {
+  return (payload || []).map((entry) => {
+    const paper = entry.paper || entry;
+    const arxivId = paper.id || paper.paper?.id;
     return {
-      stableId: doi ? `doi:${doi}` : `openalex:${work.id?.split("/").pop()}`,
-      openAlexId: work.id?.split("/").pop() || null,
-      doi,
-      title: normalizeText(work.title || work.display_name || ""),
-      abstract: decodeOpenAlexAbstract(work.abstract_inverted_index),
-      authors: (work.authorships || []).map((entry) => entry.author?.display_name).filter(Boolean),
-      researchAreas: [work.primary_topic?.display_name, work.primary_topic?.subfield?.display_name].filter(Boolean),
-      published: work.publication_date || null,
-      updated: work.updated_date || work.publication_date || null,
-      url: work.doi || work.primary_location?.landing_page_url || work.id,
-      status: work.primary_location?.source?.type === "conference" ? "published-record" : "indexed-work",
-      sources: ["OpenAlex"],
-      citedByCount: work.cited_by_count || 0
+      stableId: `arxiv:${String(arxivId).replace(/v\d+$/, "")}`,
+      arxivId,
+      title: paper.title || "",
+      abstract: paper.summary || "",
+      authors: (paper.authors || []).map((author) => author.name || author).filter(Boolean),
+      published: paper.publishedAt || paper.published_at,
+      updated: paper.submittedOnDailyAt || paper.updatedAt || paper.publishedAt,
+      featuredAt: paper.submittedOnDailyAt,
+      url: `https://huggingface.co/papers/${arxivId}`,
+      status: "preprint",
+      sources: ["Hugging Face Daily Papers"],
+      researchAreas: paper.ai_keywords || [],
+      citedByCount: 0,
+      hfUpvotes: paper.upvotes || 0
     };
-  });
+  }).filter((item) => item.arxivId && item.title);
 }
 
 function mergeItems(items) {
-  const byId = new Map();
-  const titleToId = new Map();
+  const merged = new Map();
+  const titleIndex = new Map();
   for (const item of items) {
     if (!item.title) continue;
     const titleKey = normalizeTitle(item.title);
-    const existingKey = byId.has(item.stableId) ? item.stableId : titleToId.get(titleKey);
-    if (!existingKey) {
-      byId.set(item.stableId, {...item});
-      titleToId.set(titleKey, item.stableId);
+    const key = merged.has(item.stableId) ? item.stableId : titleIndex.get(titleKey);
+    if (!key) {
+      merged.set(item.stableId, {...item});
+      titleIndex.set(titleKey, item.stableId);
       continue;
     }
-    const existing = byId.get(existingKey);
-    existing.sources = [...new Set([...existing.sources, ...item.sources])];
-    existing.researchAreas = [...new Set([...(existing.researchAreas || []), ...(item.researchAreas || [])])];
-    existing.citedByCount = Math.max(existing.citedByCount || 0, item.citedByCount || 0);
-    existing.abstract ||= item.abstract;
-    existing.doi ||= item.doi;
-    existing.arxivId ||= item.arxivId;
-    existing.openAlexId ||= item.openAlexId;
-    if (item.status === "published-record") existing.status = item.status;
+    const current = merged.get(key);
+    current.sources = [...new Set([...current.sources, ...item.sources])];
+    current.researchAreas = [...new Set([...(current.researchAreas || []), ...(item.researchAreas || [])])];
+    current.citedByCount = Math.max(current.citedByCount || 0, item.citedByCount || 0);
+    current.hfUpvotes = Math.max(current.hfUpvotes || 0, item.hfUpvotes || 0);
+    current.abstract ||= item.abstract;
+    current.doi ||= item.doi;
+    current.arxivId ||= item.arxivId;
   }
-  return [...byId.values()];
+  return [...merged.values()];
 }
 
-function summarizeHotspotClusters(items) {
-  const clusters = new Map();
-  for (const item of items) {
-    const areas = item.researchAreas?.length ? item.researchAreas : ["未分类 AI 研究"];
-    for (const area of areas.slice(0, 2)) {
-      const current = clusters.get(area) || {name: area, itemCount: 0, leadCount: 0, citations: 0, examples: []};
-      current.itemCount += 1;
-      current.leadCount += Number(item.lead);
-      current.citations += item.citedByCount || 0;
-      if (current.examples.length < 3) current.examples.push(item.title);
-      clusters.set(area, current);
-    }
-  }
-  return [...clusters.values()]
-    .sort((a, b) => b.leadCount - a.leadCount || b.itemCount - a.itemCount || b.citations - a.citations || a.name.localeCompare(b.name))
-    .slice(0, 8);
+function previousDayWindow(now, timezone) {
+  if (timezone !== "Asia/Shanghai") throw new Error(`Unsupported timezone: ${timezone}`);
+  const offset = 8 * 3600_000;
+  const local = new Date(now.getTime() + offset);
+  const midnight = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
+  const end = new Date(midnight - offset);
+  return {start: new Date(end.getTime() - 24 * 3600_000), end};
 }
 
-function previousDayWindow(now, timeZone) {
-  if (timeZone !== "Asia/Shanghai") throw new Error(`Unsupported deterministic radar timezone: ${timeZone}`);
-  const shanghaiOffsetMs = 8 * 3600_000;
-  const localNow = new Date(now.getTime() + shanghaiOffsetMs);
-  const currentLocalMidnightAsUtc = Date.UTC(localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate());
-  const end = new Date(currentLocalMidnightAsUtc - shanghaiOffsetMs);
-  const start = new Date(end.getTime() - 24 * 3600_000);
-  return {start, end};
-}
-
-function classifyItems(items, config, now, history = {}) {
-  const {start: primaryStart, end: primaryEnd} = previousDayWindow(now, config.timezone);
-  const lookbackStart = new Date(primaryEnd.getTime() - config.lateIndexLookbackHours * 3600_000);
-  const terms = config.topics.flatMap((topic) => topic.terms.map((term) => ({topic: topic.name, term: term.toLowerCase()})));
+function classifyItems(items, config, now) {
+  const end = now;
   return items.map((item) => {
-    const haystack = `${item.title} ${item.abstract}`.toLowerCase();
-    const matchedTopics = [...new Set(terms.filter(({term}) => haystack.includes(term)).map(({topic}) => topic))];
-    const relevance = matchedTopics.length;
     const published = item.published ? new Date(item.published) : null;
-    const updated = item.updated ? new Date(item.updated) : published;
-    const seen = history[item.stableId];
-    const publishedYesterday = published && published >= primaryStart && published < primaryEnd;
-    const updatedYesterday = updated && updated >= primaryStart && updated < primaryEnd && (!published || updated > published);
-    const delayedDiscovery = !seen && published && published >= lookbackStart && published < primaryStart;
-    let state = "continuing";
-    if (!seen && publishedYesterday) state = "new";
-    else if (delayedDiscovery) state = "late-indexed";
-    else if (seen && updatedYesterday && new Date(seen.lastUpdated || 0) < updated) state = "updated";
-    const inWindow = Boolean(publishedYesterday || updatedYesterday || delayedDiscovery);
-    const sourceCount = new Set(item.sources).size;
-    const hasAbstract = Boolean(item.abstract);
-    const aiContext = item.sources.includes("arXiv") || config.aiContextTerms.some((term) => haystack.includes(term.toLowerCase()));
-    const ageDays = published ? Math.max(1, (primaryEnd - published) / 86400_000) : null;
-    const citationVelocityPerDay = ageDays ? (item.citedByCount || 0) / ageDays : 0;
-    const hotspotSignals = [];
-    if (sourceCount >= config.selection.leadIfIndependentSources) hotspotSignals.push("多源独立收录");
-    if (item.citedByCount >= config.selection.leadIfEarlyCitations) hotspotSignals.push("早期引用关注");
-    if (citationVelocityPerDay >= config.selection.leadIfCitationVelocityPerDay) hotspotSignals.push("引用增长较快");
-    const lead = inWindow && state !== "late-indexed" && hasAbstract && (
-      sourceCount >= config.selection.leadIfIndependentSources ||
-      item.citedByCount >= config.selection.leadIfEarlyCitations ||
-      citationVelocityPerDay >= config.selection.leadIfCitationVelocityPerDay
-    );
-    return {...item, matchedTopics, relevance, sourceCount, state, inWindow, aiContext, publishedYesterday,
-      citationVelocityPerDay, hotspotSignals, lead: lead && aiContext};
-  }).filter((item) => item.inWindow && item.aiContext && item.abstract)
-    .sort((a, b) => Number(b.lead) - Number(a.lead)
-      || Number(b.publishedYesterday) - Number(a.publishedYesterday)
-      || b.sourceCount - a.sourceCount
-      || b.citationVelocityPerDay - a.citationVelocityPerDay
-      || b.citedByCount - a.citedByCount
-      || new Date(b.updated || b.published || 0) - new Date(a.updated || a.published || 0));
+    const text = `${item.title} ${item.abstract}`.toLowerCase();
+    const aiRelated = item.sources.includes("arXiv") || config.aiContextTerms.some((term) => text.includes(term.toLowerCase()));
+    const ageDays = published ? Math.max(1, (end - published) / 86400_000) : 1;
+    const signals = [];
+    if (item.sources.length >= 2) signals.push("多源确认");
+    if (item.hfUpvotes > 0) signals.push(`HF ${item.hfUpvotes} 票`);
+    if (item.citedByCount > 0) signals.push(`${item.citedByCount} 次早期引用`);
+    if (!signals.length) signals.push("新近发布");
+    return {...item, aiRelated, sourceCount: item.sources.length, citationVelocityPerDay: item.citedByCount / ageDays, signals};
+  }).filter((item) => item.aiRelated !== false && item.abstract);
 }
 
-async function fetchWithRetry(url, attempts = 3) {
+function topicOf(item) {
+  const text = `${item.title} ${item.abstract} ${(item.researchAreas || []).join(" ")}`.toLowerCase();
+  return TOPICS.find(([, terms]) => terms.some((term) => text.includes(term)))?.[0] || "其他 AI 研究";
+}
+
+function scholarly(item) {
+  return Boolean(item.arxivId || item.sources.includes("Hugging Face Daily Papers") || (item.doi && !item.doi.toLowerCase().startsWith("10.5281/zenodo")));
+}
+
+function compareDiscoveryPriority(a, b) {
+  return b.sourceCount - a.sourceCount
+    || new Date(b.updated || b.published || 0) - new Date(a.updated || a.published || 0);
+}
+
+function selectDailyPapers(items, limit = 3) {
+  const papers = items.filter(scholarly);
+  const selected = [];
+  const ids = new Set();
+  const topics = new Set();
+  for (const pool of [papers.sort(compareDiscoveryPriority)]) {
+    for (const item of pool) {
+      const topic = topicOf(item);
+      if (topics.has(topic) || selected.length >= limit) continue;
+      selected.push({...item, selectionTopic: topic, selectionWindow: "recent"});
+      ids.add(item.stableId);
+      topics.add(topic);
+    }
+    for (const item of pool) {
+      if (selected.length >= limit) break;
+      if (ids.has(item.stableId)) continue;
+      selected.push({...item, selectionTopic: topicOf(item), selectionWindow: "recent"});
+      ids.add(item.stableId);
+    }
+    if (selected.length >= limit) break;
+  }
+  return selected;
+}
+
+async function fetchJsonOrText(url, json = false) {
   let lastError;
-  for (let attempt = 1; attempt <= attempts; attempt++) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const response = await fetch(url, {headers: {"User-Agent": "research-agent-radar/1.0 (https://github.com/Lulili520/research-agent)"}});
+      const response = await fetch(url, {headers: {"User-Agent": "research-agent-radar/2.0"}});
       if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-      return response;
+      return json ? response.json() : response.text();
     } catch (error) {
       lastError = error;
-      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
     }
   }
   throw lastError;
@@ -199,25 +213,32 @@ async function collect(config, now) {
   const items = [];
   const provenance = [];
   const failures = [];
-  const categoryQuery = config.arxivCategories.map((category) => `cat:${category}`).join(" OR ");
-  const arxivUrl = `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(categoryQuery)}&start=0&max_results=100&sortBy=submittedDate&sortOrder=descending`;
+  const end = now;
+  const start = new Date(end.getTime() - config.arxivDiscoveryDays * 86400_000);
+  const stamp = (date) => `${date.toISOString().slice(0, 10).replace(/-/g, "")}${date.toISOString().slice(11, 16).replace(":", "")}`;
+  const arxivQuery = `(${config.arxivCategories.map((category) => `cat:${category}`).join(" OR ")}) AND submittedDate:[${stamp(start)} TO ${stamp(end)}]`;
   try {
-    const response = await fetchWithRetry(arxivUrl);
-    const parsed = parseArxiv(await response.text());
+    const parsed = parseArxiv(await fetchJsonOrText(`https://export.arxiv.org/api/query?search_query=${encodeURIComponent(arxivQuery)}&start=0&max_results=100&sortBy=submittedDate&sortOrder=descending`));
     items.push(...parsed);
-    provenance.push({source: "arXiv API", query: categoryQuery, results: parsed.length, status: "ok"});
+    provenance.push({source: "arXiv", query: arxivQuery, results: parsed.length, status: "ok"});
   } catch (error) {
-    failures.push(`arXiv API: ${error.message}`);
-    provenance.push({source: "arXiv API", query: categoryQuery, results: 0, status: error.message});
+    failures.push(`arXiv: ${error.message}`);
+    provenance.push({source: "arXiv", query: arxivQuery, results: 0, status: error.message});
   }
-
-  const {end: primaryEnd} = previousDayWindow(now, config.timezone);
-  const lookback = new Date(primaryEnd.getTime() - config.lateIndexLookbackHours * 3600_000).toISOString().slice(0, 10);
+  const coverageDate = new Intl.DateTimeFormat("en-CA", {timeZone: config.timezone}).format(now);
+  try {
+    const parsed = parseHuggingFace(await fetchJsonOrText(`https://huggingface.co/api/daily_papers?date=${coverageDate}`, true));
+    items.push(...parsed);
+    provenance.push({source: "Hugging Face Daily Papers", query: coverageDate, results: parsed.length, status: "ok"});
+  } catch (error) {
+    failures.push(`Hugging Face Daily Papers: ${error.message}`);
+    provenance.push({source: "Hugging Face Daily Papers", query: coverageDate, results: 0, status: error.message});
+  }
+  const lookbackDate = start.toISOString().slice(0, 10);
   for (const query of config.discoveryQueries) {
-    const url = `https://api.openalex.org/works?search=${encodeURIComponent(query)}&filter=from_publication_date:${lookback},has_abstract:true&sort=publication_date:desc&per_page=25`;
     try {
-      const response = await fetchWithRetry(url);
-      const parsed = parseOpenAlex(await response.json());
+      const payload = await fetchJsonOrText(`https://api.openalex.org/works?search=${encodeURIComponent(query)}&filter=from_publication_date:${lookbackDate},has_abstract:true&sort=publication_date:desc&per_page=25`, true);
+      const parsed = parseOpenAlex(payload);
       items.push(...parsed);
       provenance.push({source: "OpenAlex", query, results: parsed.length, status: "ok"});
     } catch (error) {
@@ -229,145 +250,111 @@ async function collect(config, now) {
 }
 
 function markdown(report) {
-  const stateLabels = {new: "昨日新增", "late-indexed": "延迟补录", updated: "昨日更新", continuing: "持续", corrected: "更正"};
-  const statusLabels = {preprint: "预印本", "published-record": "正式记录", "indexed-work": "索引记录"};
   const lines = [
-    `# AI 研究热点日报 — ${report.date}（回顾前一日）`,
+    `# 每日 AI 三篇论文精读 — ${report.date}`,
     "",
-    `- 分析窗口：${report.primaryStart} 至 ${report.primaryEnd}`,
-    `- 延迟索引回看起点：${report.lookbackStart}`,
-    `- 时区：${report.timezone}`,
-    `- 生成/更新时间：${report.generatedAt}`,
-    `- 失败或延迟来源：${report.failures.length ? report.failures.join("；") : "无"}`,
-    `- 个性化研究映射：${report.topics.join("、")}（不参与热点准入和排序）`,
+    `> 自动增量候选 ${report.papers.length} 篇｜阶段：${report.analysisLevel}`,
     "",
-    "## 昨日热点概览",
-    "",
-    report.leads.length ? `${report.leads.length} 个条目具有可核验的多源关注或早期传播信号，${report.watch.length} 个新近条目保留观察。热点表示前一日受到关注，不代表科学质量已经确认。` : "平静日：前一自然日没有条目达到当前可核验热点门槛；这不表示没有 AI 研究发布。",
-    "",
-    "## 热点方向总结",
+    "## 速览",
     ""
   ];
-  if (!report.clusters.length) lines.push("未形成具有足够证据的方向簇。", "");
-  report.clusters.forEach((cluster, index) => lines.push(
-    `${index + 1}. **${cluster.name}**：覆盖 ${cluster.itemCount} 个新近条目，其中 ${cluster.leadCount} 个具有热点信号；代表条目：${cluster.examples.join("；")}。`
+  if (!report.papers.length) lines.push("候选库中没有尚未精读且通过身份初筛的 AI 论文。", "");
+  report.papers.forEach((paper, index) => lines.push(`${index + 1}. **${paper.title}** — ${paper.selectionTopic}；${paper.signals.join("、")}。`));
+  lines.push("", "## 精读", "");
+  report.papers.forEach((paper, index) => lines.push(
+    `### ${index + 1}. ${paper.title}`,
+    "",
+    `- **一句话：** ${paper.abstract.slice(0, 100)}${paper.abstract.length > 100 ? "…" : ""}`,
+    "- **问题：** 待全文精读后用一句通俗中文说明。",
+    `- **方法：** ${paper.abstract.slice(0, 220)}${paper.abstract.length > 220 ? "…" : ""}`,
+    "- **证据：** 待核对数据集、基线、指标、消融和失败案例。",
+    "- **判断：** 待区分作者结论、证据支持范围与 Agent 推断。",
+    "- **Take away：** 待全文精读后给出 2-4 条可行动结论。",
+    `- **候选线索：** ${paper.selectionTopic}；${paper.signals.join("、")}。`,
+    `- **来源：** [论文](${paper.url})｜${paper.authors.slice(0, 5).join("、") || "作者未知"}`,
+    ""
   ));
   lines.push(
+    "## 方法附录",
     "",
-    "## 昨日热点条目",
+    `- arXiv 增量发现窗口：${report.arxivDiscoveryStart} 至 ${report.generatedAt}；最终选文不设时间下限。`,
+    `- 来源状态：${report.failures.length ? report.failures.join("；") : "全部成功"}`,
+    "- 当前文件是候选采集结果，不代表论文质量或最终入选。",
     ""
   );
-  if (!report.leads.length) lines.push("无。", "");
-  report.leads.forEach((item, index) => lines.push(
-    `### ${index + 1}. ${item.title}`,
-    "",
-    `- 类型/状态：论文 / ${statusLabels[item.status] || item.status}`,
-    `- 变化状态：${stateLabels[item.state] || item.state}`,
-    `- 身份：${item.authors.slice(0, 6).join("、") || "不可用"}；${item.stableId}；${item.url}`,
-    `- 首次公开/更新：${item.published || "不可用"} / ${item.updated || "不可用"}`,
-    `- 访问级别：摘要元数据`,
-    `- 原文摘要：${item.abstract.slice(0, 500)}${item.abstract.length > 500 ? "…" : ""}`,
-    `- 热点依据：${item.hotspotSignals.join("、") || "仅新近发布"}；独立来源=${item.sourceCount}；早期引用=${item.citedByCount}；日均引用≈${item.citationVelocityPerDay.toFixed(2)}`,
-    `- 与你的研究关系：${item.matchedTopics.length ? item.matchedTopics.join("、") : "暂无直接匹配"}（仅作后置标注，不影响排名）`,
-    `- 限制：当前仅完成自动发现；方法、结果、artifact与有效性必须经过全文精读`,
-    `- 建议动作：引文扩展`,
-    ""
-  ));
-  lines.push("## 新近研究观察", "", "| 条目 | 状态 | 个性化主题映射 | 未进入热点的原因 | 重新检查条件 |", "|---|---|---|---|---|");
-  report.watch.forEach((item) => lines.push(`| [${item.title}](${item.url}) | ${stateLabels[item.state] || item.state} | ${item.matchedTopics.join("、") || "无直接匹配"} | 尚无足够的独立关注或传播信号 | 新来源、年龄归一化引用、artifact 或正式发表记录 |`));
-  if (!report.watch.length) lines.push("| 无 | | | | |");
-  lines.push("", "## 查询与来源记录", "", "| 来源 | 完整查询 | 结果数 | 状态 |", "|---|---|---:|---|");
-  report.provenance.forEach((row) => lines.push(`| ${row.source} | ${row.query.replace(/\|/g, "\\|")} | ${row.results} | ${row.status} |`));
-  lines.push("", "## 限制", "", "- 当前热点依据来自学术索引的多源收录和早期引用，尚未覆盖社交讨论、下载量、GitHub 增长及全部官方发布，因此是学术热点代理信号。", "- 热度不等于质量；方法有效性、实验严谨性和科研价值需要后续精读。", "- 索引延迟、API 失败、早期关注偏差和版本关联可能改变后续结论。", "- 个性化主题只用于解释热点与你的研究有何关系，不参与全域热点筛选。", "");
   return lines.join("\n");
 }
 
+function identityKeys(item) {
+  const keys = [];
+  if (item.stableId) keys.push(item.stableId.replace(/v\d+$/i, ""));
+  if (item.arxivId) keys.push(`arxiv:${String(item.arxivId).replace(/v\d+$/i, "")}`);
+  if (item.doi) keys.push(`doi:${String(item.doi).replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").toLowerCase()}`);
+  if (item.title) keys.push(`title:${normalizeTitle(item.title)}`);
+  return new Set(keys);
+}
+
+function fullTextHistory(outputRoot, currentDate) {
+  const seen = new Set();
+  if (!fs.existsSync(outputRoot)) return seen;
+  const visit = (directory) => {
+    for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+      const fullPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) visit(fullPath);
+      else if (entry.name === "report.json" && path.basename(path.dirname(fullPath)) !== currentDate) {
+        try {
+          const report = JSON.parse(fs.readFileSync(fullPath, "utf8"));
+          if (report.analysisLevel === "full-text") for (const paper of report.papers || []) for (const key of identityKeys(paper)) seen.add(key);
+        } catch {}
+      }
+    }
+  };
+  visit(outputRoot);
+  return seen;
+}
+
 function updateHistory(history, items, generatedAt) {
-  for (const item of items) {
-    const existing = history[item.stableId] || {};
-    history[item.stableId] = {
-      stableId: item.stableId,
-      title: item.title,
-      url: item.url,
-      firstSeen: existing.firstSeen || generatedAt,
-      lastSeen: generatedAt,
-      lastUpdated: item.updated || existing.lastUpdated || null,
-      sources: [...new Set([...(existing.sources || []), ...item.sources])]
-    };
-  }
+  for (const item of items) history[item.stableId] = {stableId: item.stableId, title: item.title, url: item.url, firstSeen: history[item.stableId]?.firstSeen || generatedAt, lastSeen: generatedAt, lastUpdated: item.updated || null, sources: item.sources};
   return history;
 }
 
-function updateQueue(queue, leads, generatedAt) {
-  for (const item of leads) {
-    const existing = queue[item.stableId] || {};
-    queue[item.stableId] = {
-      stableId: item.stableId,
-      title: item.title,
-      url: item.url,
-      topics: item.matchedTopics,
-      addedAt: existing.addedAt || generatedAt,
-      lastSeen: generatedAt,
-      action: existing.action || "scholarly-search identity/citation chain",
-      status: existing.status || "pending"
-    };
-  }
-  return queue;
-}
-
-function queueMarkdown(queue) {
-  const actionLabels = {"scholarly-search identity/citation chain": "使用 scholarly-search 核验身份并扩展引文"};
-  const statusLabels = {pending: "待处理", analyzing: "分析中", complete: "已完成", rejected: "已排除"};
-  const lines = ["# 雷达精读候选队列", "", "| 稳定标识符 | 论文 | 主题 | 首阶段动作 | 状态 |", "|---|---|---|---|---|"];
-  Object.values(queue).sort((a, b) => b.addedAt.localeCompare(a.addedAt)).forEach((item) => lines.push(`| ${item.stableId} | [${item.title}](${item.url}) | ${item.topics.join("、")} | ${actionLabels[item.action] || item.action} | ${statusLabels[item.status] || item.status} |`));
-  if (!Object.keys(queue).length) lines.push("| | 暂无待处理核心条目 | | | |");
-  return `${lines.join("\n")}\n`;
-}
-
-export {classifyItems, markdown, mergeItems, parseArxiv, parseOpenAlex, previousDayWindow, summarizeHotspotClusters};
+export {classifyItems, fullTextHistory, identityKeys, markdown, mergeItems, parseArxiv, parseOpenAlex, parseHuggingFace, previousDayWindow, selectDailyPapers};
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const configPath = path.resolve(argValue("--config", path.join(agentRoot, "radar.json")));
+  const config = JSON.parse(fs.readFileSync(path.resolve(argValue("--config", path.join(agentRoot, "radar.json"))), "utf8"));
   const outputRoot = path.resolve(argValue("--output-root", path.join(workspaceRoot, "data", "radar")));
-  const fixturePath = argValue("--fixture");
+  const fixture = argValue("--fixture", null);
   const now = new Date(argValue("--now", new Date().toISOString()));
-  const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
   const indexPath = path.join(outputRoot, "index.json");
   const history = fs.existsSync(indexPath) ? JSON.parse(fs.readFileSync(indexPath, "utf8")) : {};
-  const queuePath = path.join(outputRoot, "queue.json");
-  const queue = fs.existsSync(queuePath) ? JSON.parse(fs.readFileSync(queuePath, "utf8")) : {};
-  const collected = fixturePath
-    ? JSON.parse(fs.readFileSync(path.resolve(fixturePath), "utf8"))
-    : await collect(config, now);
-  const classified = classifyItems(mergeItems(collected.items), config, now, history);
-  const leads = classified.filter((item) => item.lead).slice(0, config.maxLeadItems);
-  const watch = classified.filter((item) => !item.lead).slice(0, config.maxWatchItems);
-  const generatedAt = now.toISOString();
-  const primaryWindow = previousDayWindow(now, config.timezone);
+  const collected = fixture ? JSON.parse(fs.readFileSync(path.resolve(fixture), "utf8")) : await collect(config, now);
+  const dateFormat = new Intl.DateTimeFormat("en-CA", {timeZone: config.timezone});
+  const reportDate = dateFormat.format(now);
+  const seen = fullTextHistory(outputRoot, reportDate);
+  const classified = classifyItems(mergeItems(collected.items), config, now)
+    .filter((paper) => ![...identityKeys(paper)].some((key) => seen.has(key)));
+  const papers = selectDailyPapers(classified, config.maxWatchItems || 15);
+  const arxivDiscoveryStart = new Date(now.getTime() - config.arxivDiscoveryDays * 86400_000);
   const report = {
-    schemaVersion: 2,
-    date: new Intl.DateTimeFormat("en-CA", {timeZone: config.timezone, year: "numeric", month: "2-digit", day: "2-digit"}).format(now),
-    generatedAt,
-    primaryStart: primaryWindow.start.toISOString(),
-    primaryEnd: primaryWindow.end.toISOString(),
-    lookbackStart: new Date(primaryWindow.end.getTime() - config.lateIndexLookbackHours * 3600_000).toISOString(),
+    schemaVersion: 5,
+    analysisLevel: "abstract-screening",
+    selectionPolicy: "recent-unread-quality-review",
+    date: reportDate,
+    coverageDate: dateFormat.format(now),
+    generatedAt: now.toISOString(),
+    arxivDiscoveryDays: config.arxivDiscoveryDays,
+    arxivDiscoveryStart: arxivDiscoveryStart.toISOString(),
     timezone: config.timezone,
     outputLanguage: config.outputLanguage,
-    topics: config.topics.map((topic) => topic.name),
-    clusters: summarizeHotspotClusters(classified),
-    leads,
-    watch,
+    excludedPreviouslyReadCount: seen.size,
+    papers,
     provenance: collected.provenance || [],
     failures: collected.failures || []
   };
-  const yearDir = path.join(outputRoot, report.date.slice(0, 4));
-  fs.mkdirSync(yearDir, {recursive: true});
-  fs.writeFileSync(path.join(yearDir, `${report.date}.md`), markdown(report), "utf8");
-  fs.writeFileSync(path.join(yearDir, `${report.date}.json`), `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  fs.writeFileSync(indexPath, `${JSON.stringify(updateHistory(history, classified, generatedAt), null, 2)}\n`, "utf8");
-  const updatedQueue = updateQueue(queue, leads, generatedAt);
-  fs.writeFileSync(queuePath, `${JSON.stringify(updatedQueue, null, 2)}\n`, "utf8");
-  fs.writeFileSync(path.join(outputRoot, "queue.md"), queueMarkdown(updatedQueue), "utf8");
-  console.log(`Radar ${report.date}: ${leads.length} lead(s), ${watch.length} watch item(s), ${report.failures.length} source failure(s).`);
-  if (report.failures.length && !collected.provenance?.some((row) => row.status === "ok")) process.exitCode = 2;
+  const dateDir = path.join(outputRoot, report.date.slice(0, 4), report.date);
+  fs.mkdirSync(dateDir, {recursive: true});
+  fs.writeFileSync(path.join(dateDir, "report.md"), markdown(report), "utf8");
+  fs.writeFileSync(path.join(dateDir, "report.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  fs.writeFileSync(indexPath, `${JSON.stringify(updateHistory(history, classified, report.generatedAt), null, 2)}\n`, "utf8");
+  console.log(`Radar ${report.date}: collected ${papers.length} unread candidates; ${report.failures.length} source failure(s).`);
 }

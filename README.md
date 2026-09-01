@@ -1,6 +1,6 @@
-# CCF Computer Science Research Agent
+# CCF 计算机科学科研 Agent
 
-这是一个以 Codex 为运行时、面向计算机科学与 CCF 推荐会议论文的调研 Agent。它可以围绕技术方向检索会议论文、识别主会与 track、关联预印本和正式版本、精读方法与实验，并生成方法谱系和中文综述。
+这是一个以 Codex 为运行时、面向计算机科学与 CCF 推荐会议的科研 Agent。当前包含每日三篇 AI 热点论文精读和目标课题调研两个能力模块；后续可以独立增加实验设计、代码复现、评测执行、数据分析和论文写作等模块。
 
 默认交付语言为简体中文；论文官方标题、稳定标识符、指标名、代码符号以及为避免科学含义失真的原文摘录可以保留来源语言，并明确标注。
 
@@ -22,7 +22,16 @@ Research-Agent/
 └── .github/workflows/           # 自动调度
 ```
 
-## 能力边界
+## 当前能力模块
+
+| 模块 | 目标 | 内部能力 | 主要输出 |
+|---|---|---|---|
+| 每日三篇高价值论文精读 | 从顶会官方认可及其他未读候选中按全文质量与科研启发性选择最多三篇 | `daily-ai-radar` | `data/radar/<year>/<date>/` 的报告三件套与 `sources/` 原文 |
+| 目标课题调研 | 围绕指定问题完成检索、精读、综合和方向分析 | 其余四个 Skills | `research/<topic>/` |
+
+雷达候选可以进入目标调研，但两个模块默认独立运行；热点不等于论文质量或研究价值。
+
+## Skill 能力边界
 
 | Skill | 负责 | 不负责 |
 |---|---|---|
@@ -32,7 +41,7 @@ Research-Agent/
 | `evidence-synthesis` | 方法分类、发展脉络、可比实验、权衡、空白和阅读路线 | 用不兼容实验拼排行榜 |
 | `daily-ai-radar` | 每日 AI 论文、benchmark、artifact 和研究发布的增量发现与热点画像 | 用热度替代论文精读或科学有效性 |
 
-## 优化后的流程
+## 目标课题调研流程
 
 ```text
 计算机技术方向
@@ -92,7 +101,17 @@ $evidence-synthesis 根据 papers/ 中的论文卡片生成方法分类、发展
 调研 2023 年以来 CCF-A/B 会议中 RAG 用于代码生成的方法，区分主会与 Workshop/Findings，精读代表论文并总结方法谱系、基准结果、效率和研究空白。
 ```
 
-每日雷达由 GitHub Actions 在北京时间约 08:30 运行，回顾前一自然日的全域 AI 热点；个人研究主题只做后置映射。输出写入 `data/radar/`，不写入 `agent/`。
+每日流程由 Codex Automation 在北京时间约 07:00 启动；科研 Agent 从历届 ICML、ICLR、NeurIPS 官方 Oral、Spotlight 和获奖论文库及其他高价值来源中检索未读论文，选文不设时间下限。全文评价先执行问题价值、方法实质、证据强度、主张校准、可复现性和科研启发性门禁；同一质量层级内更新论文优先。已进入既有全文精读报告的论文不会因换链接、更新版本或再次上榜而重复。
+
+Codex 自动化不需要在仓库中配置 `OPENAI_API_KEY`。任务语义保存在 `agent/automations/daily-ai-radar.md`；当前 Windows 机器使用任务计划程序在本地时间每天 `07:00` 调用已通过 ChatGPT 登录的 Codex CLI。运行器、注册器和日志分别位于 `agent/automations/run-daily-ai-radar.ps1`、`agent/automations/register-daily-ai-radar.ps1` 和被 Git 忽略的 `.codex-log/`。任务只在用户已登录且网络可用时运行；错过触发时间后会补跑。GitHub Actions 只保留手动测试和审计，不负责生成日报。
+
+重新注册或修改运行时间：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File agent/automations/register-daily-ai-radar.ps1 -At '07:00'
+```
+
+日报通过全文检查、PDF 视觉检查和审计后，`publish-daily-radar.ps1` 在隔离的临时 worktree 中，只将当天的 `report.md`、`report.json` 与 `report.pdf` 提交并推送到 GitHub 的 `radar` 分支。该分支以 orphan 历史首次创建，只包含日报产物，不继承 `main` 中的 Agent 代码和其他文件。下载的论文原文保留在本机；当前工作区中的其他未提交修改也不会被日报提交夹带。发布器每次先读取远端最新 `radar` 分支，认证或非快进更新失败时安全退出，绝不强制推送。
 
 本地生成并审计日报：
 
@@ -125,3 +144,5 @@ powershell -File agent/audit-research.ps1 research/<topic>
 ## 加载机制
 
 `AGENTS.md` 保留在仓库根目录，作为 Codex 启动时的项目入口；Skill 内容、配置、脚本和评测统一收拢在 `agent/`。`data/` 与 `research/` 只保存运行产物，避免 Agent 定义和采集内容混杂。
+
+新增能力时，应优先在 `agent/skills/<new-skill>/` 增加独立 Skill，并在 `AGENTS.md` 中登记模块目标、输入、输出、边界和交接条件，避免继续把所有功能堆进单一调研流程。

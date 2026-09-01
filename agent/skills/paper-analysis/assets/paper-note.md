@@ -1,83 +1,17 @@
-# Paper note: <short title>
+# 论文卡片：<官方标题>
 
-## Identity and access
+- 稳定标识：
+- 版本与发表状态：
+- venue / track / paper type：
+- 访问级别：
+- 分析日期：
 
-- Citation:
-- Stable ID/DOI:
-- Venue/edition/year:
-- Track and paper type:
-- CCF catalog edition/domain/category:
-- Paper/version family:
-- Related reports or versions:
-- Version:
-- Access level:
-- File or URL:
-- Analyzed on:
-
-## Problem and contribution
-
-- Problem/task:
-- Prior limitation addressed:
-- Claimed novelty:
-- Agent assessment of actual contribution:
-- Key assumptions:
-
-## Impact profile (when requested)
-
-- Impact cohort: established / recent / emerging / unclear
-- Scholarly uptake (source and observed date):
-- Official recognition:
-- Intellectual influence or follow-on lineage:
-- Practical adoption and artifact traction:
-- Impact conclusion and uncertainty:
-- Important: impact assessment is separate from validity/confidence below.
-
-## Method
-
-- Approach/system architecture:
-- Key algorithmic steps:
-- Complexity or resource characteristics:
-- Important implementation details:
-
-## Experimental setup
-
-- Datasets/benchmarks and versions:
-- Splits/preprocessing:
-- Baselines:
-- Metrics and definitions:
-- Evaluation protocol:
-- Compute/hardware/runtime:
-
-## Relevant results
-
-| Result | Estimate/uncertainty | Locator |
-|---|---|---|
-| | | |
-
-## Ablations, failure cases, and artifacts
-
-- Ablations/sensitivity:
-- Failure cases:
-- Code/model/data/project links:
-- Reproducibility notes:
-
-## Evidence statements
-
-| Evidence ID | Source-supported statement | Locator | Access level | Interpretation level | Verification |
-|---|---|---|---|---|---|
-| E1 | | | | reported / derived / inference | pending / checked |
-
-## Critical appraisal and applicability
-
-- Reported limitations:
-- Appraisal framework/domains used:
-- Domain judgments with rationale:
-- Overall confidence and reason:
-- Applicability to the research question:
-- Unresolved questions:
-
-## Verification
-
-- Metadata checked against:
-- Evidence locators rechecked:
-- Open issues:
+## 问题与创新
+## 方法与假设
+## 数据集、基线和指标
+## 主要结果与定位
+## 消融、效率和失败案例
+## Artifact 与复现性
+## 有效性评价
+## 与最近工作的差异
+## 限制与待核验问题

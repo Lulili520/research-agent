@@ -1,9 +1,10 @@
 {
   "timezone": "Asia/Shanghai",
   "outputLanguage": "zh-CN",
-  "primaryWindowHours": 24,
-  "lateIndexLookbackHours": 72,
-  "maxLeadItems": 10,
+  "arxivDiscoveryDays": 30,
+  "priorityVenues": ["ICML", "ICLR", "NeurIPS"],
+  "priorityPresentationTypes": ["Best Paper", "Outstanding Paper", "Oral", "Spotlight"],
+  "maxLeadItems": 3,
   "maxWatchItems": 15,
   "arxivCategories": ["cs.AI", "cs.CL", "cs.LG", "cs.CV", "cs.RO", "stat.ML"],
   "discoveryQueries": [
@@ -14,18 +15,5 @@
     "computer vision",
     "robotics"
   ],
-  "aiContextTerms": ["llm", "language model", "neural", "transformer", "machine learning", "artificial intelligence", "agent", "vision-language", "foundation model"],
-  "topics": [
-    {"name": "LLM Agent", "terms": ["llm agent", "language model agent", "agentic"]},
-    {"name": "模型量化", "terms": ["quantization", "low-bit", "low precision", "model compression"]},
-    {"name": "长上下文", "terms": ["long context", "context length", "long-context"]},
-    {"name": "Agent 记忆", "terms": ["agent memory", "memory-augmented", "long-term memory"]},
-    {"name": "模型推理", "terms": ["reasoning model", "chain-of-thought", "test-time compute"]},
-    {"name": "Agent 评测", "terms": ["agent evaluation", "agent benchmark", "agent reliability", "trajectory evaluation", "tool use"]}
-  ],
-  "selection": {
-    "leadIfIndependentSources": 2,
-    "leadIfEarlyCitations": 3,
-    "leadIfCitationVelocityPerDay": 1
-  }
+  "aiContextTerms": ["llm", "language model", "neural", "transformer", "machine learning", "artificial intelligence", "agent", "vision-language", "foundation model"]
 }

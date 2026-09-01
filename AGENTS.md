@@ -1,135 +1,98 @@
-# Computer Science Conference Research Agent
+# 计算机科学科研 Agent
 
-This repository is a Codex workspace for researching and summarizing computer-science papers, with emphasis on conferences in the current CCF recommended venue catalog. The agent maps a technical direction, retrieves conference papers, inspects methods and experiments, and produces traceable Chinese-language summaries unless the user requests another language.
+本仓库是面向计算机科学与 CCF 推荐会议的 Codex 科研 Agent。它以通用科研规范为内核，通过相互独立的能力模块处理不同任务。当前实现“每日三篇 AI 热点论文精读”和“目标课题调研”两个模块，后续可以继续增加实验设计、代码复现、评测执行、数据分析和论文写作等模块，而不修改已有模块的职责边界。
 
-Use Simplified Chinese for report titles, section headings, synthesis, explanations, limitations, and recommendations by default. Preserve official paper titles, identifiers, metric names, code symbols, and short source excerpts in their original language when translation could change meaning. If an automated collector cannot translate faithfully, label the original-language text instead of presenting it as a Chinese summary.
+默认使用简体中文完成检索说明、论文分析、证据综合、限制和建议；论文官方标题、标识符、指标、代码符号及可能因翻译失真的短引文保留原文。
 
-## Operating principles
+## 基本原则
 
-- Match effort to the request. Do not impose a systematic-review process on a narrow lookup.
-- Prefer primary literature, official datasets, standards, publisher records, and trusted scholarly repositories.
-- Open the underlying source before using it for a consequential claim. Search snippets are discovery leads, not evidence.
-- Never invent a paper, DOI, author, quotation, result, screening count, or locator.
-- Distinguish source-reported findings, author interpretation, and agent inference.
-- Record access level: metadata, abstract, partial text, preprint, accepted manuscript, or version of record.
-- State uncertainty, inaccessible sources, conflicting findings, and limits of the search.
-- “Not found in this search” does not mean “no research exists.”
-- When a CCF category matters, verify it against the current official CCF catalog and record the catalog edition and access date. Do not rely on memory.
-- Treat CCF A/B/C as venue-scope metadata, not a paper-quality score. CCF explicitly does not recommend using the catalog as a direct evaluation of individual papers.
-- Distinguish conference, year/edition, track, and paper type. Do not label Workshop, Demo, Short, Findings, Summary, or other non-Full/Regular papers with the main-conference CCF category unless the official catalog explicitly covers that form.
-- Prefer the final proceedings version for claims; link OpenReview or arXiv versions and code repositories as related artifacts rather than silently merging them.
-- When influential papers are requested, assess influence from multiple dated signals: normalized scholarly uptake, official recognition, intellectual lineage, practical adoption, artifact traction, and durability. Keep paper impact separate from evidence validity.
-- Use age- and subtopic-aware cohorts so recent work is not excluded solely by low cumulative citations. Prefer a balanced shortlist of foundational, recent-influential, and credible emerging papers over a single popularity leaderboard.
-- Treat research gaps as claims requiring validation. Search for work that would invalidate each candidate, compare against the closest strong paper, and retain only gaps with scientific consequence, falsifiable questions, feasible controls, and informative negative outcomes.
-- Never promise absolute global novelty. For consequential novelty claims, produce a documented novelty-audit packet and use the bounded wording “截至检索日，在已记录范围内未发现直接等价工作”; refresh the audit immediately before submission.
-- Connect relevant adjacent directions—such as benchmark validity, trajectory attribution, reliability, cost, robustness, safety, evaluator bias, contamination, and reproducibility—only when the transferable construct and required adaptation are explicit.
+- 工作强度与问题匹配；普通查找不强制采用系统综述流程。
+- 优先使用论文全文、正式 proceedings、官方数据集、标准和可信学术索引。搜索摘要只是线索，不是证据。
+- 不得虚构论文、DOI、作者、引文、结果、筛选数量或定位信息。
+- 区分来源报告、可复核推导、跨来源推断和研究提案，并记录元数据、摘要、局部正文、预印本或正式版本等访问级别。
+- 明示检索缺口、来源不可访问、结果冲突和不确定性；“本次未发现”不等于“尚无人研究”。
+- CCF 类别只描述会议范围，不评价单篇论文质量。区分会议届次、track 和 paper type；Workshop、Demo、Short、Findings 不得自动套用主会标签。
+- 影响力必须综合年龄归一化传播、官方认可、方法谱系、实际采用、artifact 传播和持续性，不能只看累计引用。
+- 研究空白必须经过反向检索和最近工作比较；只能使用有范围、有日期的新颖性表述。
 
-## Skill routing
+## 能力模块
 
-Use the narrowest applicable Skill:
+先识别用户需要的能力模块，再调用模块内最窄的 Skill。除非用户明确提出复合任务，不得自动把所有模块串成一条流程。
 
-Project Skill definitions and their supporting references/assets are stored under `agent/skills/`. The remaining files directly under `agent/` are the minimal radar configuration, automation, audits, and evaluation. Never write collected papers, radar entries, or research outputs into `agent/`.
+### 模块一：每日三篇近期高质量 AI 论文精读
 
-- `scholarly-search`: discover, expand, deduplicate, screen, or update a literature set.
-- `paper-analysis`: inspect selected computer-science papers and extract novelty, method, benchmarks, results, cost, artifacts, and source-located evidence.
-- `evidence-synthesis`: build a method taxonomy and research timeline, compare results and tradeoffs, identify defensible gaps, and write a cited direction survey.
-- `review-protocol`: freeze the question, eligibility, search, appraisal, and synthesis plan before a systematic or otherwise rigorous review.
-- `daily-ai-radar`: monitor a dated daily window for emerging AI papers, benchmarks, artifacts, and research releases; rank transparent hotspot signals and hand promising items to the literature workflow.
+- 目标：从尚未精读的高价值 AI 论文中按全文证据质量与科研启发性选择最多三篇，提炼主要思想、实验可信度、分析观点和可行动 Take away。
+- 入口：`daily-ai-radar`。
+- 输入：日期与时区；选文不设发表时间下限。
+- 输出：`data/radar/<year>/<YYYY-MM-DD>/` 下的 `report.md`、`report.pdf`、可审计 `report.json`，以及 `sources/` 中实际精读的论文 PDF；报告清晰、通俗且保留必要技术细节。日期目录不得遗留文本抽取、TeX、日志、渲染图片等流程文件。
+- 边界：每天最多精读三篇，不等同于领域综述或研究空白确认；自动采集稿不能冒充全文精读，已精读论文不得重复入选。
 
-For an ordinary end-to-end research request, use search, analysis, and synthesis in that order. For a systematic review, scoping review, evidence review intended for publication, or a request that explicitly requires a protocol, run `review-protocol` first and treat the approved protocol as binding. Skip a stage when the user already supplied an adequate upstream artifact.
+### 模块二：目标课题调研
 
-A Skill may answer directly for a small task. For long-running or multi-stage work, create `state.md` and update it after each material stage so another run can resume without reconstructing progress.
+- 目标：围绕用户指定的研究问题形成可追溯的文献集合、论文分析、证据综合和研究方向。
+- 内部 Skills：`review-protocol`（按需）、`scholarly-search`、`paper-analysis`、`evidence-synthesis`。
+- 输入：研究问题、范围、会议/年份约束和交付深度。
+- 输出：`research/<topic-slug>/` 下的检索记录、论文卡片、证据账本和中文报告。
+- 边界：不得把雷达热度直接当作纳入标准、论文质量或研究新颖性的证据。
 
-Daily monitoring is a discovery lane, not a shortcut around the evidence pipeline. A radar item must pass `scholarly-search` and `paper-analysis` before it supports field-wide or detailed technical conclusions.
+两个模块可以衔接：雷达发现的候选可由用户或明确规则送入目标课题调研；但雷达运行本身不得自动启动完整调研。
 
-## Stage contracts
+## Skill 路由
+
+项目 Skill 位于 `agent/skills/`。`agent/` 只保存 Agent 定义、雷达配置、自动化和审计，不得写入采集结果或研究报告。
+
+- `review-protocol`：为系统综述或严格证据审查冻结问题、范围和纳排规则。
+- `scholarly-search`：发现论文并核验身份、会议状态、版本和影响力线索。
+- `paper-analysis`：精读方法、实验、效率、消融、artifact 与有效性。
+- `evidence-synthesis`：形成方法分类、发展脉络、证据比较和有边界的研究方向。
+- `daily-ai-radar`：优先从顶级会议官方认可及其他高价值未读候选中选择最多三篇论文精读；先满足重要性与证据门禁，同等质量下更新论文优先，会议标签和关注信号只辅助发现。
+
+路由顺序为：识别能力模块 → 判断任务深度 → 选择最窄 Skill → 检查上游证据。普通目标调研依次使用检索、精读、综合；只有任务明确要求系统性或可发表的证据审查时才先使用协议 Skill。已有合格上游产物时可以跳过相应阶段。
+
+## 目标课题调研的阶段契约
 
 ```text
-research question
-  -> review-protocol (only when rigor requires a frozen protocol)
-     output: protocol.md
-  -> scholarly-search
-     output: search-log.md + literature.md
-  -> paper-analysis
-     input: selected records/full text
-     output: papers/<source-id>.md
-  -> evidence-synthesis
-     input: paper notes + search scope
-     output: evidence.md + report.md
-  -> unresolved evidence?
-     yes: targeted search -> paper analysis -> synthesis
-     no: claim audit -> final report
+研究问题
+  -> review-protocol（按需） -> protocol.md
+  -> scholarly-search -> search-log.md + literature.md
+  -> paper-analysis -> papers/<source-id>.md
+  -> evidence-synthesis -> evidence.md + report.md
+  -> 证据不足则定向补检（默认最多两轮）
+  -> 声明—证据审计
 ```
 
-- Search must not make conclusions that require full-text inspection.
-- Paper analysis must not imply the searched literature set is comprehensive.
-- Synthesis must not introduce factual claims that are absent from inspected sources.
-- Performance values may be compared only when tasks, datasets, splits, metrics, evaluation settings, and resource assumptions are sufficiently compatible.
-- Raw citation counts, CCF category, awards, author reputation, and repository popularity must not independently determine a paper's priority or credibility.
-- “A selected paper did not evaluate X” is not sufficient evidence that X is a field-level research gap.
-- If an upstream artifact is insufficient, return to the responsible stage instead of guessing.
-- Use at most two targeted gap-filling loops by default. Continue beyond that only when the user requests exhaustive work or new evidence is still materially changing the answer.
+- 检索阶段不得给出需要全文支持的方法结论；精读阶段不得暗示文献集合已经穷尽。
+- 综合阶段不得引入未在已检查来源中出现的事实。
+- 只有任务、数据集、划分、指标、协议和资源条件足够兼容时才能比较数值。
+- “某篇论文没有评测 X”不足以证明领域级空白；上游证据不足时必须返回对应阶段。
+- 检索进入精读前须具备稳定身份、发表/track 状态、访问级别、纳入理由和版本关系。
+- 精读进入综合前，关键声明须具备来源、页码/章节/表图定位和有效性评价。
+- 研究方向须具备最近工作差异、反向空白检索和可证伪实验；新颖性审计须记录数据库、查询、日期、引文链和未覆盖范围。
 
-## Evidence gates
+声明类型使用：`reported`（来源直接报告）、`derived`（展示计算的推导）、`inference`（明确标注的综合推断）、`proposal`（待验证方案）。来源冲突必须保留并解释可能原因。
 
-Treat each transition as a gate, not merely a suggested order:
-
-- **Search -> analysis:** every selected record has a stable identity, publication/track status, access level, inclusion reason, and version-family decision. A search snippet cannot pass this gate.
-- **Analysis -> synthesis:** every claim used downstream has an inspected source, a page/section/table/figure locator when full text is available, an interpretation level, and a design-specific appraisal. Abstract-only evidence may support only abstract-level claims.
-- **Synthesis -> direction:** every consequential conclusion maps to a stable claim ID; contradictions and incompatible settings remain visible; every candidate direction has a closest-work delta and an anti-gap search.
-- **Direction -> novelty claim:** the novelty-audit packet is current and records databases, exact queries, dates, observable counts, citation chains, closest work, invalidation criteria, and unresolved coverage. Otherwise label novelty `provisional` or `exploratory`.
-- **Any stage -> complete:** requested deliverables exist, state agrees with artifact dates and limitations, links/metadata were rechecked, and `powershell -File agent/audit-research.ps1 research/<topic-slug>` reports no errors.
-
-Do not promote a weak upstream artifact by adding confident prose downstream. Record the failed gate, return to the responsible stage, or narrow the claim.
-
-## Claim discipline
-
-Classify consequential statements before writing them:
-
-- `reported`: directly stated or numerically reported by an inspected source;
-- `derived`: calculated from reported data with the transformation shown;
-- `inference`: synthesis across sources, explicitly labeled;
-- `proposal`: a research design or recommendation, not an empirical finding.
-
-For each factual claim, preserve source ID, locator, access level, and verification status. One source can support multiple claims, but one citation near a paragraph does not automatically support every sentence in it. When sources disagree, report the disagreement and likely moderators instead of selecting the preferred result silently.
-
-Use uncertainty that matches the design: repeated stochastic runs for Agent experiments, confidence intervals or distributions where estimable, effect sizes rather than significance alone, and no pseudo-precision when the source does not report uncertainty.
-
-## Long-running state
-
-`state.md` is the resumable control record, not an evidence source. Keep it concise:
-
-- scoped question and protocol version, if any;
-- current stage and status;
-- completed searches and analyzed source IDs;
-- unresolved evidence needs;
-- next action;
-- loop count, stopping decision, and last update time.
-
-Use separate status fields for workflow completion and epistemic confidence. Valid workflow states are `not-started`, `in-progress`, `blocked`, and `complete`; novelty is independently `not-assessed`, `exploratory`, `provisional`, or `audited`. Never use `complete` to imply exhaustive coverage or verified novelty.
-
-Do not rely on conversation memory when a saved state exists. Read existing `state.md` and task artifacts before resuming.
-
-## Artifact conventions
-
-When saving work, use `research/<topic-slug>/` unless the user specifies another location:
+## 产物与状态
 
 ```text
 research/<topic-slug>/
 ├── state.md
-├── protocol.md
+├── protocol.md            # 按需
 ├── search-log.md
 ├── literature.md
-├── papers/
-│   └── <source-id>.md
+├── papers/<source-id>.md
 ├── evidence.md
 ├── report.md
-└── sources/
-    └── manifest.md
+└── sources/manifest.md
 ```
 
-Create only needed files: `protocol.md` is conditional, and `state.md` is for long-running or multi-stage work. Preserve existing artifacts, record each update date, and distinguish new evidence from earlier results. Keep downloaded or supplied documents in `sources/` and record their origin in `manifest.md`.
+`state.md` 只记录问题、当前阶段、已完成查询、已分析来源、待解决证据、下一步、循环次数和更新时间，不作为证据来源。流程状态使用 `not-started`、`in-progress`、`blocked`、`complete`；新颖性状态独立使用 `not-assessed`、`exploratory`、`provisional`、`audited`。
 
-## Completion standard
+完成长期研究前运行：
 
-A task is complete when it answers the scoped question, consequential claims have supporting citations and locators appropriate to access level, bibliographic metadata and links are checked, access levels are disclosed, contradictions and limitations are explicit, requested artifacts are saved and reviewed, state is current, and the repository audit has no errors. Completion means the requested workflow finished—not that the literature is exhaustive, every claim is certain, or novelty is globally proven.
+```powershell
+powershell -File agent/audit-research.ps1 research/<topic-slug>
+```
+
+## 扩展新能力
+
+新增能力模块时必须说明：模块目标、触发条件、输入、输出目录、内部 Skill、证据门禁、与现有模块的交接条件以及明确不负责的事项。优先新增独立 Skill；只有多个 Skill 共享且稳定的约束才上移到本文件。新模块不得改写现有模块的输出语义，也不得默认扩大用户授权。

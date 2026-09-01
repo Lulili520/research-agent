@@ -1,34 +1,22 @@
-# Source and ranking policy
+# 来源与质量选择策略
 
-## Source lanes
+候选池不设发表时间下限。第一优先来源是 ICML、ICLR、NeurIPS 官方 program、proceedings、OpenReview 和奖项公告中的 Best/Outstanding Paper、Oral 与 Spotlight；第二优先来源是其他顶级会议主会论文中具有持续影响或强证据的工作；第三优先来源是证据特别突出、尚未经过会议评审的新兴论文。arXiv 新稿、OpenAlex/Semantic Scholar、社区榜单和 GitHub 传播用于补充发现，不能作为质量证据。
 
-Use complementary lanes because no single index is both instantaneous and authoritative:
+## 两阶段选择
 
-1. **Fresh scholarly feeds:** arXiv categories such as `cs.AI`, `cs.CL`, `cs.LG`, `cs.CV`, `cs.RO`, and `stat.ML`; OpenReview recent submissions only when status is explicitly labeled.
-2. **Bibliographic graphs:** OpenAlex for date/topic/search filters, citation neighborhoods, related works, and normalized identities; Semantic Scholar for academic-graph search and seed-based recommendations.
-3. **Authoritative publication records:** ACL Anthology, PMLR, CVF Open Access, ACM DL, IEEE Xplore, USENIX, AAAI/IJCAI, NeurIPS/ICLR/OpenReview, DBLP, or the applicable official proceedings.
-4. **Artifacts:** official project, code, model, dataset, and benchmark repositories. Stars/downloads are dated attention signals, not evidence of validity.
-5. **Primary institutional releases:** official research-lab or standards pages for new models, datasets, evaluations, or policies. Keep these distinct from peer-reviewed evidence.
+第一阶段只发现候选。候选须身份真实、AI 相关、正文可访问且尚未精读。对会议论文必须从官方页面核验年份、主会/Workshop、track、paper type 和 Oral/Spotlight/奖项身份；作者自述或第三方标签不能完成核验。顶会展示类型用于降低发现成本，不代表论文天然高质量。
 
-Respect API terms, rate limits, and access restrictions. Record failures and do not infer zero activity from a failed source.
+第二阶段阅读全文后选择最多三篇。逐篇记录以下判断，不使用单一加权总分掩盖短板：
 
-## Hotness profile
+1. **问题价值**：问题是否真实、边界清楚，解决后是否会改变研究或实践判断；不能只凭宏大叙事得高评价。
+2. **方法实质**：核心设计是否带来可解释的新能力或新认识，是否明显超出简单基线、工程堆叠或重命名。
+3. **证据强度**：比较是否公平，基线是否充分，是否有消融、稳健性、多数据集或多次运行；指标是否真的回答论文主张，是否存在泄漏、选择性报告或算力不对等。
+4. **主张校准**：结论是否限定在实验支持的范围内，替代解释和失败案例是否被处理。夸大主张应降低选择优先级。
+5. **可复现性**：方法、数据、训练与评测协议是否足够明确；代码、模型、数据和许可证是否可用。Artifact 是加分证据，不是质量的替代品。
+6. **科研启发性**：论文是否提供可迁移的研究视角、可复用的实验范式、反常但可信的发现，或能直接形成可证伪后续问题。只有“结果更高”而没有解释价值的工作应降低优先级。
 
-Record dimensions separately:
+优先选择没有致命证据缺陷、在问题价值、方法实质或证据强度上突出，并且能够产生具体科研启发的论文。正式发表、Oral、Spotlight 和奖项是可信度背景，而非质量保证。
 
-- **Research mapping:** match to tracked topics and user research questions after field-wide hotspot selection; this must not determine admission or rank in the daily hotspot list.
-- **Freshness:** first public appearance and material update time, not merely index ingestion time.
-- **Independent attention:** appearance across independent scholarly/artifact sources; syndicated copies count once.
-- **Uptake velocity:** age-normalized early citations, references, recommendations, downloads, forks, or follow-on discussion when verifiable.
-- **Artifact strength:** code/data/model availability, license, documentation, and reproducibility evidence.
-- **Publication confidence:** proceedings > accepted record > active submission > preprint for status confidence, not necessarily scientific quality.
-- **Evidence quality:** construct validity, fair comparisons, uncertainty, external validity, and disclosed limitations to the extent actually inspected.
-- **Novelty signal:** credible difference from closest recent work; this remains exploratory until anti-gap search and full-text analysis.
+排序采用分层而非混合总分：先按全文证据将论文划入“优先精读、值得精读、观察、排除”，只有前两层可以进入日报；在同一层内，优先选择发表或正式接收时间更近的论文。较旧论文只有在科学杠杆、持续影响或科研生成力明显更强时才能越过更新论文。主题多样性仅用于剩余平局，合格论文不足三篇时允许少选。
 
-Do not use a universal weighted sum by default. Report why an item is selected and where the signals disagree. A highly discussed preprint can be hot but weakly validated; a rigorous paper can be important without trending socially.
-
-Daily hotspot selection is field-first: identify what gained verifiable attention across AI during the previous calendar day, cluster retained items into emerging directions, and only then map those clusters and items to the user's tracked research themes.
-
-## Corrections
-
-If identity, venue, result, or status changes, preserve the previous entry and publish a dated correction. Never silently rewrite historical radar output.
+最终日报必须与既有全文精读报告按 DOI、去版本号 arXiv ID 和规范化标题去重。论文出现新版本时更新已有论文的版本关系；只有研究内容发生实质变化且报告明确说明差异时，才允许再次精读。候选库没有达到要求且未读过的论文时输出空晨报，而不是降低标准凑数。

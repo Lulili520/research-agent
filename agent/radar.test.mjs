@@ -1,33 +1,32 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import {classifyItems, markdown, mergeItems, summarizeHotspotClusters} from "./radar.mjs";
+import {classifyItems, markdown, mergeItems, selectDailyPapers} from "./radar.mjs";
 
 const config = JSON.parse(fs.readFileSync(path.resolve("agent/radar.json"), "utf8"));
-assert.equal(config.outputLanguage, "zh-CN", "radar reports should default to Simplified Chinese");
-const fixture = {
-  items: [
-    {stableId: "arxiv:2608.00001", arxivId: "2608.00001v1", title: "Evaluating Quantized LLM Agents with Long Context and Memory", abstract: "We study quantization and agent evaluation across long context, agent memory, trajectory evaluation, and tool use.", authors: ["A. Researcher"], published: "2026-08-27T00:00:00Z", updated: "2026-08-27T00:00:00Z", url: "https://arxiv.org/abs/2608.00001", status: "preprint", sources: ["arXiv"], citedByCount: 0},
-    {stableId: "openalex:W1", title: "Evaluating Quantized LLM Agents with Long Context and Memory", abstract: "Duplicate indexed record.", authors: ["A. Researcher"], published: "2026-08-27", updated: "2026-08-27", url: "https://openalex.org/W1", status: "indexed-work", sources: ["OpenAlex"], citedByCount: 1},
-    {stableId: "arxiv:2608.00002", title: "A Narrow Tool Use Observation", abstract: "A tool use note for language model systems.", authors: ["B. Researcher"], published: "2026-08-25T12:00:00Z", updated: "2026-08-25T12:00:00Z", url: "https://arxiv.org/abs/2608.00002", status: "preprint", sources: ["arXiv"], citedByCount: 0}
-  ]
-};
-const merged = mergeItems(fixture.items);
-assert.equal(merged.length, 2, "title-identical arXiv/OpenAlex versions should merge");
-const classified = classifyItems(merged, config, new Date("2026-08-28T00:30:00Z"), {});
-assert.equal(classified.length, 2, "both fixture items should be in the 72h discovery window");
-const lead = classified.find((item) => item.title.startsWith("Evaluating Quantized"));
-assert.equal(lead.lead, true, "multi-source previous-day item should pass hotspot gate");
-assert.equal(lead.sourceCount, 2);
-const watch = classified.find((item) => item.title.startsWith("A Narrow"));
-assert.equal(watch.lead, false, "single-topic single-source item should remain watchlist");
-assert.equal(watch.state, "late-indexed");
-const rendered = markdown({
-  date: "2026-08-28", primaryStart: "2026-08-26T16:00:00Z", primaryEnd: "2026-08-27T16:00:00Z", lookbackStart: "2026-08-24T16:00:00Z",
-  generatedAt: "2026-08-27T00:00:00Z", timezone: "Asia/Shanghai", failures: [], topics: ["模型量化"],
-  clusters: summarizeHotspotClusters(classified), leads: [], watch: [], provenance: []
-});
-for (const heading of ["# AI 研究热点日报", "## 昨日热点概览", "## 热点方向总结", "## 昨日热点条目", "## 新近研究观察", "## 查询与来源记录", "## 限制"]) {
-  assert.ok(rendered.includes(heading), `missing Chinese heading: ${heading}`);
-}
-console.log("AI radar fixture tests passed.");
+assert.equal(config.maxLeadItems, 3);
+assert.equal("selection" in config, false, "不得保留绝对热度门槛");
+
+const items = [
+  {stableId: "arxiv:1", arxivId: "1v1", title: "Agent Memory", abstract: "An LLM agent memory method.", authors: ["A"], published: "2026-08-27T00:00:00Z", updated: "2026-08-27T00:00:00Z", url: "https://arxiv.org/abs/1", status: "preprint", sources: ["arXiv"], researchAreas: [], citedByCount: 0, hfUpvotes: 0},
+  {stableId: "openalex:dup", title: "Agent Memory", abstract: "Duplicate.", authors: ["A"], published: "2026-08-27", updated: "2026-08-27", url: "https://openalex.org/dup", status: "indexed-work", sources: ["OpenAlex"], researchAreas: [], citedByCount: 1, hfUpvotes: 0},
+  {stableId: "arxiv:2", arxivId: "2v1", title: "Vision Language Robot", abstract: "A vision-language-action robot policy.", authors: ["B"], published: "2026-08-25T12:00:00Z", updated: "2026-08-25T12:00:00Z", url: "https://arxiv.org/abs/2", status: "preprint", sources: ["arXiv"], researchAreas: [], citedByCount: 0, hfUpvotes: 0},
+  {stableId: "doi:zenodo", doi: "10.5281/zenodo.1", title: "Repository Document", abstract: "An AI repository note.", authors: ["C"], published: "2026-08-27", updated: "2026-08-27", url: "https://doi.org/10.5281/zenodo.1", status: "indexed-work", sources: ["OpenAlex"], researchAreas: [], citedByCount: 9, hfUpvotes: 0}
+];
+
+const merged = mergeItems(items);
+assert.equal(merged.length, 3, "同题论文版本应合并");
+const classified = classifyItems(merged, config, new Date("2026-08-28T00:30:00Z"));
+const selected = selectDailyPapers(classified, 3);
+assert.equal(selected.length, 2, "应选择合格论文并排除普通 Zenodo 文档");
+assert.equal(selected[0].selectionWindow, "recent");
+assert.equal(selected[1].selectionWindow, "recent");
+assert.notEqual(selected[0].selectionTopic, selected[1].selectionTopic, "候选发现阶段可用主题差异扩大覆盖");
+
+const report = {date: "2026-08-28", arxivDiscoveryDays: 30, arxivDiscoveryStart: "2026-07-29T00:30:00Z", generatedAt: "2026-08-28T00:30:00Z", timezone: "Asia/Shanghai", analysisLevel: "abstract-screening", papers: selected, provenance: [], failures: []};
+const rendered = markdown(report);
+for (const heading of ["# 每日 AI 三篇论文精读", "## 速览", "## 精读", "## 方法附录"]) assert.ok(rendered.includes(heading));
+assert.equal(rendered.includes("## 横向结论"), false);
+for (const removedHeading of ["阅读顺序", "今日共同信号", "未入选观察池", "查询与来源记录"]) assert.equal(rendered.includes(removedHeading), false);
+
+console.log("Radar tests passed.");

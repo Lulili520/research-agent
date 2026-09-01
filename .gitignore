@@ -7,6 +7,7 @@ research/**/downloads/*
 
 # Disposable local verification output
 .tmp-*/
+tmp/
 
 # Keep directory placeholders and source manifests if added
 !research/**/sources/.gitkeep

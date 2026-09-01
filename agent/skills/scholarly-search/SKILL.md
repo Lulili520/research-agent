@@ -1,41 +1,18 @@
 ---
 name: scholarly-search
-description: Find, verify, deduplicate, and map computer-science conference papers, especially current CCF-recommended venues. Use for CCF paper searches, topic landscapes, conference/year/track filtering, citation chaining, or candidate bibliographies; do not use for full-paper interpretation or cross-paper conclusions.
+description: 发现、核验、去重并组织计算机科学论文，尤其适用于 CCF 会议检索、方向图谱、年份/track 筛选、引文扩展和候选书目；不负责全文结论。
 ---
 
-# Scholarly Search
+# 学术论文检索
 
-Build a relevant, reproducible computer-science literature set without overstating what metadata or abstracts establish.
+默认用简体中文说明检索过程和结果，官方题名与标识符保留原文。
 
-## Workflow
+1. 明确技术问题、时间范围、会议范围、paper type 和所需影响力口径；范围不清时先做探索检索并标注边界。
+2. 保存数据库、完整查询、过滤条件、日期、可观察结果数和访问限制。搜索片段只能用于发现。
+3. 优先通过 DOI、arXiv、OpenReview、DBLP 和 proceedings 核验身份；再用标题、作者和年份合并版本族。
+4. 若涉及 CCF，必须阅读[CCF 会议规则](references/ccf-venue-rules.md)，核验目录版本、会议届次、track 和 paper type。
+5. 同时进行关键词检索、代表论文前后向引文扩展和最近相关工作追踪；停止于新增查询主要重复已知记录。
+6. 纳入记录须写明纳入理由、稳定链接、发表状态、访问级别和版本决定；排除记录保留明确原因。
+7. 用户要求高影响力论文时阅读[影响力优先策略](references/impact-prioritization.md)，平衡奠基性、近期高影响和可信新兴论文，不以引用数或 CCF 类别单独排序。
 
-1. Frame the technical direction, subproblems, time range, target CCF domains/categories, conference or journal scope, paper types, and desired breadth. State material assumptions.
-2. Create concept groups with synonyms, abbreviations, spelling variants, and useful exclusions. Use multiple queries when one cannot cover the topic.
-3. Search complementary sources. Prefer official conference proceedings or submission portals for status and paper type; use DBLP for normalized computer-science metadata; use ACM Digital Library, IEEE Xplore, USENIX, Springer, AAAI/IJCAI proceedings, ACL Anthology, CVF Open Access, PMLR, or field-equivalent proceedings as applicable; use OpenReview for review-era metadata; use arXiv for discovery and accessible manuscripts.
-4. Record the database and platform, exact query, searched fields, controlled vocabulary, filters, sort, result cap, pagination status, search date, and observable count. If a field or count is unavailable, record `unavailable`; do not omit it or imply complete pagination.
-5. Read [references/ccf-venue-rules.md](references/ccf-venue-rules.md) whenever filtering, labeling, or comparing CCF venues. Separate three operations:
-   - deduplicate identical records by DOI/stable ID, then normalized title and author/year;
-   - link versions or reports such as preprint, conference abstract, accepted manuscript, and version of record;
-   - group multiple reports that describe the same underlying study when the study is the protocol's unit of interest.
-6. Screen with predeclared criteria when a protocol exists. Record a concrete exclusion reason for full-text candidates when coverage matters, using the protocol vocabulary.
-7. Expand strong seed papers through backward references, forward citations, and related-paper links when the requested breadth requires it.
-8. When the user prioritizes influential or representative work, read [references/impact-prioritization.md](references/impact-prioritization.md). Build dated, source-attributed impact profiles and select across foundational, recent-influential, and emerging cohorts. Otherwise rank using topical directness, study type, recency, and likely methodological value.
-9. Verify title, authors, venue, conference edition/year, track, paper type, pages or paper ID, DOI/DBLP key/OpenReview forum ID where available, version relationship, and stable link from authoritative records. Record the authoritative record used and the verification date.
-10. Before handoff, apply the search gate in the repository `AGENTS.md`. Mark unresolved identities, inaccessible text, incomplete pagination, failed queries, and update needs explicitly; do not silently discard them.
-
-## Output contract
-
-Return or save the search scope and exact queries, a deduplicated candidate list with CCF catalog metadata, venue/year/track/paper type, record/version relationships, full-text and code availability, screening rationale, a shortlist for analysis, and search limitations with the stopping reason. For impact-focused searches, also report each candidate's impact evidence, sources and observation dates, cohort, uncertainty, and selection rationale.
-
-When saving files, adapt [assets/search-output.md](assets/search-output.md) into `search-log.md` and `literature.md`. Do not fill unknown metadata by guessing.
-
-## Boundaries
-
-- Label conclusions drawn only from titles or abstracts.
-- Do not claim comprehensiveness unless the process supports it.
-- Do not synthesize causal, clinical, or comparative conclusions; hand selected sources to `paper-analysis` first.
-- Do not silently merge records merely because their titles are similar; preserve uncertain version or study-family matches for review.
-- Do not infer acceptance track or Full/Regular status from the venue acronym alone.
-- Do not rank individual papers by CCF category alone.
-- Do not call a paper high-impact from raw citation count or one popularity proxy alone.
-- Stop when the scope is met and new searches mostly duplicate known results, or when access limitations prevent useful expansion.
+保存文件时参考[检索输出模板](assets/search-output.md)。输出只说明检索到什么及为何入选，不作需要全文支持的方法、实验或领域级结论。
