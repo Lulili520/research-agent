@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 6,
+  "date": "2026-09-01",
+  "generatedAt": "2026-09-01T17:10:00+08:00",
+  "timezone": "Asia/Shanghai",
+  "outputLanguage": "zh-CN",
+  "analysisLevel": "full-text",
+  "selectionPolicy": "importance-gated-recency-preferred",
+  "selectionSummary": {
+    "eligibility": "未在此前全文日报出现；正式全文可访问；会议和 Oral 身份由 ICLR 2026 官方 program 核验。",
+    "ranking": "先通过问题价值、方法实质、证据强度、主张校准、可复现性和科研启发性门禁；同层更新论文优先。",
+    "decision": "三篇均为 ICLR 2026 Oral。AstaBench 改进科研 Agent 的受控评测，Gaia2 将时间和环境动力学纳入 Agent 评测，Rational Agents 将主动提问转化为可计算的信息价值；三者均提供可迁移的研究范式。"
+  },
+  "papers": [
+    {
+      "stableId": "arxiv:2510.21652",
+      "arxivId": "2510.21652",
+      "title": "AstaBench: Rigorous Benchmarking of AI Agents with a Scientific Research Suite",
+      "abstract": "AstaBench combines 11 benchmarks and more than 2400 problems across literature understanding, code and execution, data analysis, and end-to-end discovery, with controlled scientific search tools and cost-aware reporting.",
+      "url": "https://arxiv.org/abs/2510.21652",
+      "status": "conference-paper",
+      "venue": "ICLR 2026",
+      "presentationType": "Oral",
+      "officialVenueSource": "https://iclr.cc/virtual/2026/events/oral",
+      "published": "2026-04-21",
+      "selectionTopic": "科研 Agent 评测",
+      "selectionWindow": "unbounded-candidate-pool",
+      "fullTextSource": "https://arxiv.org/pdf/2510.21652",
+      "fullTextFile": "sources/astabench.pdf",
+      "fullTextPages": 88,
+      "qualityAssessment": {
+        "tier": "优先精读",
+        "scientificLeverage": "突出：将科研 Agent 评测重新定义为受控工具、成本和完整研究流程的联合实验设计。",
+        "evidenceStrength": "充分：57 个 Agent、22 类架构、11 个 benchmark，并报告成本、标准差和 Pareto frontier。",
+        "researchGenerativity": "突出：可直接派生模型—脚手架解耦、错误累积和成本归一化实验。",
+        "reproducibility": "较强：提供冻结语料检索、统一工具、agent-eval 和基线 Agent；部分闭源系统只能复核输出。"
+      },
+      "analysis": {
+        "problem": "科研 Agent benchmark 被工具差异、动态搜索结果和推理预算混杂，且常只覆盖科研流程的一小部分。",
+        "method": "以 11 个 benchmark 覆盖四类科研能力，提供可按日期冻结的科学语料工具、统一执行接口、成本快照和开放性分级。",
+        "keyEvidence": [
+          "开放权重 Agent 的最佳全任务结果为 11.1%，使用闭源模型的 Asta v0 为 53.0%。",
+          "Asta v0 为 53.0%，ReAct+GPT-5 为 44.0%，但前者包含更多专用工程与工具。",
+          "端到端任务单步完成率可接近 70%，全部步骤成功率最高仅 5%。"
+        ],
+        "limitations": "任务异质且部分使用模型评分；商业系统覆盖不完整；受控工具提高可比性但弱化真实研究中的自由工具选择。",
+        "evidenceLocations": ["Sections 3-5, PDF pp.5-10", "Tables 4-10, PDF pp.18-20", "Table 20, PDF p.41"]
+      }
+    },
+    {
+      "stableId": "arxiv:2602.11964",
+      "arxivId": "2602.11964",
+      "title": "Gaia2: Benchmarking LLM Agents on Dynamic and Asynchronous Environments",
+      "abstract": "Gaia2 evaluates agents in asynchronous environments with temporal constraints, external events, noise, ambiguity, and agent-to-agent collaboration, using action-level verification across 1120 scenarios.",
+      "url": "https://arxiv.org/abs/2602.11964",
+      "status": "conference-paper",
+      "venue": "ICLR 2026",
+      "presentationType": "Oral",
+      "officialVenueSource": "https://iclr.cc/virtual/2026/events/oral",
+      "published": "2026-02-12",
+      "selectionTopic": "动态 Agent 评测",
+      "selectionWindow": "unbounded-candidate-pool",
+      "fullTextSource": "https://arxiv.org/pdf/2602.11964",
+      "fullTextFile": "sources/gaia2.pdf",
+      "fullTextPages": 32,
+      "qualityAssessment": {
+        "tier": "优先精读",
+        "scientificLeverage": "突出：说明 Agent 性能是模型、推理延迟、编排和环境动力学的联合结果。",
+        "evidenceStrength": "充分：1120 个场景、七类能力、450 条人工验证轨迹和多模型成本—时间—准确率比较。",
+        "researchGenerativity": "突出：直接产生 adaptive compute、扰动退化曲线和异构多 Agent 编排研究。",
+        "reproducibility": "较强：ARE 环境、场景和 action verifier 可扩展；API 服务波动仍会影响时间结果。"
+      },
+      "analysis": {
+        "problem": "静态 benchmark 无法测量环境在 Agent 思考期间继续变化时的时间意识、适应、鲁棒性和协作。",
+        "method": "用事件驱动 ARE 构建 1120 个动态场景，通过 oracle action DAG 和语义匹配验证写操作、顺序与时间约束。",
+        "keyEvidence": [
+          "GPT-5 high 总体 42.1% pass@1，开源 Kimi-K2 约 21%，没有模型在全部能力领先。",
+          "去除生成延迟后，Sonnet 的 Time 分数从 8.1% 升至 26.7%，GPT-5 high 从 0.0% 升至 34.4%。",
+          "Verifier 在 450 条人工标注轨迹上达到 0.99 precision 和 0.95 recall。"
+        ],
+        "limitations": "手机式模拟环境和最长约五分钟的时间任务不能覆盖长期真实工作；能力类别非正交；等价写操作的验证覆盖不可能完备。",
+        "evidenceLocations": ["Sections 3-4, PDF pp.3-6", "Table 2 and Figures 6-8, PDF pp.7-9", "Section 6, PDF p.10"]
+      }
+    },
+    {
+      "stableId": "arxiv:2510.20886",
+      "arxivId": "2510.20886",
+      "title": "Shoot First, Ask Questions Later? Building Rational Agents that Explore and Act Like People",
+      "abstract": "The paper evaluates information-seeking agents in Collaborative Battleship and combines language models with Bayesian Experimental Design and Sequential Monte Carlo to select informative questions and actions under uncertainty.",
+      "url": "https://arxiv.org/abs/2510.20886",
+      "status": "conference-paper",
+      "venue": "ICLR 2026",
+      "presentationType": "Oral",
+      "officialVenueSource": "https://iclr.cc/virtual/2026/events/oral",
+      "published": "2026-04-21",
+      "selectionTopic": "主动信息获取",
+      "selectionWindow": "unbounded-candidate-pool",
+      "fullTextSource": "https://arxiv.org/pdf/2510.20886",
+      "fullTextFile": "sources/rational-agents.pdf",
+      "fullTextPages": 47,
+      "qualityAssessment": {
+        "tier": "优先精读",
+        "scientificLeverage": "突出：把 Agent 提问质量从语言合理性提升为信息增益与行动价值的可测量决策问题。",
+        "evidenceStrength": "充分：42 名人类基线、15 个模型、受控策略组合、显著性检验和第二游戏复现。",
+        "researchGenerativity": "突出：可迁移到搜索、诊断和科研假设选择，并可研究 world model 与 verifier 误差阈值。",
+        "reproducibility": "较强：论文公开代码、数据构造和推断细节；方法仍依赖可采样的结构化隐藏状态。"
+      },
+      "analysis": {
+        "problem": "语言模型能生成自然问题，却不一定选择能最大限度减少不确定性、并值得延迟行动的问题。",
+        "method": "用 SMC 维护隐藏世界状态的粒子 belief，让模型生成候选问题，再以 EIG 选择问题，并以贝叶斯策略选择动作和提问时机。",
+        "keyEvidence": [
+          "CoT+Code 在 SpotterQA 上平均提高 14.7 个准确率百分点，p<0.001。",
+          "完整贝叶斯策略将 Llama-4-Scout 的 targeting F1 从 0.367 提升至 0.764。",
+          "问题 EIG 最多提高 0.227 bit，达到可实现上限的 94.2%；Guess Who? 成功率提高 28.3-42.4 个百分点。"
+        ],
+        "limitations": "两个游戏都有规则明确且可采样的隐藏状态；固定错误率不能表达信息源差异；GPT-5 未覆盖全部策略组合；游戏内超人结果不能外推为一般理性。",
+        "evidenceLocations": ["Sections 3-4, PDF pp.3-8", "Figure 4 and Table 5, PDF pp.8 and 40", "Section 5 and Table 9, PDF pp.8 and 45"]
+      }
+    }
+  ],
+  "provenance": [
+    {"source": "ICLR 2026 official oral program", "url": "https://iclr.cc/virtual/2026/events/oral", "status": "verified"},
+    {"source": "arXiv full text", "query": "2510.21652, 2602.11964, 2510.20886", "status": "downloaded-and-read"}
+  ],
+  "failures": []
+}
