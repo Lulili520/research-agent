@@ -1,4 +1,6 @@
 # Local research inputs and generated task artifacts
+/data/
+/research/
 research/**/sources/*
 research/**/downloads/*
 
