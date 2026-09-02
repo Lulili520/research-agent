@@ -12,9 +12,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import quote
 
-from huggingface_hub import HfApi
-
-
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -23,7 +20,19 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def transport_complete(target: Path, expected_size: int | None) -> bool:
+    """仅当实体大小正确且 aria2 控制文件消失时判定传输完成。"""
+    control_path = target.with_name(target.name + ".aria2")
+    return (
+        target.is_file()
+        and expected_size == target.stat().st_size
+        and not control_path.exists()
+    )
+
+
 def main() -> int:
+    from huggingface_hub import HfApi
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", required=True)
     parser.add_argument("--revision", required=True)
@@ -50,7 +59,8 @@ def main() -> int:
         target.parent.mkdir(parents=True, exist_ok=True)
         expected_size = sibling.size
         expected_sha = sibling.lfs.sha256 if sibling.lfs is not None else None
-        if not (target.is_file() and expected_size == target.stat().st_size):
+        control_path = target.with_name(target.name + ".aria2")
+        if not transport_complete(target, expected_size):
             url = (
                 f"{args.endpoint}/{args.repo}/resolve/{args.revision}/"
                 f"{quote(relative, safe='/')}"
@@ -79,6 +89,8 @@ def main() -> int:
             ):
                 aria_environment.pop(name, None)
             subprocess.run(command, check=True, env=aria_environment)
+        if control_path.exists():
+            raise RuntimeError(f"{relative} 仍存在 aria2 控制文件，传输未完成")
         actual_size = target.stat().st_size
         if expected_size is not None and actual_size != expected_size:
             raise RuntimeError(
