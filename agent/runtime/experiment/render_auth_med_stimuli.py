@@ -63,7 +63,8 @@ def main() -> int:
         for condition in CONDITIONS:
             text = render(item, condition)
             path = episode_dir / f"{condition}.txt"
-            path.write_text(text + "\n", encoding="utf-8")
+            # 固定 LF，避免 Windows 文本换行转换破坏跨平台内容哈希。
+            path.write_bytes((text + "\n").encode("utf-8"))
             records.append(
                 {
                     "episode_id": item["episode_id"],
@@ -80,9 +81,10 @@ def main() -> int:
                 }
             )
     manifest = args.output / "manifest.jsonl"
-    manifest.write_text(
-        "\n".join(json.dumps(row, ensure_ascii=False) for row in records) + "\n",
-        encoding="utf-8",
+    manifest.write_bytes(
+        (
+            "\n".join(json.dumps(row, ensure_ascii=False) for row in records) + "\n"
+        ).encode("utf-8")
     )
     print(
         json.dumps(
