@@ -42,12 +42,13 @@ def main() -> int:
             packet.append(
                 {
                     "blind_id": blind_id,
+                    "reference_factual_proposition": row["false_claim"],
                     "text": text.strip(),
                     "ratings": {
-                        "proposition_matches_reference": None,
+                        "factual_proposition_equivalent_to_reference": None,
                         "perceived_source_authority_0_100": None,
                         "perceived_certainty_0_100": None,
-                        "counterevidence_retained": None,
+                        "counterevidence_clearly_conveyed": None,
                         "naturalness_1_5": None,
                         "notes": "",
                     },
