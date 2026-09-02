@@ -4,17 +4,41 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$root = Resolve-Path -LiteralPath $TopicDirectory -ErrorAction SilentlyContinue
-if (-not $root) {
+$topicRoot = Resolve-Path -LiteralPath $TopicDirectory -ErrorAction SilentlyContinue
+if (-not $topicRoot) {
     Write-Output "ERROR: topic directory does not exist: $TopicDirectory"
     exit 2
+}
+$internalRoot = Join-Path $topicRoot '.research'
+$root = if (Test-Path -LiteralPath $internalRoot -PathType Container) {
+    Resolve-Path -LiteralPath $internalRoot
+} else {
+    $topicRoot
 }
 
 $errors = [System.Collections.Generic.List[string]]::new()
 $warnings = [System.Collections.Generic.List[string]]::new()
 
+$layout = @{
+    'state.md' = 'control/state.md'; 'scope.md' = 'review/scope.md'
+    'search-log.md' = 'review/search-log.md'; 'literature.md' = 'review/literature.md'
+    'evidence.md' = 'review/evidence.md'; 'research-directions.md' = 'proposal/directions.md'
+}
+
+function Resolve-ArtifactPath([string]$Name) {
+    $relative = if ($layout.ContainsKey($Name)) { $layout[$Name] } else { $Name }
+    return Join-Path $root $relative
+}
+
 function Read-Artifact([string]$Name) {
-    $path = Join-Path $root $Name
+    $path = Resolve-ArtifactPath $Name
+    if ($Name -eq 'report.md' -and -not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        $outputDirectory = Join-Path $topicRoot 'outputs'
+        $publicReport = Get-ChildItem -LiteralPath $outputDirectory -Filter '01-*.md' -File -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($publicReport) {
+            return Get-Content -Raw -Encoding UTF8 -LiteralPath $publicReport.FullName
+        }
+    }
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         $errors.Add("missing required artifact: $Name")
         return ''
@@ -61,7 +85,7 @@ foreach ($item in @(@('search-log.md', $search), @('literature.md', $literature)
     }
 }
 
-if ($search -and $search -notmatch '(?i)query|search') {
+if ($search -and $search -notmatch '(?i)query|search|\u67e5\u8be2|\u68c0\u7d22') {
     $errors.Add('search-log.md does not expose queries/search activity')
 }
 if ($search -and $search -notmatch '\b20\d{2}-\d{2}-\d{2}\b') {
@@ -76,7 +100,7 @@ if ($claimIds.Count -eq 0) {
 }
 
 if ($state -match '(?i)Novelty status:\s*provisional') {
-    $directionsPath = Join-Path $root 'research-directions.md'
+    $directionsPath = Resolve-ArtifactPath 'research-directions.md'
     $directions = if (Test-Path -LiteralPath $directionsPath) {
         Get-Content -Raw -Encoding UTF8 -LiteralPath $directionsPath
     } else { '' }

@@ -1,12 +1,15 @@
 # Local research inputs and generated task artifacts
+/research/
 research/**/sources/*
 research/**/downloads/*
 
-# Codex local session output
-.codex-log/
-
 # Disposable local verification output
 .tmp-*/
+tmp/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
 
 # Keep directory placeholders and source manifests if added
 !research/**/sources/.gitkeep

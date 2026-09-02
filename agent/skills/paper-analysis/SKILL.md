@@ -1,36 +1,18 @@
 ---
 name: paper-analysis
-description: Closely analyze computer-science conference papers with source-located evidence about novelty, method, datasets, baselines, results, efficiency, and artifacts. Use for CCF paper summaries, experiment or ablation review, figure/table interpretation, reproducibility assessment, or structured paper notes; do not use for broad discovery or unsupported field-wide synthesis.
+description: 基于可定位来源精读计算机科学论文，分析创新、方法、数据集、基线、结果、效率、消融和 artifact；不用于宽泛发现或无证据的跨论文综合。
 ---
 
-# Paper Analysis
+# 论文精读
 
-Turn accessible paper content into a source-located evidence record. Analyze only what was actually accessed.
+1. 先确认论文身份、版本、发表状态、访问级别和用户关心的问题。
+2. 优先读取正式全文或作者稿；只能访问摘要时明确限制，不能推断未公开细节。
+3. 提取研究问题、最近工作差异、方法组成、假设、数据集、划分、基线、指标、资源设置和主要结果。
+4. 数值声明必须带页码、章节、表格或图编号；区分作者报告、计算推导和分析推断。
+5. 检查消融、随机性、不确定性、成本、公平比较、失败案例和局限；依据[研究设计评价](references/design-appraisal.md)选择适合该类研究的有效性检查。
+6. 核验代码、模型、数据、配置和环境可用性，不把“有仓库”视为可复现。
+7. 区分论文声称的创新与证据真正支持的创新；不因作者声称“首次”就确认全局新颖性。
 
-## Workflow
+大规模 Proposal 调研采用分层深度：50–100 篇纳入论文均记录最小证据卡；其中 20–30 篇最接近 Proposal、最新强基线、潜在先例、关键矛盾证据和主要实验协议进入核心集合并全文精读。不得把批量摘要改写冒充全文精读。
 
-1. Resolve identity and publication status. Verify title, authors, canonical venue, edition/year, track, paper type, pages or paper ID, stable identifiers, and whether the document is arXiv, OpenReview, proceedings, or a later journal version.
-2. Record access level. If only metadata or an abstract is available, restrict analysis accordingly and say so prominently.
-3. Extract the problem formulation, prior limitation addressed, claimed novelty, assumptions, method or system design, algorithmic steps, complexity, datasets/benchmarks, splits, baselines, metrics, evaluation protocol, headline results, ablations, efficiency/compute, limitations, and failure cases when relevant.
-4. Read tables, figures, appendices, and supplementary material when they materially affect the requested conclusion. Use the available PDF workflow for PDF inspection.
-5. Extract narrow evidence statements with page, section, figure, or table locators. Assign stable evidence IDs and classify each as `reported`, `derived`, or `inference`; show any derivation. Keep source-reported results separate from author interpretation and agent inference.
-6. Assess validity and reproducibility using a computer-science lane in [references/design-appraisal.md](references/design-appraisal.md). Check code, model, data, configuration, and environment availability when reported. Do not apply one generic checklist to every subfield.
-7. For impact-focused work, verify the shortlisted impact signals against their cited external records and summarize the concrete intellectual or practical uptake. Keep this separate from technical appraisal.
-8. Check whether the abstract, results, and conclusion differ in strength or scope; flag overclaiming or unsupported extrapolation.
-9. Before handoff, apply the analysis gate in the repository `AGENTS.md`. Claims without adequate access or locators remain unresolved and cannot be promoted downstream.
-
-## Output contract
-
-Return or save a paper note containing verified venue/track/type and version family, problem and novelty, method, datasets/benchmarks, baselines, metrics, comparable results, ablations, resource cost, artifacts, source-located evidence, validity appraisal, limitations, and unresolved questions. Include a separately sourced impact profile when impact is part of the selection question.
-
-When saving a note, adapt [assets/paper-note.md](assets/paper-note.md) to `papers/<source-id>.md`. Omit irrelevant fields rather than inventing values.
-
-## Boundaries
-
-- A paper note is not a field-wide conclusion.
-- Acceptance at a CCF venue is not evidence that every claim in the paper is correct.
-- Never compare headline numbers without checking dataset version, split, metric definition, evaluation protocol, and resource assumptions.
-- Do not treat absence from the accessible text as proof that something was not done.
-- Keep quotations short and use precise paraphrase where possible.
-- Do not turn an unperformed appraisal into a high/medium/low quality label.
-- Stop when the requested claims are located and the paper note captures the evidence needed downstream, or report that the accessible version is insufficient.
+默认使用简体中文写作，保留官方标题、指标和必要短引文。保存时参考[论文卡片模板](assets/paper-note.md)，无关字段直接省略，不猜测缺失信息。

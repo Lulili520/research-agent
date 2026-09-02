@@ -1,0 +1,3 @@
+interface:
+  display_name: "科研问题建模"
+  short_description: "把 topic 转为有边界且可证伪的研究问题"

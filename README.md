@@ -1,6 +1,6 @@
-# CCF Computer Science Research Agent
+# CCF 计算机科学科研 Agent
 
-这是一个以 Codex 为运行时、面向计算机科学与 CCF 推荐会议论文的调研 Agent。它可以围绕技术方向检索会议论文、识别主会与 track、关联预印本和正式版本、精读方法与实验，并生成方法谱系和中文综述。
+本仓库实现一个计算机科学 Research Agent：接收 topic，完成课题调研，或在用户明确要求时推进从创新审计、理论建模到实验和证据交付的长期迭代科研。
 
 默认交付语言为简体中文；论文官方标题、稳定标识符、指标名、代码符号以及为避免科学含义失真的原文摘录可以保留来源语言，并明确标注。
 
@@ -9,20 +9,24 @@
 ```text
 Research-Agent/
 ├── AGENTS.md                    # Codex 根级入口
-├── agent/                       # Agent 本体，不存采集结果
-│   ├── skills/                  # 五个科研 Skills
-│   ├── radar.json               # 日报配置
-│   ├── radar.mjs                # 日报采集器
-│   ├── radar.test.mjs           # 确定性回归测试
-│   ├── audit-radar.ps1
+├── agent/                       # Agent 定义、Skills 与运行时
+│   ├── skills/                  # 独立路由的 Skills
+│   ├── runtime/research/        # Research Agent 控制平面
 │   ├── audit-research.ps1
+│   ├── audit-iterative-research.ps1
 │   └── evals.md                 # Agent 路由评测
-├── data/radar/                  # 每日采集数据、索引与队列
 ├── research/                    # 正式调研成果
-└── .github/workflows/           # 自动调度
+└── .gitignore
 ```
 
-## 能力边界
+## 两种科研深度
+
+| 模块 | 目标 | 内部能力 | 主要输出 |
+|---|---|---|---|
+| Research Agent：课题调研 | 围绕用户 topic 完成检索、精读、综合和方向分析 | 四个调研 Skills | `research/<topic>/` |
+| Research Agent：迭代科研 | 从 topic 完成创新审计、理论、实验与证据交付 | `iterative-research` 与 Research runtime | `research/<topic>/` |
+
+## Skill 能力边界
 
 | Skill | 负责 | 不负责 |
 |---|---|---|
@@ -30,9 +34,44 @@ Research-Agent/
 | `scholarly-search` | CCF 会议检索、venue/year/track 核验、版本关联和方向图谱 | 全文方法结论和跨论文综合 |
 | `paper-analysis` | 创新点、方法、基准、结果、消融、计算成本和代码精读 | 宣称方向覆盖全面 |
 | `evidence-synthesis` | 方法分类、发展脉络、可比实验、权衡、空白和阅读路线 | 用不兼容实验拼排行榜 |
-| `daily-ai-radar` | 每日 AI 论文、benchmark、artifact 和研究发布的增量发现与热点画像 | 用热度替代论文精读或科学有效性 |
+| `iterative-research` | 相关工作、创新审计、理论预测、实验迭代、证据和 Artifact 的端到端编排 | 为追求正结果隐藏失败、事后改假设或自动取得外部授权 |
 
-## 优化后的流程
+## 迭代科研流程
+
+当用户明确要求“围绕 topic 开展/完成科研”时进入：
+
+```text
+topic
+→ 问题空间与约束
+→ 候选发现与身份/版本核验
+→ 50–100 篇左右的纳入语料与覆盖矩阵
+→ 至少 15 篇核心近邻全文精读
+→ 检索饱和与最近工作反向检索
+→ Proposal 生成、新颖性审计与方向选择
+→ 理论/机制模型、竞争解释和可证伪预测
+→ Claim—Hypothesis—Prediction—Experiment 映射与理论审计
+→ 实验设计、预先分析计划与协议审计
+→ 冻结实验协议，等待明确执行指令
+→ 试点验证测量、方差、成本和复现性
+→ 主实验
+→ 消融、稳健性、反例和独立复核
+→ 声明—run ID—原始产物审计
+→ Artifact 构建与独立验证
+→ 中文报告撰写与审查
+→ 不可绕过的完成门禁
+```
+
+这是一套可回退状态机：新工作推翻创新时返回方向阶段，理论没有区分性预测时返回问题阶段，试点暴露指标或实现问题时返回协议阶段，主实验反驳假设时保留负结果并分析边界。只有用户明确要求长期科研时才启用，不会把普通文献调研自动升级成昂贵实验。
+
+Research runtime 使用 `.research/control/` 保存项目配置、状态、事件链和决策日志；调研、Proposal、理论和实验材料分别进入对应阶段目录。初始化示例：
+
+```powershell
+python agent/runtime/research/researchctl.py init research/<topic> --topic "<topic>" --research-type benchmark --gpu-hours 0 --cost 0
+```
+
+完整命令与权限、协议和实验登记规则见 `agent/skills/iterative-research/references/runtime-contract.md`。
+
+## 目标课题调研流程
 
 ```text
 计算机技术方向
@@ -92,16 +131,6 @@ $evidence-synthesis 根据 papers/ 中的论文卡片生成方法分类、发展
 调研 2023 年以来 CCF-A/B 会议中 RAG 用于代码生成的方法，区分主会与 Workshop/Findings，精读代表论文并总结方法谱系、基准结果、效率和研究空白。
 ```
 
-每日雷达由 GitHub Actions 在北京时间约 08:30 运行，回顾前一自然日的全域 AI 热点；个人研究主题只做后置映射。输出写入 `data/radar/`，不写入 `agent/`。
-
-本地生成并审计日报：
-
-```text
-node agent/radar.test.mjs
-node agent/radar.mjs
-powershell -File agent/audit-radar.ps1 data/radar
-```
-
 ## CCF 使用规则
 
 - 每次需要 CCF 分类时查询 CCF 官方当前目录，记录目录版本和访问日期。
@@ -125,3 +154,5 @@ powershell -File agent/audit-research.ps1 research/<topic>
 ## 加载机制
 
 `AGENTS.md` 保留在仓库根目录，作为 Codex 启动时的项目入口；Skill 内容、配置、脚本和评测统一收拢在 `agent/`。`data/` 与 `research/` 只保存运行产物，避免 Agent 定义和采集内容混杂。
+
+新增能力时，应优先在 `agent/skills/<new-skill>/` 增加独立 Skill，并在 `AGENTS.md` 中登记模块目标、输入、输出、边界和交接条件，避免继续把所有功能堆进单一调研流程。

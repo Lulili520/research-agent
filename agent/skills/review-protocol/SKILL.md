@@ -1,30 +1,18 @@
 ---
 name: review-protocol
-description: Define and freeze a reproducible protocol for a rigorous computer-science or CCF conference-paper survey. Use when venue categories, editions, tracks, paper types, technical scope, appraisal, and synthesis decisions must be fixed before screening; do not use for quick paper discovery or ordinary direction summaries.
+description: 为严格的计算机科学或 CCF 论文调研预先冻结可复现协议。适用于需要明确会议、届次、track、paper type、评价和综合规则的任务；不用于快速查找。
 ---
 
-# Review Protocol
+# 调研协议
 
-Create a decision-complete protocol before detailed searching or screening. Do not retroactively change it to fit discovered results.
+在正式筛选前定义并冻结：
 
-## Workflow
+1. 研究问题、目标读者、时间范围和更新截止日期。
+2. 数据库、官方 proceedings、完整查询、字段和引文扩展方法。
+3. CCF 目录版本、会议、届次、track、paper type 和版本合并规则。
+4. 纳入、排除、去重、双阶段筛选和冲突处理规则。
+5. 数据提取字段、访问级别、有效性评价和影响力信号。
+6. 数值可比性、证据综合、研究空白和新颖性审计规则。
+7. API 失败、付费墙、索引延迟、停止条件和协议修订机制。
 
-1. Define the research question and intended decision. Use PICO, PECO, SPIDER, or another domain-appropriate framework only when it improves clarity.
-2. Specify the unit of interest: paper, version family, method, benchmark, system, or another entity. Explain how arXiv, OpenReview, proceedings, and journal extensions will be linked.
-3. Freeze inclusion and exclusion criteria for topic, CCF domain/category, venue editions, track and paper type, method/task, dataset/benchmark, dates, language, publication status, and access where relevant.
-4. Define information sources, draft search concepts, grey-literature or registry coverage, citation chaining, deduplication, and search-update policy.
-5. Define screening stages, exclusion-reason vocabulary, conflict resolution, and which counts will be recorded. Do not promise independent dual review unless separate reviewers or genuinely independent passes are available.
-6. Select study-design-appropriate extraction and critical-appraisal methods.
-7. Predefine grouping, synthesis, heterogeneity handling, evidence-strength method, and conditions under which meta-analysis or other quantitative synthesis is appropriate.
-8. Define amendments, stopping rules, deliverables, and review limitations.
-
-## Output contract
-
-Adapt [assets/protocol.md](assets/protocol.md) and save it as `protocol.md` when files are requested or downstream stages need persistent state. Mark the protocol status and version. Later amendments must preserve the original decision, date, reason, and expected impact.
-
-## Boundaries
-
-- A protocol improves consistency; it does not by itself make a review systematic or PRISMA-compliant.
-- CCF category is a venue filter, not an individual-paper quality criterion.
-- Do not invent registration, peer review, independent reviewers, or measured counts.
-- If the question is too ambiguous to define defensible eligibility criteria, stop for user direction.
+协议不能为了迎合结果而事后改变。修订必须保留原决定、日期、原因和预期影响。需要保存时参考[协议模板](assets/protocol.md)，默认使用简体中文。
