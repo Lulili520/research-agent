@@ -314,6 +314,14 @@ def main() -> int:
             scenario_name=args.scenario,
         )
         summary["evaluation"] = attrs.asdict(result.evaluation_result)
+        ending_sandbox = result.ending_context.get_database(
+            DatabaseNamespace.SANDBOX,
+            get_all_history_snapshots=True,
+            drop_sandbox_message_index=False,
+        )
+        summary["tool_call_exception_count"] = ending_sandbox.filter(
+            pl.col("tool_call_exception").is_not_null()
+        ).height
         summary["status"] = "succeeded"
         return_code = 0
     except Exception as error:  # 失败也必须落盘，供运行注册表审计。

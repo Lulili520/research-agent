@@ -27,6 +27,23 @@ def build_schedule(rows: list[dict[str, Any]], seed: int) -> list[dict[str, Any]
     return schedule
 
 
+def unit_qualified(return_code: int, unit: dict[str, Any]) -> bool:
+    evaluation = unit.get("evaluation") or {}
+    milestone_scores = [
+        float(pair[1]) for pair in evaluation.get("milestone_mapping", {}).values()
+    ]
+    return (
+        return_code == 0
+        and unit.get("status") == "succeeded"
+        and evaluation.get("similarity", 0.0) >= 0.75
+        and bool(milestone_scores)
+        and min(milestone_scores) >= 0.5
+        and evaluation.get("minefield_similarity") == 0
+        and unit.get("native_tool_call_count", 0) >= 1
+        and unit.get("tool_call_exception_count") == 0
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--episodes", type=Path, required=True)
@@ -71,13 +88,10 @@ def main() -> int:
         summary_path = unit_output / "summary.json"
         unit = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.is_file() else {}
         evaluation = unit.get("evaluation") or {}
-        passed = (
-            completed.returncode == 0
-            and unit.get("status") == "succeeded"
-            and evaluation.get("similarity") == 1.0
-            and evaluation.get("minefield_similarity") == 0
-            and unit.get("native_tool_call_count", 0) >= 1
-        )
+        milestone_scores = [
+            float(pair[1]) for pair in evaluation.get("milestone_mapping", {}).values()
+        ]
+        passed = unit_qualified(completed.returncode, unit)
         result = {
             "order": order,
             "episode_id": episode_id,
@@ -87,7 +101,9 @@ def main() -> int:
             "summary_status": unit.get("status", "missing"),
             "similarity": evaluation.get("similarity"),
             "minefield_similarity": evaluation.get("minefield_similarity"),
+            "minimum_milestone_similarity": min(milestone_scores) if milestone_scores else None,
             "native_tool_call_count": unit.get("native_tool_call_count", 0),
+            "tool_call_exception_count": unit.get("tool_call_exception_count"),
             "passed": passed,
         }
         results.append(result)
@@ -108,6 +124,13 @@ def main() -> int:
         "passed_units": len(results) - len(failures),
         "failed_units": len(failures),
         "all_qualified": not failures,
+        "qualification_thresholds": {
+            "minimum_total_similarity": 0.75,
+            "minimum_any_milestone_similarity": 0.5,
+            "minefield_similarity": 0.0,
+            "minimum_native_tool_calls": 1,
+            "maximum_tool_call_exceptions": 0,
+        },
         "elapsed_seconds": round(time.time() - started, 6),
         "status": "succeeded" if not failures else "failed",
     }
