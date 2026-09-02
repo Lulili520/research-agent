@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import polars as pl
+from openai import OpenAI
 
 from tool_sandbox.common.execution_context import DatabaseNamespace, RoleType
 from tool_sandbox.common.message_conversion import Message
@@ -26,6 +27,7 @@ from tool_sandbox.common.tool_discovery import ToolBackend
 from tool_sandbox.roles.base_role import BaseRole
 from tool_sandbox.roles.execution_environment import ExecutionEnvironment
 from tool_sandbox.roles.hermes_api_agent import HermesAPIAgent
+from tool_sandbox.roles.openai_api_agent import OpenAIAPIAgent
 from tool_sandbox.scenarios import named_scenarios
 
 
@@ -69,6 +71,39 @@ class AuditedHermesAPIAgent(HermesAPIAgent):
             "request": {
                 "messages": openai_messages,
                 "tools": openai_tools,
+            },
+            "response": response.model_dump(mode="json"),
+        }
+        with self.audit_path.open("a", encoding="utf-8", newline="\n") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        return response
+
+
+class AuditedOpenAIToolAgent(OpenAIAPIAgent):
+    """使用本地 chat-completions 原生工具协议并保存请求与原始响应。"""
+
+    def __init__(self, model_name: str, base_url: str, audit_path: Path) -> None:
+        BaseRole.__init__(self)
+        self.model_name = model_name
+        self.audit_path = audit_path
+        self.openai_client = OpenAI(api_key="EMPTY", base_url=base_url)
+
+    def model_inference(self, openai_messages, openai_tools):
+        response = self.openai_client.chat.completions.create(
+            model=self.model_name,
+            messages=openai_messages,
+            tools=openai_tools,
+            temperature=0.0,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
+        record = {
+            "request": {
+                "messages": openai_messages,
+                "tools": openai_tools,
+                "temperature": 0.0,
+                "chat_template_kwargs": {"enable_thinking": False},
             },
             "response": response.model_dump(mode="json"),
         }
@@ -150,6 +185,11 @@ def main() -> int:
     parser.add_argument("--model", required=True)
     parser.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     parser.add_argument(
+        "--adapter",
+        choices=("hermes-completion", "openai-tools"),
+        default="hermes-completion",
+    )
+    parser.add_argument(
         "--memory-file",
         type=Path,
         help="UTF-8 文本；提供时作为固定命中的检索记忆插入当前请求之前",
@@ -189,6 +229,7 @@ def main() -> int:
         "seed": args.seed,
         "model": args.model,
         "base_url": args.base_url,
+        "adapter": args.adapter,
         "snapshot_sha256": hashlib.sha256(json_bytes(snapshot)).hexdigest(),
         "memory_supplied": memory is not None,
         "retrieval_hit": delivery["verified"] if delivery is not None else None,
@@ -199,13 +240,22 @@ def main() -> int:
         "status": "running",
     }
     try:
+        agent = (
+            AuditedHermesAPIAgent(
+                model_name=args.model, audit_path=raw_completions_path
+            )
+            if args.adapter == "hermes-completion"
+            else AuditedOpenAIToolAgent(
+                model_name=args.model,
+                base_url=args.base_url,
+                audit_path=raw_completions_path,
+            )
+        )
         result = scenario.play_and_evaluate(
             roles={
                 RoleType.USER: DeterministicEndUser(),
                 RoleType.EXECUTION_ENVIRONMENT: ExecutionEnvironment(),
-                RoleType.AGENT: AuditedHermesAPIAgent(
-                    model_name=args.model, audit_path=raw_completions_path
-                ),
+                RoleType.AGENT: agent,
             },
             output_directory=args.output,
             scenario_name=args.scenario,
