@@ -65,6 +65,10 @@ def run_smoke(name: str, seed: int) -> dict[str, Any]:
         "untouched_evaluation_replay": canonical_hash(first_eval)
         == canonical_hash(copied_eval),
     }
+    # ToolSandbox 场景构造包含不受 Python random.seed 控制的标识符。
+    # 实验协议要求从已冻结快照重放，而不是重新调用场景生成器；因此重建结果只作
+    # 环境诊断，不得成为重放门禁，也不能用它替代保存原始快照。
+    required_checks = ["deepcopy_snapshot", "untouched_evaluation_replay"]
     return {
         "schema_version": 1,
         "profile": "toolsandbox-local-no-model",
@@ -74,7 +78,9 @@ def run_smoke(name: str, seed: int) -> dict[str, Any]:
         "snapshot_sha256": canonical_hash(first_snapshot),
         "untouched_evaluation_sha256": canonical_hash(first_eval),
         "checks": checks,
-        "passed": all(checks.values()),
+        "required_checks": required_checks,
+        "diagnostic_checks": ["seeded_scenario_rebuild"],
+        "passed": all(checks[name] for name in required_checks),
     }
 
 
