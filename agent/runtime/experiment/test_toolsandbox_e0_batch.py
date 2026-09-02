@@ -1,6 +1,10 @@
 import unittest
 
-from toolsandbox_e0_batch import build_schedule, paired_execution_seed
+from toolsandbox_e0_batch import (
+    build_schedule,
+    paired_execution_seed,
+    treatment_unit_failed,
+)
 
 
 class E0BatchDesignTests(unittest.TestCase):
@@ -32,6 +36,22 @@ class E0BatchDesignTests(unittest.TestCase):
     def test_rejects_duplicate_or_incomplete_manifest(self) -> None:
         with self.assertRaises(RuntimeError):
             build_schedule(self.rows[:-1] + [self.rows[0]], 1)
+
+    def test_treatment_unit_failure_includes_tool_exceptions(self) -> None:
+        valid = {
+            "return_code": 0,
+            "summary_status": "succeeded",
+            "tool_call_exception_count": 0,
+        }
+        self.assertFalse(treatment_unit_failed(valid))
+        for field, value in (
+            ("return_code", 1),
+            ("summary_status", "failed"),
+            ("tool_call_exception_count", 1),
+        ):
+            item = dict(valid)
+            item[field] = value
+            self.assertTrue(treatment_unit_failed(item))
 
 
 if __name__ == "__main__":

@@ -35,6 +35,14 @@ def paired_execution_seed(schedule_seed: int, episode_id: str) -> int:
     return schedule_seed + int(episode_id.split("-")[-1])
 
 
+def treatment_unit_failed(item: dict[str, Any]) -> bool:
+    return (
+        item["return_code"] != 0
+        or item["summary_status"] != "succeeded"
+        or item.get("tool_call_exception_count") != 0
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -99,6 +107,7 @@ def main() -> int:
             "return_code": completed.returncode,
             "summary_status": unit_summary.get("status") if unit_summary else "missing",
             "retrieval_hit": unit_summary.get("retrieval_hit") if unit_summary else None,
+            "tool_call_exception_count": unit_summary.get("tool_call_exception_count") if unit_summary else None,
             "elapsed_seconds": unit_summary.get("elapsed_seconds") if unit_summary else None,
         }
         results.append(result)
@@ -106,7 +115,7 @@ def main() -> int:
             stream.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
             stream.flush()
 
-    failed = [item for item in results if item["return_code"] != 0 or item["summary_status"] != "succeeded"]
+    failed = [item for item in results if treatment_unit_failed(item)]
     retrieval_misses = [item for item in results if item["retrieval_hit"] is not True]
     summary = {
         "schema_version": 1,
