@@ -68,6 +68,10 @@ def main() -> int:
             command = [
                 "aria2c",
                 "--continue=true",
+                "--max-tries=20",
+                "--retry-wait=3",
+                "--connect-timeout=30",
+                "--timeout=60",
                 f"--max-connection-per-server={args.connections}",
                 f"--split={args.connections}",
                 "--min-split-size=4M",
