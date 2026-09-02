@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -67,7 +68,17 @@ def main() -> int:
                 f"--out={target.name}",
                 url,
             ]
-            subprocess.run(command, check=True)
+            aria_environment = os.environ.copy()
+            for name in (
+                "HTTP_PROXY",
+                "HTTPS_PROXY",
+                "ALL_PROXY",
+                "http_proxy",
+                "https_proxy",
+                "all_proxy",
+            ):
+                aria_environment.pop(name, None)
+            subprocess.run(command, check=True, env=aria_environment)
         actual_size = target.stat().st_size
         if expected_size is not None and actual_size != expected_size:
             raise RuntimeError(
