@@ -37,6 +37,29 @@ def json_bytes(value: Any) -> bytes:
     ).encode("utf-8")
 
 
+def raw_completion_stats(path: Path) -> dict[str, int]:
+    records = 0
+    native_tool_calls = 0
+    if not path.is_file():
+        return {"raw_completion_records": 0, "native_tool_call_count": 0}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        records += 1
+        try:
+            item = json.loads(line)
+            choices = item.get("response", {}).get("choices", [])
+            for choice in choices:
+                calls = choice.get("message", {}).get("tool_calls") or []
+                native_tool_calls += len(calls)
+        except (json.JSONDecodeError, AttributeError, TypeError):
+            continue
+    return {
+        "raw_completion_records": records,
+        "native_tool_call_count": native_tool_calls,
+    }
+
+
 class DeterministicEndUser(BaseRole):
     """在单轮任务收到最终答复后调用 ToolSandbox 的结束工具。"""
 
@@ -269,6 +292,7 @@ def main() -> int:
         summary["error"] = str(error)
         return_code = 1
     finally:
+        summary.update(raw_completion_stats(raw_completions_path))
         summary["elapsed_seconds"] = round(time.time() - started, 6)
         (args.output / "summary.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2, default=str) + "\n",
