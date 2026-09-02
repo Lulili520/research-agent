@@ -22,6 +22,19 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def build_schedule(rows: list[dict[str, Any]], seed: int) -> list[dict[str, Any]]:
+    identities = {(row["episode_id"], row["condition"]) for row in rows}
+    if len(rows) != 96 or len(identities) != 96:
+        raise RuntimeError(f"冻结 E0 清单必须包含 96 个唯一单元，实际为 {len(rows)}/{len(identities)}")
+    schedule = list(rows)
+    random.Random(seed).shuffle(schedule)
+    return schedule
+
+
+def paired_execution_seed(schedule_seed: int, episode_id: str) -> int:
+    return schedule_seed + int(episode_id.split("-")[-1])
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -34,13 +47,7 @@ def main() -> int:
     args = parser.parse_args()
 
     rows = [json.loads(line) for line in args.manifest.read_text(encoding="utf-8").splitlines() if line.strip()]
-    identities = {(row["episode_id"], row["condition"]) for row in rows}
-    if len(rows) != 96 or len(identities) != 96:
-        raise RuntimeError(f"冻结 E0 清单必须包含 96 个唯一单元，实际为 {len(rows)}/{len(identities)}")
-
-    rng = random.Random(args.seed)
-    schedule = list(rows)
-    rng.shuffle(schedule)
+    schedule = build_schedule(rows, args.seed)
     args.output.mkdir(parents=True, exist_ok=True)
     if (args.output / "results.jsonl").exists():
         raise RuntimeError("输出目录已包含 results.jsonl；审计运行不得原地覆盖或追加")
@@ -65,8 +72,7 @@ def main() -> int:
         unit_output = args.output / "units" / unit_name
         unit_output.mkdir(parents=True, exist_ok=False)
         # 同一 episode 的四个条件共享随机种子；只随机化执行顺序，不引入条件间随机性差异。
-        episode_number = int(str(row["episode_id"]).split("-")[-1])
-        execution_seed = args.seed + episode_number
+        execution_seed = paired_execution_seed(args.seed, str(row["episode_id"]))
         command = [
             sys.executable,
             str(runner),
