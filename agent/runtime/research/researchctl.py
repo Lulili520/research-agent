@@ -925,6 +925,21 @@ def command_authorize(args: argparse.Namespace) -> None:
     emit(root, "permission-changed", args.actor, {"permission": args.permission, "value": config["permissions"][args.permission], "reason": args.reason})
 
 
+def command_set_budget(args: argparse.Namespace) -> None:
+    root = project(args.directory)
+    verify_events(root)
+    nonnegative("gpu-hours", args.gpu_hours)
+    nonnegative("cost", args.cost)
+    config = read_json(root / "research.json")
+    state = read_json(root / "state.json")
+    if args.gpu_hours < state["usage"]["gpu_hours"] or args.cost < state["usage"]["cost"]:
+        raise SystemExit("budget cannot be lower than recorded usage")
+    previous = dict(config["budget"])
+    config["budget"] = {"gpu_hours": args.gpu_hours, "cost": args.cost}
+    write_json_atomic(root / "research.json", config)
+    emit(root, "budget-changed", args.actor, {"previous": previous, "current": config["budget"], "reason": args.reason})
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     commands = result.add_subparsers(dest="command", required=True)
@@ -944,6 +959,7 @@ def parser() -> argparse.ArgumentParser:
     run = commands.add_parser("register-run"); run.add_argument("directory"); run.add_argument("--id", required=True); run.add_argument("--experiment", required=True); run.add_argument("--config", required=True); run.add_argument("--code-revision", required=True); run.add_argument("--environment", required=True); run.add_argument("--seed", action="append", default=[]); run.add_argument("--gpu-hours", type=float, default=0.0); run.add_argument("--cost", type=float, default=0.0); run.add_argument("--permission", choices=("none",) + PERMISSIONS, default="none"); run.add_argument("--actor", default="experiment-manager"); run.set_defaults(func=command_run)
     finish = commands.add_parser("finish-run"); finish.add_argument("directory"); finish.add_argument("--id", required=True); finish.add_argument("--status", choices=("succeeded", "failed", "timed-out", "cancelled", "invalid"), required=True); finish.add_argument("--gpu-hours", type=float, default=0.0); finish.add_argument("--cost", type=float, default=0.0); finish.add_argument("--artifact"); finish.add_argument("--reason", required=True); finish.add_argument("--actor", default="experiment-manager"); finish.set_defaults(func=command_finish_run)
     authorize = commands.add_parser("authorize"); authorize.add_argument("directory"); authorize.add_argument("permission", choices=PERMISSIONS); authorize.add_argument("value", choices=("true", "false")); authorize.add_argument("--reason", required=True); authorize.add_argument("--actor", default="user"); authorize.set_defaults(func=command_authorize)
+    budget = commands.add_parser("set-budget"); budget.add_argument("directory"); budget.add_argument("--gpu-hours", type=float, required=True); budget.add_argument("--cost", type=float, required=True); budget.add_argument("--reason", required=True); budget.add_argument("--actor", default="research-director"); budget.set_defaults(func=command_set_budget)
     verify = commands.add_parser("verify-log"); verify.add_argument("directory"); verify.set_defaults(func=lambda args: verify_events(project(args.directory)))
     return result
 

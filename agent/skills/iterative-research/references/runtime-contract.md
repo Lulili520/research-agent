@@ -17,6 +17,8 @@ python agent/runtime/research/researchctl.py audit-pre-experiment research/<topi
 
 初始化默认关闭外部算力、受限数据、人类参与研究和外部发布权限。只有用户明确授权后才能运行 `authorize`；记录必须说明授权原因。
 
+初始化后若用户批准新的资源上限，使用 `set-budget --gpu-hours <n> --cost <n> --reason <reason>` 更新；新预算不得低于已记录用量，禁止手工修改项目配置绕过事件登记。
+
 ## 阶段转换与决策
 
 ```powershell
