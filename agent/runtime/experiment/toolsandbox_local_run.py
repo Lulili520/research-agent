@@ -56,6 +56,29 @@ class DeterministicEndUser(BaseRole):
         )
 
 
+class AuditedHermesAPIAgent(HermesAPIAgent):
+    """保持官方严格解析行为，同时在解析前保存模型原始 completion。"""
+
+    def __init__(self, model_name: str, audit_path: Path) -> None:
+        super().__init__(model_name=model_name)
+        self.audit_path = audit_path
+
+    def model_inference(self, openai_messages, openai_tools):
+        response = super().model_inference(openai_messages, openai_tools)
+        record = {
+            "request": {
+                "messages": openai_messages,
+                "tools": openai_tools,
+            },
+            "response": response.model_dump(mode="json"),
+        }
+        with self.audit_path.open("a", encoding="utf-8", newline="\n") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        return response
+
+
 def inject_retrieved_memory(scenario, memory: str) -> None:
     """把固定命中的记忆置于当前用户请求之前，并保留为系统可见证据。"""
 
@@ -152,6 +175,7 @@ def main() -> int:
         delivery = verify_retrieved_memory_delivery(scenario, memory)
 
     args.output.mkdir(parents=True, exist_ok=True)
+    raw_completions_path = args.output / "raw-completions.jsonl"
     snapshot = scenario.starting_context.to_dict(serialize_console=False)
     snapshot_path = args.output / "starting_snapshot.json"
     snapshot_path.write_text(
@@ -179,7 +203,9 @@ def main() -> int:
             roles={
                 RoleType.USER: DeterministicEndUser(),
                 RoleType.EXECUTION_ENVIRONMENT: ExecutionEnvironment(),
-                RoleType.AGENT: HermesAPIAgent(model_name=args.model),
+                RoleType.AGENT: AuditedHermesAPIAgent(
+                    model_name=args.model, audit_path=raw_completions_path
+                ),
             },
             output_directory=args.output,
             scenario_name=args.scenario,
