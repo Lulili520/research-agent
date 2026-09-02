@@ -101,6 +101,10 @@ class AuditedHermesAPIAgent(HermesAPIAgent):
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
+        if response.model != self.model_name:
+            raise RuntimeError(
+                f"模型服务身份漂移：请求 {self.model_name}，响应 {response.model}"
+            )
         return response
 
 
@@ -134,6 +138,10 @@ class AuditedOpenAIToolAgent(OpenAIAPIAgent):
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
+        if response.model != self.model_name:
+            raise RuntimeError(
+                f"模型服务身份漂移：请求 {self.model_name}，响应 {response.model}"
+            )
         return response
 
 
