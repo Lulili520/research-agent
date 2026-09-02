@@ -60,6 +60,25 @@ def raw_completion_stats(path: Path) -> dict[str, int]:
     }
 
 
+def normalize_tool_call_ids(response: Any) -> list[dict[str, str]]:
+    """把 OpenAI 允许的任意 call id 转为 ToolSandbox 可执行的标识符。
+
+    ToolSandbox 0.1.x 会把 ``openai_tool_call_id`` 拼入 Python 临时变量名；
+    vLLM 默认生成的 ``chatcmpl-tool-...`` 含连字符，会让正确工具调用在执行前
+    触发 SyntaxError。映射只改变协议关联 id，不改变工具名或参数。原始响应在映射
+    前落盘，因此审计者仍能复核服务实际输出。
+    """
+
+    mappings: list[dict[str, str]] = []
+    for choice in response.choices:
+        for call in choice.message.tool_calls or []:
+            original = str(call.id)
+            normalized = f"call_{hashlib.sha256(original.encode('utf-8')).hexdigest()[:20]}"
+            call.id = normalized
+            mappings.append({"original": original, "normalized": normalized})
+    return mappings
+
+
 class DeterministicEndUser(BaseRole):
     """在单轮任务收到最终答复后调用 ToolSandbox 的结束工具。"""
 
@@ -125,6 +144,8 @@ class AuditedOpenAIToolAgent(OpenAIAPIAgent):
             temperature=0.0,
             extra_body={"chat_template_kwargs": {"enable_thinking": False}},
         )
+        dumped_response = response.model_dump(mode="json")
+        normalized_tool_call_ids = normalize_tool_call_ids(response)
         record = {
             "request": {
                 "messages": openai_messages,
@@ -132,7 +153,8 @@ class AuditedOpenAIToolAgent(OpenAIAPIAgent):
                 "temperature": 0.0,
                 "chat_template_kwargs": {"enable_thinking": False},
             },
-            "response": response.model_dump(mode="json"),
+            "response": dumped_response,
+            "normalized_tool_call_ids": normalized_tool_call_ids,
         }
         with self.audit_path.open("a", encoding="utf-8", newline="\n") as stream:
             stream.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
