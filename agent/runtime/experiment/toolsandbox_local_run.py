@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+"""使用本地 OpenAI-compatible 模型运行单个 ToolSandbox 场景。
+
+该入口不需要云端 API key。它冻结初始快照、完整保留 ToolSandbox 轨迹与判分，
+并使用确定性用户在 Agent 给出最终答复后结束单轮场景。多轮用户场景不应使用本入口。
+"""
+
+from __future__ import annotations
+
+import argparse
+import attrs
+import hashlib
+import json
+import os
+import random
+import sys
+import time
+from pathlib import Path
+from typing import Any, Optional
+
+from tool_sandbox.common.execution_context import RoleType
+from tool_sandbox.common.message_conversion import Message
+from tool_sandbox.common.tool_discovery import ToolBackend
+from tool_sandbox.roles.base_role import BaseRole
+from tool_sandbox.roles.execution_environment import ExecutionEnvironment
+from tool_sandbox.roles.hermes_api_agent import HermesAPIAgent
+from tool_sandbox.scenarios import named_scenarios
+
+
+def json_bytes(value: Any) -> bytes:
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, default=str
+    ).encode("utf-8")
+
+
+class DeterministicEndUser(BaseRole):
+    """在单轮任务收到最终答复后调用 ToolSandbox 的结束工具。"""
+
+    role_type = RoleType.USER
+
+    def respond(self, ending_index: Optional[int] = None) -> None:
+        messages = self.get_messages(ending_index=ending_index)
+        self.messages_validation(messages)
+        if messages[-1].sender == RoleType.SYSTEM:
+            return
+        self.add_messages(
+            [
+                Message(
+                    sender=RoleType.USER,
+                    recipient=RoleType.EXECUTION_ENVIRONMENT,
+                    content="print(repr(end_conversation()))",
+                )
+            ]
+        )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--scenario", required=True)
+    parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+
+    os.environ["OPENAI_BASE_URL"] = args.base_url
+    random.seed(args.seed)
+    scenarios = named_scenarios(preferred_tool_backend=ToolBackend.DEFAULT)
+    if args.scenario not in scenarios:
+        raise KeyError(f"未知或不受支持的场景：{args.scenario}")
+    scenario = scenarios[args.scenario]
+    if "multiple_user_turn" in args.scenario:
+        raise ValueError("确定性用户仅适用于单轮场景")
+
+    args.output.mkdir(parents=True, exist_ok=True)
+    snapshot = scenario.starting_context.to_dict(serialize_console=False)
+    snapshot_path = args.output / "starting_snapshot.json"
+    snapshot_path.write_text(
+        json.dumps(snapshot, ensure_ascii=False, indent=2, default=str) + "\n",
+        encoding="utf-8",
+    )
+    started = time.time()
+    summary: dict[str, Any] = {
+        "schema_version": 1,
+        "scenario": args.scenario,
+        "seed": args.seed,
+        "model": args.model,
+        "base_url": args.base_url,
+        "snapshot_sha256": hashlib.sha256(json_bytes(snapshot)).hexdigest(),
+        "status": "running",
+    }
+    try:
+        result = scenario.play_and_evaluate(
+            roles={
+                RoleType.USER: DeterministicEndUser(),
+                RoleType.EXECUTION_ENVIRONMENT: ExecutionEnvironment(),
+                RoleType.AGENT: HermesAPIAgent(model_name=args.model),
+            },
+            output_directory=args.output,
+            scenario_name=args.scenario,
+        )
+        summary["evaluation"] = attrs.asdict(result.evaluation_result)
+        summary["status"] = "succeeded"
+        return_code = 0
+    except Exception as error:  # 失败也必须落盘，供运行注册表审计。
+        summary["status"] = "failed"
+        summary["error_type"] = type(error).__name__
+        summary["error"] = str(error)
+        return_code = 1
+    finally:
+        summary["elapsed_seconds"] = round(time.time() - started, 6)
+        (args.output / "summary.json").write_text(
+            json.dumps(summary, ensure_ascii=False, indent=2, default=str) + "\n",
+            encoding="utf-8",
+        )
+        print(json.dumps(summary, ensure_ascii=False, indent=2, default=str))
+    return return_code
+
+
+if __name__ == "__main__":
+    sys.exit(main())
