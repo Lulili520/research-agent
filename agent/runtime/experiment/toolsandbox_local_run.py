@@ -18,7 +18,9 @@ import time
 from pathlib import Path
 from typing import Any, Optional
 
-from tool_sandbox.common.execution_context import RoleType
+import polars as pl
+
+from tool_sandbox.common.execution_context import DatabaseNamespace, RoleType
 from tool_sandbox.common.message_conversion import Message
 from tool_sandbox.common.tool_discovery import ToolBackend
 from tool_sandbox.roles.base_role import BaseRole
@@ -54,12 +56,47 @@ class DeterministicEndUser(BaseRole):
         )
 
 
+def inject_retrieved_memory(scenario, memory: str) -> None:
+    """把固定命中的记忆置于当前用户请求之前，并保留为系统可见证据。"""
+
+    context = scenario.starting_context
+    sandbox = context._dbs[DatabaseNamespace.SANDBOX]  # ToolSandbox 无公开插入 API。
+    message_index = context.max_sandbox_message_index
+    memory_row = {
+        "sandbox_message_index": message_index,
+        "sender": RoleType.SYSTEM,
+        "recipient": RoleType.AGENT,
+        "content": memory,
+        "conversation_active": True,
+        "openai_tool_call_id": None,
+        "openai_function_name": None,
+        "tool_call_exception": None,
+        "tool_trace": None,
+        "visible_to": [RoleType.SYSTEM, RoleType.AGENT],
+    }
+    before = sandbox.filter(pl.col("sandbox_message_index") < message_index)
+    after = sandbox.filter(pl.col("sandbox_message_index") >= message_index).with_columns(
+        (pl.col("sandbox_message_index") + 1).alias("sandbox_message_index")
+    )
+    inserted = pl.DataFrame(
+        [memory_row], schema=context.dbs_schemas[DatabaseNamespace.SANDBOX]
+    )
+    context._dbs[DatabaseNamespace.SANDBOX] = pl.concat(
+        [before, inserted, after], how="vertical"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scenario", required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
+    parser.add_argument(
+        "--memory-file",
+        type=Path,
+        help="UTF-8 文本；提供时作为固定命中的检索记忆插入当前请求之前",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -71,6 +108,12 @@ def main() -> int:
     scenario = scenarios[args.scenario]
     if "multiple_user_turn" in args.scenario:
         raise ValueError("确定性用户仅适用于单轮场景")
+    memory = None
+    if args.memory_file is not None:
+        memory = args.memory_file.read_text(encoding="utf-8").strip()
+        if not memory:
+            raise ValueError("memory-file 不得为空")
+        inject_retrieved_memory(scenario, memory)
 
     args.output.mkdir(parents=True, exist_ok=True)
     snapshot = scenario.starting_context.to_dict(serialize_console=False)
@@ -87,6 +130,10 @@ def main() -> int:
         "model": args.model,
         "base_url": args.base_url,
         "snapshot_sha256": hashlib.sha256(json_bytes(snapshot)).hexdigest(),
+        "retrieval_hit": memory is not None,
+        "memory_sha256": hashlib.sha256(memory.encode("utf-8")).hexdigest()
+        if memory is not None
+        else None,
         "status": "running",
     }
     try:
