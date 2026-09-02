@@ -86,6 +86,40 @@ def inject_retrieved_memory(scenario, memory: str) -> None:
     )
 
 
+def verify_retrieved_memory_delivery(scenario, memory: str) -> dict[str, Any]:
+    """验证记忆在冻结输入中紧邻当前用户请求，而非只验证调用方传了文件。"""
+
+    sandbox = scenario.starting_context._dbs[DatabaseNamespace.SANDBOX]
+    memory_rows = sandbox.filter(
+        (pl.col("sender") == RoleType.SYSTEM)
+        & (pl.col("recipient") == RoleType.AGENT)
+        & (pl.col("content") == memory)
+    ).to_dicts()
+    if len(memory_rows) != 1:
+        raise RuntimeError(f"检索记忆必须且只能投递一次，实际为 {len(memory_rows)} 次")
+    memory_index = int(memory_rows[0]["sandbox_message_index"])
+    next_rows = sandbox.filter(
+        pl.col("sandbox_message_index") == memory_index + 1
+    ).to_dicts()
+    if len(next_rows) != 1:
+        raise RuntimeError("检索记忆之后没有唯一的当前用户请求")
+    current_request = next_rows[0]
+    verified = (
+        current_request["sender"] == RoleType.USER
+        and current_request["recipient"] == RoleType.AGENT
+    )
+    if not verified:
+        raise RuntimeError("检索记忆没有紧邻置于当前 USER→AGENT 请求之前")
+    return {
+        "verified": True,
+        "memory_message_index": memory_index,
+        "current_request_message_index": memory_index + 1,
+        "current_request_sha256": hashlib.sha256(
+            str(current_request["content"]).encode("utf-8")
+        ).hexdigest(),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scenario", required=True)
@@ -109,11 +143,13 @@ def main() -> int:
     if "multiple_user_turn" in args.scenario:
         raise ValueError("确定性用户仅适用于单轮场景")
     memory = None
+    delivery: dict[str, Any] | None = None
     if args.memory_file is not None:
         memory = args.memory_file.read_text(encoding="utf-8").strip()
         if not memory:
             raise ValueError("memory-file 不得为空")
         inject_retrieved_memory(scenario, memory)
+        delivery = verify_retrieved_memory_delivery(scenario, memory)
 
     args.output.mkdir(parents=True, exist_ok=True)
     snapshot = scenario.starting_context.to_dict(serialize_console=False)
@@ -130,7 +166,9 @@ def main() -> int:
         "model": args.model,
         "base_url": args.base_url,
         "snapshot_sha256": hashlib.sha256(json_bytes(snapshot)).hexdigest(),
-        "retrieval_hit": memory is not None,
+        "memory_supplied": memory is not None,
+        "retrieval_hit": delivery["verified"] if delivery is not None else None,
+        "retrieval_delivery": delivery,
         "memory_sha256": hashlib.sha256(memory.encode("utf-8")).hexdigest()
         if memory is not None
         else None,
