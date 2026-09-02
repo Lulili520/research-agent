@@ -64,11 +64,14 @@ def main() -> int:
         unit_name = f'{row["episode_id"]}_{row["condition"].replace("+", "p").replace("-", "m")}'
         unit_output = args.output / "units" / unit_name
         unit_output.mkdir(parents=True, exist_ok=False)
+        # 同一 episode 的四个条件共享随机种子；只随机化执行顺序，不引入条件间随机性差异。
+        episode_number = int(str(row["episode_id"]).split("-")[-1])
+        execution_seed = args.seed + episode_number
         command = [
             sys.executable,
             str(runner),
             "--scenario", str(row["scenario"]),
-            "--seed", str(args.seed + order),
+            "--seed", str(execution_seed),
             "--model", args.model,
             "--base-url", args.base_url,
             "--adapter", args.adapter,
@@ -85,6 +88,7 @@ def main() -> int:
             "episode_id": row["episode_id"],
             "scenario": row["scenario"],
             "condition": row["condition"],
+            "execution_seed": execution_seed,
             "stimulus_sha256": actual_sha,
             "return_code": completed.returncode,
             "summary_status": unit_summary.get("status") if unit_summary else "missing",
