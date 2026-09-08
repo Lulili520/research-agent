@@ -30,7 +30,7 @@ agent/runtime/research/
 
 ## 测试分层
 
-`tests/test_researchctl.py` 保留原控制平面回归；`tests/test_topic_independence.py` 检查算法、系统与理论问题使用相同协议入口；`tests/test_execution.py` 验证绕过路径和真实的状态转换，全部使用临时项目和模拟产物，不执行研究实验。课题专用测试随课题实现维护，不再纳入本分支。默认测试通过只证明这些实现性质，不证明研究内容正确。
+`agent/tests/test_researchctl.py` 保留原控制平面回归；`agent/tests/test_topic_independence.py` 检查算法、系统与理论问题使用相同协议入口；`agent/tests/test_execution.py` 验证绕过路径和真实的状态转换，全部使用临时项目和模拟产物，不执行研究实验。课题专用测试随课题实现维护，不再纳入本分支。默认测试通过只证明这些实现性质，不证明研究内容正确。
 
 ## 后续优化顺序
 
@@ -39,3 +39,7 @@ agent/runtime/research/
 3. 有第二个真实执行器后，再提炼通用执行适配接口。当前控制平面只登记和验收，不自动调度 GPU、SSH 或外部发布。
 
 事件链不是签名，也不能防止拥有写权限的人重写全部历史。授权证据内容与独立审查质量仍需要可信编排和人工监督；文件格式与哈希不能替代科学判断。
+
+## 仓库入口
+
+根目录仅保留 `AGENTS.md`、`README.md` 和 `agent/` 作为可见源码入口；实际课题创建后才出现 `research/`。测试、结构说明、开发依赖及 pytest 配置统一收拢到 `agent/`，使用 `python agent/check.py` 运行检查。`.github/` 保留在 GitHub 要求的位置，用于 CI；`.git/` 和 `.gitignore` 用于版本管理。

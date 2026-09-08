@@ -11,7 +11,7 @@ from urllib.parse import parse_qs, urlparse
 from agent.runtime.research.audit import Audit
 from agent.runtime.research.collect_openalex import load_queries, fetch
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 
 
 class ToolTests(unittest.TestCase):
@@ -90,7 +90,7 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(query['per-page'], ['7'])
 
     def test_agent_has_no_topic_imports(self):
-        for path in (REPO / 'agent').rglob('*.py'):
+        for path in (REPO / 'agent/runtime').rglob('*.py'):
             tree = ast.parse(path.read_text(encoding='utf-8-sig'))
             for node in ast.walk(tree):
                 modules = []

@@ -10,11 +10,15 @@ agent/
   skills/                         10 个科研 Skill、模板及参考契约
   runtime/research/               通用状态机、检索工具与跨平台审计
   audit-*.ps1                    Windows 兼容入口，委托同一 Python 审计
+  tests/                          通用控制平面及工具回归测试
+  docs/                           项目结构说明
+  check.py                        统一检查入口
+  requirements-dev.txt            开发测试依赖
+  pytest.ini                      测试配置
   evals.md                        科研行为验收场景
 research/<topic>/                 本地生成产物，Git 忽略
   outputs/                        用户阅读的成果
   .research/                      控制状态、文献、证据、协议、运行与论文源文件
-tests/                            通用工具及架构边界回归
 ```
 
 本分支只维护与具体课题无关的计算机科学科研 Agent。研究对象、方法、数据、工具和资源由用户 topic 及冻结范围决定。课题实现及其依赖独立维护，通过显式路径和 `researchctl.py` 登记协议与运行；通用 Agent 不预设模型、数据集或 GPU 环境，也不附带真实课题产物、模型或冻结实验工作区。
@@ -24,10 +28,10 @@ tests/                            通用工具及架构边界回归
 通用运行时仅依赖 Python 3.11+ 标准库，无需 GPU 或 PowerShell。从仓库根目录执行：
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-python -m pytest -q
+python3 -m venv agent/.venv
+source agent/.venv/bin/activate
+python -m pip install -r agent/requirements-dev.txt
+python agent/check.py
 python agent/runtime/research/researchctl.py --help
 python agent/runtime/research/audit.py --help
 ```
@@ -101,4 +105,4 @@ python agent/runtime/research/collect_openalex.py research/example/.research/rev
 新增通用能力优先放入独立 Skill；课题实现、专用依赖及部署说明在独立仓库或其他分支维护。研究配置、生成数据与结果进入本地 `research/`，不提交进 Agent 定义。
 
 
-控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](docs/architecture.md)。`execution-contract-v5` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。
+控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](agent/docs/architecture.md)。`execution-contract-v5` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。

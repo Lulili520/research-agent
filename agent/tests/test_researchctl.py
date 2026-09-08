@@ -9,7 +9,7 @@ from pathlib import Path
 from agent.runtime.research.researchctl import ResearchRoot
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "agent/runtime/research/researchctl.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "agent/runtime/research/researchctl.py"
 
 
 class ResearchControlTests(unittest.TestCase):
