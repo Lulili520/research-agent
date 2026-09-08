@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import subprocess
 import sys
@@ -174,7 +174,7 @@ class ResearchControlTests(unittest.TestCase):
 - Deviations policy: version protocol
 """
         (experiments / "protocol.md").write_text(protocol, encoding="utf-8")
-        design = {"protocol_id": "PR1", "protocol_version": 1, "research_type": "benchmark", "claims": ["C1"], "hypotheses": ["H1"], "predictions": ["P1"], "experimental_units": ["tasks"], "independent_variables": ["context"], "dependent_variables": ["score"], "controls": ["model"], "baselines": ["full precision"], "data_splits": ["test"], "leakage_checks": ["dedup"], "metrics": ["score"], "randomness": [1, 2, 3], "resource_budget": {"gpu_hours": 2}, "stopping_rules": ["fixed budget"]}
+        design = {"protocol_id": "PR1", "protocol_version": 1, "research_type": "benchmark", "claims": ["C1"], "hypotheses": ["H1"], "predictions": ["P1"], "experimental_units": ["tasks"], "independent_variables": ["context"], "dependent_variables": ["score"], "controls": ["model"], "baselines": ["full precision"], "data_splits": ["test"], "leakage_checks": ["dedup"], "metrics": ["score"], "randomness": [1, 2, 3], "resource_budget": {"gpu_hours": 2}, "stopping_rules": ["fixed budget"], "required_permissions": [], "research_materials": {"mode": "generated", "rationale": "controlled synthetic tasks"}}
         (experiments / "design.json").write_text(json.dumps(design), encoding="utf-8")
         (experiments / "analysis-plan.md").write_text("Primary estimand: paired difference\nPrimary metrics: score\nAggregation unit: task\nUncertainty: bootstrap CI\nRandomness: three seeds\nMultiplicity: adjusted\nFailed runs: retained\nMissing data: reported\nExclusions: predeclared\nDecision rule: CI and effect\nExploratory boundary: labeled\n", encoding="utf-8")
         (experiments / "protocol-audit.md").write_text("Protocol ID: PR1\nProtocol version: 1\nProtocol gate: pass\nReviewer role: protocol-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from protocol design\nExecution authorization: not granted\n", encoding="utf-8")
@@ -183,9 +183,13 @@ class ResearchControlTests(unittest.TestCase):
             for index in range(1, 6)
         ]
         (self.internal / "theory-experiment-iterations.jsonl").write_text("".join(json.dumps(row) + "\n" for row in iterations), encoding="utf-8")
-        experiment_sections = ("理论构念与适用域", "机制推导与竞争解释", "可证伪预测", "预测—实验映射", "数据集选择", "历史错误构造", "具体实验方案", "指标与判定规则", "统计计划", "硬件资源要求", "人工部署与软件环境", "时间与运行量估算", "执行顺序与门禁")
+        experiment_sections = ("理论构念与适用域", "机制推导与竞争解释", "可证伪预测", "预测—实验映射", "数据与研究材料", "具体实验方案", "指标与判定规则", "统计计划", "硬件资源要求", "人工部署与软件环境", "时间与运行量估算", "执行顺序与门禁")
         experiment_output = "实验协议审计: pass\n" + "\n".join(f"## {name}\ncontent" for name in experiment_sections) + "\nhttps://a.example https://b.example https://c.example\n"
         (self.root / "outputs/03-理论分析与实验探究.md").write_text(experiment_output, encoding="utf-8")
+
+    def grant_execution(self):
+        (self.internal / "control/user-execution.md").write_text("User explicitly requests execution of the frozen protocol.")
+        self.invoke("authorize-execution", str(self.root), "true", "--evidence", "control/user-execution.md", "--reason", "explicit user instruction")
 
     def test_gate_and_event_integrity(self):
         self.invoke("transition", str(self.root), "problem-framing", "--reason", "start")
@@ -211,9 +215,10 @@ class ResearchControlTests(unittest.TestCase):
         self.assertNotEqual(duplicate.returncode, 0)
         (experiments / "pilot.md").write_text("Pilot gate: pending\n", encoding="utf-8")
         (self.internal / "proposal/novelty-refresh-pre-experiment.md").write_text("Search date: 2026-09-03\nDatabases: proceedings\nQuery families: nearest-neighbor refresh\nNew nearest neighbors: none\nClaim impact: unchanged\nRefresh decision: pass\n", encoding="utf-8")
+        self.grant_execution()
         self.invoke("transition", str(self.root), "pilot", "--reason", "protocol frozen")
         state = json.loads((self.internal / "state.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["empirical_status"], "pilot")
+        self.assertEqual(state["empirical_status"], "not-run")
         self.assertEqual(state["execution_readiness"], "deployable")
         (self.internal / "configs").mkdir()
         (self.internal / "configs/1.json").write_text("{}", encoding="utf-8")
@@ -225,15 +230,16 @@ class ResearchControlTests(unittest.TestCase):
         over_budget = self.invoke("register-run", str(self.root), "--id", "run-2", "--experiment", "exp-1", "--config", "configs/2.json", "--code-revision", "abc", "--environment", "env-1", "--gpu-hours", "3", ok=False)
         self.assertNotEqual(over_budget.returncode, 0)
 
-    def test_empirical_status_is_preserved_when_pilot_returns_to_protocol(self):
+    def test_entering_and_leaving_pilot_without_runs_remains_not_run(self):
         self.advance_to_protocol()
         self.write_protocol_artifacts()
         (self.internal / "proposal/novelty-refresh-pre-experiment.md").write_text("Search date: 2026-09-03\nDatabases: proceedings\nQuery families: nearest-neighbor refresh\nNew nearest neighbors: none\nClaim impact: unchanged\nRefresh decision: pass\n", encoding="utf-8")
         self.invoke("freeze-protocol", str(self.root))
+        self.grant_execution()
         self.invoke("transition", str(self.root), "pilot", "--reason", "start pilot")
         self.invoke("transition", str(self.root), "experiment-protocol", "--reason", "revise protocol")
         state = json.loads((self.internal / "state.json").read_text(encoding="utf-8"))
-        self.assertEqual(state["empirical_status"], "pilot")
+        self.assertEqual(state["empirical_status"], "not-run")
         self.assertEqual(state["execution_readiness"], "designed")
 
     def test_protocol_tamper_is_rejected(self):

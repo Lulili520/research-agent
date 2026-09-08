@@ -9,9 +9,9 @@ from pathlib import Path
 import re
 
 try:
-    from . import researchctl as ctl
+    from . import gates as ctl
 except ImportError:
-    import researchctl as ctl
+    import gates as ctl
 
 
 class Audit:
@@ -108,38 +108,15 @@ class Audit:
         if stage not in ctl.STAGES:
             self.errors.append(f'invalid research stage: {stage}')
             return
-        stages = ctl.STAGES[:ctl.STAGES.index('complete') + 1]
-        for first, check in [('literature-mapping', ctl.scope_errors),
-                             ('theory-building', ctl.proposal_errors),
-                             ('experiment-protocol', ctl.theory_errors)]:
-            if stage in stages[stages.index(first):]:
-                self.check(check)
-        if (self.root / 'experiments/protocol.lock.json').is_file():
-            self.check(ctl.protocol_errors)
-            self.check(ctl.verify_protocol, returns_errors=False)
-        if state.get('workflow_status') == 'complete' or stage == 'complete':
-            if stage != 'complete' or state.get('workflow_status') != 'complete':
-                self.errors.append('workflow status and research stage disagree on completion')
-            self.check(ctl.completion_errors)
-            for name, fields in [
-                ('theory.md', ('Assumptions:', 'Competing explanations:', 'Predictions:',
-                               'Falsifiers:', 'Experiment mapping:')),
-                ('experiments/protocol.md', ('Claims:', 'Independent variables:',
-                    'Dependent variables:', 'Controls:', 'Baselines:', 'Metrics:',
-                    'Randomness:', 'Stopping rules:')),
-            ]:
-                self.fields(name, self.read(name), fields)
-            for name, pattern in [
-                ('experiments/registry.jsonl', r'experiment_id'),
-                ('runs/registry.jsonl', r'run_id'), ('runs/outcomes.jsonl', r'status'),
-                ('paper/claims.jsonl', r'claim_id'), ('paper/iterations.jsonl', r'cycle_type'),
-                ('search-log.md', r'(?is)(?=.*(?:query|search))(?=.*20\d{2}-\d{2}-\d{2})'),
-            ]:
-                text = self.read(name)
-                if text and not re.search(pattern, text, re.I):
-                    self.errors.append(f'{name} lacks required audit identifiers or dates')
-            if self.errors:
-                self.errors.append('machine state claims completion while audit errors remain')
+        self.errors.extend(ctl.stage_errors(self.root, stage))
+        try:
+            actual = ctl.empirical_status(self.root)
+            if state.get('empirical_status') != actual:
+                self.errors.append(f'empirical status differs from verified run evidence: {actual}')
+        except (SystemExit, OSError, ValueError, KeyError, TypeError) as error:
+            self.errors.append(f'run evidence: {error}')
+        if (state.get('workflow_status') == 'complete') != (stage == 'complete'):
+            self.errors.append('workflow status and research stage disagree on completion')
 
 
 def main() -> int:

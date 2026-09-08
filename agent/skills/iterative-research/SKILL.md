@@ -38,11 +38,12 @@ topic
 - `direction-audit` 对 Proposal 做实验前科学审计。除语料覆盖、检索饱和、最近近邻差异和 `Q-K-M-D-C` 外，还必须形成研究问题树、贡献层级、深度链、确认性核心、必要边界、最小外部效度和扩张停止规则，并完成当前 Proposal 的五轮全流程复核。只有深度、广度、机制、可区分预测、反证条件和纸面识别路径共同通过 `researchctl.py audit-proposal` 后，才进入 `theory-building`。尚未执行实验是正常状态，不得作为拒绝原因。
 - Proposal 通过后调用 `theory-building`，并阅读[理论—实验契约](references/theory-to-experiment.md)。形式化证明不是所有研究的硬要求，但必须有明确机制、竞争解释、区分性预测、反证条件和实验映射；`researchctl.py audit-theory` 未通过时不得进入实验协议。
 - 理论通过后调用 `experiment-design`，把全部核心预测映射为可反证的设计与预先分析计划；通过 `audit-protocol` 后冻结协议。冻结完成只表示“准备执行”，不会自动启动试点、GPU 或外部任务。
-- 用户要求继续执行时，进入试点和主实验前阅读[实验迭代规则](references/experimental-iteration.md)。正式协议冻结后，探索性分析与确认性实验必须分开。
+- 用户要求继续执行时，进入试点和主实验前阅读[实验迭代规则](references/experimental-iteration.md)。正式协议冻结后，探索性分析与确认性实验必须分开。进入 Pilot 前用 `authorize-execution` 登记当前协议版本的用户指令证据；所需资源权限还必须与冻结设计中的 `required_permissions` 一致。登记只落实已有授权，不得凭 Skill 自行授予执行权限。
 - `artifact-building` 和 `report-writing` 负责生产，`artifact-validation` 和 `report-review` 负责验收，不能由“文件已经存在”冒充正在执行的生产阶段。
 - `report-writing` 与 `report-review` 使用 `paper-development`：先冻结被证据支持的声明，再迭代论文论证、图表、复现说明和模拟审稿。实验数量多不等于论文完整；每项实验必须服务于主张、竞争解释或外部效度。
 - 申请 `complete` 前先运行 `python agent/runtime/research/audit.py iterative research/<topic-slug>`；控制平面还会执行不可绕过的完成门禁。结构审计通过不等于科学结论已通过同行评议。
 - 所有阶段转换、关键决策、协议冻结、实验和 run 都通过控制平面登记；不得只修改 Markdown 假装状态已经推进。
+- 实证进度由已登记并可核验的运行终局和产物推导；进入 Pilot 或主实验本身不改变实证状态。主实验需要当前协议的 `experiments/pilot-gate.json`，其中引用的 Pilot run 必须执行成功且产物通过哈希核验。
 - 控制平面分别记录 Proposal 决策、新颖性、实证进度和执行就绪度。`Proposal decision: pass` 只代表实验前论证成立；`Empirical status: not-run`、`Execution readiness: designed` 可以与其同时成立。
 
 ## 回退与停止

@@ -99,3 +99,5 @@ python agent/runtime/research/collect_openalex.py research/example/.research/rev
 新增通用能力优先放入独立 Skill；新增课题实现放入 `studies/<topic>/`，并附专用依赖、配置和部署说明。生成数据与结果仍进入 `research/`，不提交进 Agent 定义。
 
 原 `agent/runtime/experiment/` 已迁至 `studies/qhist/runtime/`，测试迁至 `studies/qhist/tests/`。历史版本之间仍有导入依赖，需整体部署。迁移不重写旧协议哈希或实验结果；已有冻结工作区按原版本保留，新源码部署须按科研协议重新验收。
+
+控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](docs/architecture.md)。`execution-contract-v5` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。
