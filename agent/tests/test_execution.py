@@ -189,3 +189,108 @@ def test_protocol_does_not_require_topic_specific_sections_or_dataset_count(proj
 def test_budget_rejects_nonfinite(value):
     with pytest.raises(SystemExit, match='finite'):
         ctl.nonnegative('cost', float(value))
+
+
+@pytest.mark.parametrize('removed', ['registration', 'outcome'])
+def test_deleted_run_records_cannot_bypass_gate(project, removed):
+    enter_pilot(project)
+    assert register(project, 'good').returncode == 0
+    finish(project, 'good')
+    assert register(project, 'pending').returncode == 0
+    if removed == 'registration':
+        path = project.internal / 'runs/registry.jsonl'
+        records = [r for r in ctl.read_jsonl(path) if r['run_id'] != 'pending']
+    else:
+        finish(project, 'pending', 'cancelled')
+        path = project.internal / 'runs/outcomes.jsonl'
+        records = [r for r in ctl.read_jsonl(path) if r['run_id'] != 'pending']
+    path.write_text(''.join(json.dumps(r) + '\n' for r in records))
+    pilot_gate(project, ['good'])
+    denied = advance_main(project, ok=False)
+    assert denied.returncode != 0 and 'event differs from registry' in denied.stderr
+
+
+def make_manifest(project):
+    raw = project.internal / 'runs/raw.json'
+    raw.write_text('{"measurement": 1}')
+    nested = project.internal / 'runs/nested.manifest.json'
+    nested.write_text(json.dumps({'manifest_schema': 1, 'files_sha256': {'runs/raw.json': ctl.digest(raw)}}))
+    manifest = project.internal / 'runs/manifest.json'
+    manifest.write_text(json.dumps({'manifest_schema': 1, 'files_sha256': {'runs/nested.manifest.json': ctl.digest(nested)}}))
+    return raw
+
+
+@pytest.mark.parametrize('damage', ['edit', 'delete'])
+@pytest.mark.parametrize('stage', ['pilot', 'main-experiment'])
+def test_nested_manifest_members_are_verified_at_gate(project, damage, stage):
+    enter_pilot(project)
+    if stage == 'main-experiment':
+        assert register(project, 'first-pilot').returncode == 0
+        finish(project, 'first-pilot')
+        pilot_gate(project, ['first-pilot'])
+        advance_main(project)
+    assert register(project, 'pilot').returncode == 0
+    raw = make_manifest(project)
+    project.invoke('finish-run', str(project.root), '--id', 'pilot', '--status', 'succeeded',
+                   '--artifact', 'runs/manifest.json', '--reason', 'fixture')
+    if stage == 'pilot':
+        pilot_gate(project, ['pilot'])
+        verify = ctl.require_pilot_evidence
+    else:
+        verify = ctl.require_main_evidence
+    verify(project.internal)
+    if damage == 'edit':
+        raw.write_text('{"measurement": 999}')
+    else:
+        raw.unlink()
+    with pytest.raises(SystemExit):
+        verify(project.internal)
+
+
+def test_bad_manifest_rejected_before_recording_outcome(project):
+    enter_pilot(project)
+    assert register(project, 'pilot').returncode == 0
+    raw = make_manifest(project)
+    raw.write_text('tampered')
+    denied = project.invoke('finish-run', str(project.root), '--id', 'pilot', '--status', 'succeeded',
+                            '--artifact', 'runs/manifest.json', '--reason', 'fixture', ok=False)
+    assert denied.returncode != 0 and 'manifest member changed' in denied.stderr
+    assert ctl.read_jsonl(project.internal / 'runs/outcomes.jsonl') == []
+
+
+@pytest.mark.parametrize('status', ['invalid', 'cancelled'])
+@pytest.mark.parametrize('damage', ['edit', 'delete'])
+def test_config_drift_can_close_without_evidence_and_refreeze(project, status, damage):
+    enter_pilot(project)
+    assert register(project, 'drift').returncode == 0
+    path = project.internal / 'runs/drift.config.json'
+    if damage == 'edit':
+        path.write_text('{"seed": 2}')
+    else:
+        path.unlink()
+    denied = project.invoke('finish-run', str(project.root), '--id', 'drift', '--status', 'failed',
+                            '--reason', 'configuration drift', ok=False)
+    assert denied.returncode != 0
+    project.invoke('finish-run', str(project.root), '--id', 'drift', '--status', status,
+                   '--reason', 'configuration drift')
+    assert ctl.empirical_status(project.internal) == 'not-run'
+    pairs = ctl.verified_outcomes(project.internal, require_terminal=True)
+    assert pairs[0][1]['config_changed'] is True
+    project.invoke('transition', str(project.root), 'experiment-protocol', '--reason', 'correct configuration')
+    bump_protocol(project)
+    assert ctl.verify_protocol(project.internal)['version'] == 2
+
+
+@pytest.mark.parametrize('kind', ['unsupported', 'empty', 'outside', 'missing'])
+def test_manifest_rejects_invalid_or_uncontained_members(project, kind):
+    manifest = project.internal / 'experiments/manifest.json'
+    if kind == 'unsupported':
+        data = {'files': ['raw.json']}
+    elif kind == 'empty':
+        data = {'manifest_schema': 1, 'files_sha256': {}}
+    else:
+        name = '../outside.json' if kind == 'outside' else 'runs/missing.json'
+        data = {'manifest_schema': 1, 'files_sha256': {name: '0' * 64}}
+    manifest.write_text(json.dumps(data))
+    with pytest.raises(SystemExit):
+        ctl.artifact_files(project.internal, 'experiments/manifest.json')

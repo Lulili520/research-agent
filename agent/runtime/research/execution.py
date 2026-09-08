@@ -32,7 +32,47 @@ def artifact_path(root, relative: str) -> Path:
 
 
 def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def artifact_files(root, relative: str) -> dict[str, str]:
+    """Hash a file and recursively verify project-relative manifest members.
+
+    Manifests use {"manifest_schema": 1, "files_sha256": {path: sha256}}.
+    Reserved manifest filenames cannot silently fall back to opaque files.
+    """
+    result = {}
+    visiting = set()
+
+    def visit(name):
+        path = artifact_path(root, name)
+        if path in visiting:
+            raise SystemExit(f'cyclic artifact manifest: {name}')
+        if name in result:
+            return
+        result[name] = digest(path)
+        reserved = path.name == 'manifest.json' or path.name.endswith('.manifest.json')
+        try:
+            data = json.loads(path.read_text(encoding='utf-8')) if path.suffix == '.json' else None
+        except (ValueError, UnicodeError):
+            data = None
+        is_manifest = isinstance(data, dict) and ('manifest_schema' in data or 'files_sha256' in data)
+        if not reserved and not is_manifest:
+            return
+        if not isinstance(data, dict) or data.get('manifest_schema') != 1 or not isinstance(data.get('files_sha256'), dict) or not data['files_sha256']:
+            raise SystemExit(f'invalid artifact manifest: {name}')
+        visiting.add(path)
+        for member, expected in data['files_sha256'].items():
+            if not isinstance(expected, str) or len(expected) != 64 or any(c not in '0123456789abcdef' for c in expected):
+                raise SystemExit(f'invalid manifest member hash: {member}')
+            if digest(artifact_path(root, member)) != expected:
+                raise SystemExit(f'artifact manifest member changed: {member}')
+            visit(member)
+        visiting.remove(path)
+
+    visit(relative)
+    return result
 
 
 def manifest_digest(files: dict) -> str:
@@ -98,9 +138,18 @@ def verify_execution_authorization(root) -> dict:
 
 
 def verified_outcomes(root, *, require_terminal: bool = False) -> list[tuple[dict, dict]]:
+    verify_events(root)
     runs = read_jsonl(root / 'runs/registry.jsonl')
     outcomes = read_jsonl(root / 'runs/outcomes.jsonl')
     events = load_events(root)
+    for kind, records in [('run-registered', runs), ('run-finished', outcomes)]:
+        event_records = [e['payload'] for e in events if e['type'] == kind]
+        # Older registrations used partial events; preserve them without treating
+        # them as current scientific evidence. Full records must match both ways.
+        full_events = [r for r in event_records if kind == 'run-finished' or r.get('record_schema') == 2]
+        for record in full_events:
+            if records.count(record) != 1 or full_events.count(record) != 1:
+                raise SystemExit(f'{kind} event differs from registry: {record.get("run_id")}')
     by_id = {}
     for run in runs:
         run_id = run.get('run_id')
@@ -125,11 +174,14 @@ def verified_outcomes(root, *, require_terminal: bool = False) -> list[tuple[dic
             raise SystemExit(f'run outcome differs from event record: {run_id}')
         if outcome.get('status') not in TERMINAL_STATUSES:
             raise SystemExit(f'invalid terminal run status: {run_id}')
-        if digest(artifact_path(root, run['config'])) != run.get('config_sha256'):
+        if outcome['status'] not in {'invalid', 'cancelled'} and digest(artifact_path(root, run['config'])) != run.get('config_sha256'):
             raise SystemExit(f'run config changed: {run_id}')
         if outcome.get('artifact'):
-            if digest(artifact_path(root, outcome['artifact'])) != outcome.get('artifact_sha256'):
+            files = artifact_files(root, outcome['artifact'])
+            if files[outcome['artifact']] != outcome.get('artifact_sha256'):
                 raise SystemExit(f'run artifact changed: {run_id}')
+            if outcome.get('artifact_files_sha256') is not None and files != outcome['artifact_files_sha256']:
+                raise SystemExit(f'run artifact members changed: {run_id}')
         elif outcome['status'] == 'succeeded':
             raise SystemExit(f'succeeded run lacks artifact: {run_id}')
         verified.append((run, outcome))

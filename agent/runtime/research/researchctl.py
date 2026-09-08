@@ -22,11 +22,11 @@ except ImportError:
 
 try:
     from .execution import (BUNDLE_FILES, bundle_files, manifest_digest, verify_protocol,
-        verify_execution_authorization, required_permissions, artifact_path, digest,
+        verify_execution_authorization, required_permissions, artifact_path, artifact_files, digest,
         empirical_status, verified_outcomes, require_pilot_evidence, require_main_evidence)
 except ImportError:
     from execution import (BUNDLE_FILES, bundle_files, manifest_digest, verify_protocol,
-        verify_execution_authorization, required_permissions, artifact_path, digest,
+        verify_execution_authorization, required_permissions, artifact_path, artifact_files, digest,
         empirical_status, verified_outcomes, require_pilot_evidence, require_main_evidence)
 
 
@@ -356,6 +356,7 @@ def command_run(args: argparse.Namespace) -> None:
 def command_finish_run(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
+    verified_outcomes(root)
     registrations = read_jsonl(root / "runs/registry.jsonl")
     matches = [item for item in registrations if item.get("run_id") == args.id]
     if len(matches) != 1:
@@ -363,23 +364,31 @@ def command_finish_run(args: argparse.Namespace) -> None:
     if any(item.get("run_id") == args.id for item in read_jsonl(root / "runs/outcomes.jsonl")):
         raise SystemExit(f"run already finished: {args.id}")
     registered = matches[0]
-    if digest(artifact_path(root, registered["config"])) != registered["config_sha256"]:
-        raise SystemExit("run config changed after registration")
+    try:
+        observed_config_sha256 = digest(artifact_path(root, registered["config"]))
+    except SystemExit:
+        if args.status not in {"invalid", "cancelled"}:
+            raise
+        observed_config_sha256 = None
+    config_changed = observed_config_sha256 != registered["config_sha256"]
+    if config_changed and args.status not in {"invalid", "cancelled"}:
+        raise SystemExit("run config changed after registration; close as invalid or cancelled")
     nonnegative("gpu-hours", args.gpu_hours)
     nonnegative("cost", args.cost)
     if args.status == "succeeded" and not args.artifact:
         raise SystemExit("a succeeded run requires --artifact")
     artifact_sha256 = None
+    files = None
     if args.artifact:
-        output_path = require_nonempty(root, args.artifact)
-        artifact_sha256 = hashlib.sha256(output_path.read_bytes()).hexdigest()
+        files = artifact_files(root, args.artifact)
+        artifact_sha256 = files[args.artifact]
     state = read_json(root / "state.json")
     state["usage"]["gpu_hours"] = max(0.0, state["usage"]["gpu_hours"] - registered["reserved_gpu_hours"] + args.gpu_hours)
     state["usage"]["cost"] = max(0.0, state["usage"]["cost"] - registered["reserved_cost"] + args.cost)
     state["updated_at"] = now()
     config = read_json(root / "research.json")
     budget_exceeded = state["usage"]["gpu_hours"] > config["budget"]["gpu_hours"] or state["usage"]["cost"] > config["budget"]["cost"]
-    outcome = {"run_id": args.id, "time": now(), "actor": args.actor, "status": args.status, "actual_gpu_hours": args.gpu_hours, "actual_cost": args.cost, "artifact": args.artifact, "artifact_sha256": artifact_sha256, "budget_exceeded": budget_exceeded, "reason": args.reason}
+    outcome = {"run_id": args.id, "time": now(), "actor": args.actor, "status": args.status, "actual_gpu_hours": args.gpu_hours, "actual_cost": args.cost, "artifact": args.artifact, "artifact_sha256": artifact_sha256, "artifact_files_sha256": files, "config_changed": config_changed, "observed_config_sha256": observed_config_sha256, "budget_exceeded": budget_exceeded, "reason": args.reason}
     append_jsonl(root / "runs/outcomes.jsonl", outcome)
     emit(root, "run-finished", args.actor, outcome)
     state["empirical_status"] = empirical_status(root)

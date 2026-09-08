@@ -105,4 +105,4 @@ python agent/runtime/research/collect_openalex.py research/example/.research/rev
 新增通用能力优先放入独立 Skill；课题实现、专用依赖及部署说明在独立仓库或其他分支维护。研究配置、生成数据与结果进入本地 `research/`，不提交进 Agent 定义。
 
 
-控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](agent/docs/architecture.md)。`execution-contract-v5` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。
+控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](agent/docs/architecture.md)。`execution-contract-v6` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。

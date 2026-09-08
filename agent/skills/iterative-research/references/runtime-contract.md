@@ -43,15 +43,15 @@ python agent/runtime/research/researchctl.py register-run research/<topic> --id 
 python agent/runtime/research/researchctl.py finish-run research/<topic> --id run-001 --status failed --reason "OOM" --artifact runs/run-001/manifest.json
 ```
 
-协议冻结按完整文件集合计算 SHA-256，并归档正文和各成员文件；具体归档与授权规则见下方 v5 契约。任何冻结成员改动都要求生成新版本。`protocol-audit.md` 必须声明被审查的 Protocol ID/version，并与正文和结构化设计一致。实验和 run 只能在匹配阶段登记，ID 不可重复。run 配置必须存在且记录 SHA-256，成功 run 必须提供实际产物及其 SHA-256。失败、超时、取消和无效运行同样写入 append-only outcome。注册 run 时执行权限、非负数值与预算检查；实际消耗超预算仍保留结果并显式标记。
+协议冻结按完整文件集合计算 SHA-256，并归档正文和各成员文件；具体归档与授权规则见下方 v6 契约。任何冻结成员改动都要求生成新版本。`protocol-audit.md` 必须声明被审查的 Protocol ID/version，并与正文和结构化设计一致。实验和 run 只能在匹配阶段登记，ID 不可重复。run 配置必须存在且记录 SHA-256，成功 run 必须提供实际产物及其 SHA-256。失败、超时、取消和无效运行同样写入 append-only outcome。注册 run 时执行权限、非负数值与预算检查；实际消耗超预算仍保留结果并显式标记。
 
 所有变更命令使用 `.research/control/.research.lock` 串行执行。事件链可以发现非预期修改，但不是密码学签名或外部时间戳；具有文件写权限的攻击者仍可能重算整条链，因此不能把它表述为防篡改证明。
 
 控制器只登记和治理实验，不直接执行任意 shell、SSH 或 GPU 作业。执行器必须是后续独立组件，并消费已注册的结构化 run。
 
-## execution-contract-v5：冻结、授权和运行证据
+## execution-contract-v6：冻结、授权和运行证据
 
-当前 schema 为 4，门禁策略为 `execution-contract-v5`。Python 审计、阶段转换和迁移复核共用 `gates.py` 的阶段要求。
+当前 schema 为 4，门禁策略为 `execution-contract-v6`。Python 审计、阶段转换和迁移复核共用 `gates.py` 的阶段要求。
 
 `freeze-protocol` 只在 `experiment-protocol` 阶段运行，且不能存在未登记终局的 run。冻结文件集合包含：`protocol.md`、`design.json`、`analysis-plan.md`、`protocol-audit.md`、范围、Proposal、理论正文、理论声明及预测。归档同时保存 `experiments/protocols/vNNN.md`、`vNNN.bundle/` 和 `vNNN.lock.json`，当前锁与 `protocol-frozen` 事件必须一致。冻结文件的正文、配置或分析方法发生变化都需要新版本，不能只保持 protocol.md 不变。
 
@@ -93,6 +93,21 @@ python agent/runtime/research/researchctl.py transition research/<topic> pilot -
 所有引用必须是当前协议下执行成功的 Pilot run，登记配置与结果产物的 SHA-256 必须匹配，不能引用不存在、未结束或旧版本的 run。人工科学审查仍需核实 rationale；JSON 字段不证明操纵真的有效。
 
 `finish-run --artifact` 接受项目内部的非空文件；目录产物应先生成含成员哈希的 manifest 文件并登记该文件。`succeeded` 必须有产物；`failed`、`timed-out` 可用日志作为产物。只有具有可核验产物的这些执行终局才推进实证状态：Pilot 为 `pilot`，主实验/稳健性为 `tested`。取消、无效运行以及仅登记未执行的 run 不会推进状态。`tested` 只表示已发生可核验的主实验执行，不表示结论为正或论文已完成。
+
+v6 对登记表与事件链做双向核对，删除任何已登记运行或终局记录都会阻止门禁通过。产物清单使用以下固定格式（哈希须替换为真实 SHA-256）：
+
+```json
+{
+  "manifest_schema": 1,
+  "files_sha256": {
+    "runs/run-001/raw.json": "<64 位小写 SHA-256>"
+  }
+}
+```
+
+成员路径相对于项目内部 `.research/`，沿用 runtime 路径映射规则，不相对于清单所在目录。清单可引用嵌套清单；登记终局和后续审计均递归检查成员存在、路径边界与哈希。`manifest.json`、`*.manifest.json` 或包含 `manifest_schema` / `files_sha256` 字段的 JSON 被视为清单；格式错误不能作为普通文件跳过检查。普通结果 JSON 和日志仍可直接登记。清单只能证明列出的文件，不能证明未列出产物的完整性。
+
+配置被修改或删除时，运行只能以 `invalid` 或 `cancelled` 关闭，并填写真实原因和实际消耗。终局保留配置变化标记及关闭时可读取的配置哈希，原登记哈希不变；这类终局不产生实证进度，也不能作为 Pilot 成功证据。它们允许后续回到协议阶段重新冻结，避免无法关闭的运行阻塞研究。其他终局仍要求配置匹配。
 
 `blocked` 记录暂停前阶段，恢复时必须先返回该阶段，再按正常转换推进或回退。
 
