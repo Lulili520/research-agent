@@ -41,7 +41,7 @@ topic
 - 用户要求继续执行时，进入试点和主实验前阅读[实验迭代规则](references/experimental-iteration.md)。正式协议冻结后，探索性分析与确认性实验必须分开。
 - `artifact-building` 和 `report-writing` 负责生产，`artifact-validation` 和 `report-review` 负责验收，不能由“文件已经存在”冒充正在执行的生产阶段。
 - `report-writing` 与 `report-review` 使用 `paper-development`：先冻结被证据支持的声明，再迭代论文论证、图表、复现说明和模拟审稿。实验数量多不等于论文完整；每项实验必须服务于主张、竞争解释或外部效度。
-- 申请 `complete` 前先运行 `powershell -File agent/audit-iterative-research.ps1 research/<topic-slug>`；控制平面还会执行不可绕过的完成门禁。结构审计通过不等于科学结论已通过同行评议。
+- 申请 `complete` 前先运行 `python agent/runtime/research/audit.py iterative research/<topic-slug>`；控制平面还会执行不可绕过的完成门禁。结构审计通过不等于科学结论已通过同行评议。
 - 所有阶段转换、关键决策、协议冻结、实验和 run 都通过控制平面登记；不得只修改 Markdown 假装状态已经推进。
 - 控制平面分别记录 Proposal 决策、新颖性、实证进度和执行就绪度。`Proposal decision: pass` 只代表实验前论证成立；`Empirical status: not-run`、`Execution readiness: designed` 可以与其同时成立。
 

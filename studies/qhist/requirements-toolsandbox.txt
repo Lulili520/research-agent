@@ -1,0 +1,3 @@
+# Separate Python 3.11 environment; do not install in the precision environment.
+-c runtime/toolsandbox-local-constraints.txt
+tool-sandbox @ git+https://github.com/apple/ToolSandbox.git@165848b9a78cead7ca7fe7c89c688b58e6501219

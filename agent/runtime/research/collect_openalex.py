@@ -10,15 +10,14 @@ import urllib.request
 from pathlib import Path
 
 
-QUERIES = {
-    "error-recovery": "LLM agent error recovery trajectory",
-    "memory": "LLM agent memory long horizon",
-    "reflection": "language agent reflection failure experience",
-    "evaluation": "LLM agent trajectory evaluation benchmark",
-    "context": "LLM agent context compression history",
-    "poisoning": "LLM agent memory poisoning",
-    "self-correction": "LLM self correction external feedback agent",
-}
+def load_queries(path: Path) -> dict[str, str]:
+    queries = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(queries, dict) or not queries or any(
+        not isinstance(k, str) or not k.strip() or not isinstance(v, str) or not v.strip()
+        for k, v in queries.items()
+    ):
+        raise ValueError("search plan must be a nonempty JSON object of cluster: query strings")
+    return queries
 
 
 def abstract(work: dict) -> str:
@@ -27,10 +26,10 @@ def abstract(work: dict) -> str:
     return " ".join(token for _, token in sorted(positioned))
 
 
-def fetch(query: str, per_page: int, mailto: str) -> list[dict]:
+def fetch(query: str, per_page: int, mailto: str, from_date: str) -> list[dict]:
     params = urllib.parse.urlencode({
         "search": query,
-        "filter": "from_publication_date:2022-01-01",
+        "filter": f"from_publication_date:{from_date}",
         "per-page": per_page,
         "mailto": mailto,
     })
@@ -44,10 +43,20 @@ def main() -> None:
     parser.add_argument("output")
     parser.add_argument("--mailto", required=True)
     parser.add_argument("--per-query", type=int, default=35)
+    parser.add_argument("--queries", type=Path, required=True, help="JSON object mapping cluster names to queries")
+    parser.add_argument("--from-date", required=True, help="inclusive publication date, YYYY-MM-DD")
     args = parser.parse_args()
+    from datetime import date
+    try:
+        date.fromisoformat(args.from_date)
+        queries = load_queries(args.queries)
+        if not 1 <= args.per_query <= 200:
+            raise ValueError("--per-query must be between 1 and 200")
+    except (ValueError, OSError) as error:
+        parser.error(str(error))
     records: dict[str, dict] = {}
-    for cluster, query in QUERIES.items():
-        for work in fetch(query, args.per_query, args.mailto):
+    for cluster, query in queries.items():
+        for work in fetch(query, args.per_query, args.mailto, args.from_date):
             source_id = (work.get("doi") or work["id"]).replace("https://doi.org/", "doi:").replace("https://openalex.org/", "openalex:")
             location = work.get("primary_location") or {}
             source = location.get("source") or {}

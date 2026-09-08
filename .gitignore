@@ -14,3 +14,9 @@ __pycache__/
 # Keep directory placeholders and source manifests if added
 !research/**/sources/.gitkeep
 !research/**/sources/manifest.md
+
+# Local environments and test tooling
+.venv/
+.venvs/
+.pytest_cache/
+.coverage

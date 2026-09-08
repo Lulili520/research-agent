@@ -1,0 +1,2 @@
+# Core runtime and audits use only the Python 3.11+ standard library.
+# Topic-specific GPU / ToolSandbox dependencies belong in studies/<topic>/.

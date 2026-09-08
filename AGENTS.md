@@ -45,7 +45,7 @@ Research Agent 接收用户给定的 topic，先经过充分调研和 Proposal �
 
 ## Skill 路由
 
-项目 Skill 位于 `agent/skills/`。`agent/` 只保存 Agent 定义、Research runtime 和审计，不得写入采集结果或研究报告。
+项目 Skill 位于 `agent/skills/`。通用 Agent 不得依赖 `studies/`；可版本管理的课题实现、专用依赖和检索配置放在 `studies/<topic>/`，实际研究产物仍放在 `research/<topic>/`。`agent/` 只保存 Agent 定义、Research runtime 和审计，不得写入采集结果或研究报告。
 
 - `review-protocol`：为系统综述或严格证据审查冻结问题、范围和纳排规则。
 - `scholarly-search`：发现论文并核验身份、会议状态、版本和影响力线索。
@@ -174,14 +174,14 @@ research/<topic-slug>/.research/
 
 完成长期研究前运行：
 
-```powershell
-powershell -File agent/audit-research.ps1 research/<topic-slug>
+```bash
+python agent/runtime/research/audit.py review research/<topic-slug>
 ```
 
 完成迭代科研前运行：
 
-```powershell
-powershell -File agent/audit-iterative-research.ps1 research/<topic-slug>
+```bash
+python agent/runtime/research/audit.py iterative research/<topic-slug>
 ```
 
 ## 扩展新能力
