@@ -1,6 +1,6 @@
 ---
 name: iterative-research
-description: 从用户给定的计算机科学 topic 出发，持续完成相关工作调研、创新方向审计、理论建模、实验协议、执行分析与论文级交付；用于明确要求开展或完成研究的长期任务，不用于只要文献综述或方向建议的请求。
+description: 从用户给定的计算机科学 topic 出发，持续完成顶级 CCF 会议标准的相关工作调研、创新审计、理论建模、实验、Artifact 与论文交付；用于明确要求自主开展或完成研究的长期任务，不用于只要文献综述或方向建议的请求。
 ---
 
 # 迭代科研
@@ -12,6 +12,7 @@ description: 从用户给定的计算机科学 topic 出发，持续完成相关
 1. 先调用 `research-framing` 将用户 topic 转成有边界的问题空间并通过 `audit-scope`。缺少的约束若不改变研究方向，可先采用保守假设并记录；会改变数据、算力、研究对象或外部授权时再请求用户决定。
 2. 阅读[Research runtime contract](references/runtime-contract.md)，用 `researchctl.py init` 初始化机器状态；参考[状态摘要模板](assets/state.md)维护 `control/state.md`，但机器事实源是 `control/state.json`。不得覆盖已有项目，每次运行先验证事件链并从当前阶段恢复。
 3. 根据研究类型选择证据标准。算法/模型、工程系统、benchmark、实证研究、人类参与研究、理论研究和系统综述不得套用同一实验模板。
+4. 正式启动顶会目标研究时阅读[统一顶会完整研究标准](references/top-tier-research-standard.md)和[外部质量依据](references/external-quality-sources.md)。所有课题使用同一质量门禁，不按会议拆分科研标准；具体投稿会议仅在研究完成后影响提交合规检查。
 
 ## 状态机
 
@@ -33,14 +34,16 @@ topic
   -> complete
 ```
 
-- `literature-mapping` 先调用 `research-proposal`；它复用 `review-protocol`（按需）、`scholarly-search`、`paper-analysis` 和 `evidence-synthesis`，形成 50–100 篇已核验语料、20–30 篇核心全文精读和 Proposal，不得把简短调研报告当作完成。
-- `direction-audit` 对 Proposal 做反向新颖性审计。只有语料覆盖、检索饱和、最近近邻差异、机制、可区分预测和反证条件通过 `researchctl.py audit-proposal` 后，才进入 `theory-building`。
+- `literature-mapping` 先调用 `research-proposal`；它复用 `review-protocol`（按需）、`scholarly-search`、`paper-analysis` 和 `evidence-synthesis`，形成覆盖充分且饱和的已核验语料与核心全文精读（默认预算分别为 50–100 与 20–30 篇）和 Proposal，不得把简短调研报告当作完成。
+- `direction-audit` 对 Proposal 做实验前科学审计。除语料覆盖、检索饱和、最近近邻差异和 `Q-K-M-D-C` 外，还必须形成研究问题树、贡献层级、深度链、确认性核心、必要边界、最小外部效度和扩张停止规则，并完成当前 Proposal 的五轮全流程复核。只有深度、广度、机制、可区分预测、反证条件和纸面识别路径共同通过 `researchctl.py audit-proposal` 后，才进入 `theory-building`。尚未执行实验是正常状态，不得作为拒绝原因。
 - Proposal 通过后调用 `theory-building`，并阅读[理论—实验契约](references/theory-to-experiment.md)。形式化证明不是所有研究的硬要求，但必须有明确机制、竞争解释、区分性预测、反证条件和实验映射；`researchctl.py audit-theory` 未通过时不得进入实验协议。
 - 理论通过后调用 `experiment-design`，把全部核心预测映射为可反证的设计与预先分析计划；通过 `audit-protocol` 后冻结协议。冻结完成只表示“准备执行”，不会自动启动试点、GPU 或外部任务。
 - 用户要求继续执行时，进入试点和主实验前阅读[实验迭代规则](references/experimental-iteration.md)。正式协议冻结后，探索性分析与确认性实验必须分开。
 - `artifact-building` 和 `report-writing` 负责生产，`artifact-validation` 和 `report-review` 负责验收，不能由“文件已经存在”冒充正在执行的生产阶段。
+- `report-writing` 与 `report-review` 使用 `paper-development`：先冻结被证据支持的声明，再迭代论文论证、图表、复现说明和模拟审稿。实验数量多不等于论文完整；每项实验必须服务于主张、竞争解释或外部效度。
 - 申请 `complete` 前先运行 `powershell -File agent/audit-iterative-research.ps1 research/<topic-slug>`；控制平面还会执行不可绕过的完成门禁。结构审计通过不等于科学结论已通过同行评议。
 - 所有阶段转换、关键决策、协议冻结、实验和 run 都通过控制平面登记；不得只修改 Markdown 假装状态已经推进。
+- 控制平面分别记录 Proposal 决策、新颖性、实证进度和执行就绪度。`Proposal decision: pass` 只代表实验前论证成立；`Empirical status: not-run`、`Execution readiness: designed` 可以与其同时成立。
 
 ## 回退与停止
 

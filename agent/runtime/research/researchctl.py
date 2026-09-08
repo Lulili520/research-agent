@@ -14,6 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+SCHEMA_VERSION = 3
+GATE_POLICY_VERSION = "proposal-contract-v4"
 
 LAYOUT = {
     "research.json": "control/project.json",
@@ -36,6 +38,7 @@ LAYOUT = {
     "proposal-rivals.jsonl": "proposal/rivals.jsonl",
     "proposal-threats.jsonl": "proposal/threats.jsonl",
     "proposal-iterations.jsonl": "proposal/iterations.jsonl",
+    "proposal-depth-breadth.md": "proposal/depth-breadth.md",
     "proposal-v1-rejected.md": "proposal/archive/v1-rejected.md",
     "novelty-review.md": "proposal/novelty.md",
     "theory.md": "theory/theory.md",
@@ -111,21 +114,30 @@ TRANSITIONS = {
 GATES = {
     "literature-mapping": ["scope.md"],
     "direction-audit": ["search-log.md", "literature.md", "literature/corpus.jsonl", "literature/coverage.md", "evidence.md"],
-    "theory-building": ["research-directions.md", "selected-direction.md", "proposal.md", "proposal-audit.md", "literature/nearest-neighbors.md"],
+    "theory-building": ["research-directions.md", "selected-direction.md", "proposal.md", "proposal-depth-breadth.md", "proposal-audit.md", "literature/nearest-neighbors.md"],
     "experiment-protocol": ["theory.md", "theory/claims.jsonl", "theory/predictions.jsonl", "theory-audit.md"],
-    "pilot": ["experiments/protocol.md", "experiments/protocol.lock.json", "experiments/design.json", "experiments/analysis-plan.md", "experiments/protocol-audit.md"],
+    "pilot": ["experiments/protocol.md", "experiments/protocol.lock.json", "experiments/design.json", "experiments/analysis-plan.md", "experiments/protocol-audit.md", "proposal/novelty-refresh-pre-experiment.md"],
     "main-experiment": ["experiments/pilot.md"],
     "robustness-analysis": ["experiments/results.md", "runs/registry.jsonl"],
     "evidence-audit": ["analysis.md", "evidence.md"],
     "artifact-building": ["analysis.md", "evidence.md"],
     "artifact-validation": ["artifact/README.md"],
     "report-writing": ["artifact/README.md"],
-    "report-review": ["report.md"],
+    "report-review": [
+        "report.md", "paper/manuscript.md", "paper/claims.jsonl",
+        "paper/iterations.jsonl", "paper/quality-audit.json", "paper/unified-quality-audit.md",
+        "paper/review.md", "paper/reproducibility.md", "proposal/novelty-refresh-pre-paper.md",
+    ],
 }
 
 PERMISSIONS = ("external_compute", "restricted_data", "human_subjects", "external_publish")
 EXPERIMENT_STAGES = {"experiment-protocol", "pilot", "main-experiment", "robustness-analysis"}
 RUN_STAGES = {"pilot", "main-experiment", "robustness-analysis"}
+QUALITY_DIMENSIONS = {
+    "importance", "novelty", "depth", "theory", "correctness",
+    "experimental_sufficiency", "robustness", "reproducibility", "ethics", "clarity",
+}
+EMPIRICAL_ORDER = {"not-run": 0, "pilot": 1, "tested": 2}
 
 
 @contextlib.contextmanager
@@ -242,9 +254,82 @@ def require_stage(state: dict[str, Any], allowed: set[str], operation: str) -> N
         raise SystemExit(f"{operation} is not allowed in stage {state['research_stage']}")
 
 
+def require_current_policy(root: Path) -> None:
+    config = read_json(root / "research.json")
+    state = read_json(root / "state.json")
+    if (config.get("schema_version") != SCHEMA_VERSION or
+            config.get("gate_policy_version") != GATE_POLICY_VERSION or
+            state.get("policy_status") != "current"):
+        raise SystemExit("project policy is migration-required; run migrate-policy and revalidate-policy")
+
+
+def quality_errors(root: Path) -> list[str]:
+    path = root / "paper/quality-audit.json"
+    if not path.is_file() or path.stat().st_size == 0:
+        return ["missing or empty: paper/quality-audit.json"]
+    try:
+        audit = read_json(path)
+    except (json.JSONDecodeError, OSError) as error:
+        return [f"invalid paper/quality-audit.json: {error}"]
+    errors: list[str] = []
+    dimensions = audit.get("dimensions", {})
+    if set(dimensions) != QUALITY_DIMENSIONS:
+        errors.append("quality audit must contain exactly the ten unified quality dimensions")
+    for name in QUALITY_DIMENSIONS:
+        item = dimensions.get(name, {})
+        if item.get("status") not in {"pass", "not-applicable"}:
+            errors.append(f"quality dimension {name} is not closed")
+        if not str(item.get("rationale", "")).strip() or not item.get("evidence"):
+            errors.append(f"quality dimension {name} requires rationale and evidence locators")
+    if audit.get("fatal_issues") != []:
+        errors.append("quality audit has unresolved fatal issues")
+    independence = audit.get("review_independence", {})
+    for field in ("reviewer_role", "reviewer_model", "context_isolation"):
+        if not str(independence.get(field, "")).strip():
+            errors.append(f"quality audit missing review_independence.{field}")
+    if independence.get("independent_evidence_check") is not True:
+        errors.append("quality audit requires an independent evidence check")
+    return errors
+
+
+def novelty_refresh_errors(root: Path, phase: str) -> list[str]:
+    path = root / f"proposal/novelty-refresh-{phase}.md"
+    if not path.is_file() or path.stat().st_size == 0:
+        return [f"missing or empty: proposal/novelty-refresh-{phase}.md"]
+    text = path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    for label in ("Search date:", "Databases:", "Query families:", "New nearest neighbors:", "Claim impact:"):
+        if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", text):
+            errors.append(f"novelty refresh {phase} missing non-empty field: {label}")
+    if not re.search(r"(?im)^Refresh decision:\s*(pass|return-to-proposal)\s*$", text):
+        errors.append(f"novelty refresh {phase} lacks a valid decision")
+    elif re.search(r"(?im)^Refresh decision:\s*return-to-proposal\s*$", text):
+        errors.append(f"novelty refresh {phase} requires return to proposal")
+    return errors
+
+
 def nonnegative(name: str, value: float) -> None:
     if value < 0:
         raise SystemExit(f"{name} must be non-negative")
+
+
+def markdown_field(text: str, label: str) -> str | None:
+    match = re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*(\S.*)$", text)
+    return match.group(1).strip() if match else None
+
+
+def proposal_metadata(root: Path) -> dict[str, str]:
+    path = root / "proposal.md"
+    if not path.is_file() or path.stat().st_size == 0:
+        return {}
+    text = path.read_text(encoding="utf-8")
+    labels = ("Proposal decision:", "Novelty status:", "Empirical status:", "Execution readiness:", "Paper sufficiency:")
+    return {label[:-1].lower().replace(" ", "_"): value for label in labels if (value := markdown_field(text, label))}
+
+
+def later_empirical_status(first: str | None, second: str | None) -> str:
+    values = [value for value in (first, second) if value in EMPIRICAL_ORDER]
+    return max(values, key=EMPIRICAL_ORDER.get) if values else "not-run"
 
 
 def require_nonempty(root: Path, relative: str) -> Path:
@@ -263,17 +348,22 @@ def completion_errors(root: Path) -> list[str]:
         "scope.md", "search-log.md", "literature.md", "literature/corpus.jsonl",
         "literature/coverage.md", "literature/nearest-neighbors.md",
         "research-directions.md", "selected-direction.md", "proposal.md",
-        "proposal-audit.md", "theory.md", "theory/claims.jsonl",
+        "proposal-depth-breadth.md", "proposal-audit.md", "theory.md", "theory/claims.jsonl",
         "theory/predictions.jsonl", "theory-audit.md", "experiments/protocol.md",
         "experiments/design.json", "experiments/analysis-plan.md", "experiments/protocol-audit.md",
         "experiments/protocol.lock.json", "experiments/pilot.md",
         "experiments/registry.jsonl", "runs/registry.jsonl", "runs/outcomes.jsonl",
         "experiments/results.md", "analysis.md", "evidence.md",
-        "artifact/README.md", "report.md",
+        "artifact/README.md", "report.md", "paper/manuscript.md",
+        "paper/claims.jsonl", "paper/iterations.jsonl", "paper/quality-audit.json", "paper/unified-quality-audit.md",
+        "paper/review.md", "paper/reproducibility.md", "proposal/novelty-refresh-pre-paper.md",
     ]
     errors = [item for item in required if not (root / item).is_file() or (root / item).stat().st_size == 0]
     if errors:
         return [f"missing or empty: {item}" for item in errors]
+    errors.extend(theory_errors(root))
+    errors.extend(quality_errors(root))
+    errors.extend(novelty_refresh_errors(root, "pre-paper"))
     try:
         verify_protocol(root)
     except SystemExit as error:
@@ -286,6 +376,12 @@ def completion_errors(root: Path) -> list[str]:
         errors.append("experiments/results.md lacks a valid Outcome")
     if not re.search(r"\bC\d+\b", (root / "evidence.md").read_text(encoding="utf-8")):
         errors.append("evidence.md lacks stable claim IDs")
+    paper_review = (root / "paper/review.md").read_text(encoding="utf-8")
+    if not re.search(r"(?im)^Review decision:\s*agent-review-cleared\s*$", paper_review):
+        errors.append("paper/review.md must record `Review decision: agent-review-cleared` before completion")
+    public_audit = root.parent / "outputs" / "04-论文与投稿审计.md"
+    if not public_audit.is_file() or public_audit.stat().st_size == 0:
+        errors.append("missing or empty user deliverable: outputs/04-论文与投稿审计.md")
     return errors
 
 
@@ -317,11 +413,11 @@ def proposal_errors(root: Path) -> list[str]:
             for field in ("title", "stable_url", "relevance_reason"):
                 if not str(item[field]).strip():
                     errors.append(f"included source has empty {field}: {source_id}")
-    if not 50 <= len(included) <= 100:
-        errors.append(f"included corpus has {len(included)} papers; formal proposals require 50–100")
     core = [item for item in included if item["role"] == "core" and item["access_level"] == "full-text"]
-    if not 20 <= len(core) <= 30:
-        errors.append(f"{len(core)} core papers have full-text access; formal proposals require 20–30")
+    if not included:
+        errors.append("included corpus is empty")
+    if not core:
+        errors.append("core full-text set is empty")
     for item in core:
         card = root / "papers" / f"{item['source_id']}.md"
         if not card.is_file() or card.stat().st_size == 0:
@@ -330,7 +426,7 @@ def proposal_errors(root: Path) -> list[str]:
         "search-log.md", "literature/coverage.md", "literature/nearest-neighbors.md",
         "proposal-candidates.jsonl", "proposal-claims.jsonl", "proposal-rivals.jsonl",
         "proposal-threats.jsonl", "proposal-iterations.jsonl",
-        "proposal.md", "proposal-audit.md", "novelty-review.md",
+        "proposal.md", "proposal-depth-breadth.md", "proposal-audit.md", "novelty-review.md",
     )
     for relative in required_files:
         path = root / relative
@@ -347,8 +443,8 @@ def proposal_errors(root: Path) -> list[str]:
         motivation_count = len(re.findall(r"(?im)^####\s+研究动机\s*$", review))
         method_count = len(re.findall(r"(?im)^####\s+方法介绍\s*$", review))
         summary_count = len(re.findall(r"(?im)^####\s+总结归纳\s*$", review))
-        if not (20 <= motivation_count <= 30 and motivation_count == method_count == summary_count):
-            errors.append("outputs/01-文献调研总结.md must contain 20–30 matched motivation/method/summary full-text analyses")
+        if not (motivation_count == method_count == summary_count == len(core)):
+            errors.append("outputs/01-文献调研总结.md must contain one matched motivation/method/summary analysis for every core full-text paper")
         if not re.search(r"(?im)^##\s+.*\d+\s*篇论文形成的整体认识.*$", review):
             errors.append("outputs/01-文献调研总结.md missing corpus-level synthesis section")
         if not re.search(r"(?im)^##\s+.*仍然存在的问题.*$", review):
@@ -356,11 +452,29 @@ def proposal_errors(root: Path) -> list[str]:
     public_proposal = public / "02-验证后Proposal.md"
     if public_proposal.is_file() and public_proposal.stat().st_size > 0:
         text = public_proposal.read_text(encoding="utf-8")
-        for heading in ("研究背景与问题重要性", "精确研究问题", "理论机制", "可证伪假设", "核心构念与测量", "最近邻与新颖性边界", "风险、失败结果与停止条件"):
+        public_statuses = {
+            "Proposal decision:": r"pass",
+            "Novelty status:": r"audited",
+            "Empirical status:": r"not-run|pilot|tested",
+            "Execution readiness:": r"designed|deployable|blocked",
+        }
+        for label, allowed in public_statuses.items():
+            if not re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*(?:{allowed})\s*$", text):
+                errors.append(f"outputs/02-验证后Proposal.md missing or invalid status: {label}")
+        for heading in (
+                "研究背景与问题重要性", "精确研究问题", "研究边界与必要广度",
+                "论证深度与机制链", "理论机制", "可证伪假设", "核心构念与测量",
+                "最近邻与新颖性边界", "完整论文证据包", "风险、失败结果与停止条件"):
             if not re.search(rf"(?im)^##\s+.*{re.escape(heading)}.*$", text):
                 errors.append(f"outputs/02-验证后Proposal.md missing section: {heading}")
     if errors:
         return errors
+    coverage = (root / "literature/coverage.md").read_text(encoding="utf-8")
+    for label in ("Corpus size rationale:", "Core set rationale:", "Direct-neighbor coverage:"):
+        if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", coverage):
+            errors.append(f"literature/coverage.md missing non-empty field: {label}")
+    if not re.search(r"(?im)^Coverage status:\s*saturated\s*$", coverage):
+        errors.append("literature/coverage.md requires `Coverage status: saturated`")
     try:
         candidates = read_jsonl(root / "proposal-candidates.jsonl")
         claims = read_jsonl(root / "proposal-claims.jsonl")
@@ -369,20 +483,74 @@ def proposal_errors(root: Path) -> list[str]:
         iterations = read_jsonl(root / "proposal-iterations.jsonl")
     except (json.JSONDecodeError, OSError) as error:
         return [f"invalid proposal iteration registry: {error}"]
-    if len(candidates) < 2:
-        errors.append("proposal-candidates.jsonl requires competing directions, not a single preselected idea")
+    proposal_text = (root / "proposal.md").read_text(encoding="utf-8")
+    current_proposal_id = markdown_field(proposal_text, "Proposal ID:")
+    if not current_proposal_id:
+        errors.append("proposal.md missing field: Proposal ID:")
+    if len(candidates) < 3:
+        errors.append("proposal-candidates.jsonl requires at least three knowledge-distinct directions")
+    selected_candidates = [item for item in candidates if str(item.get("status", "")).startswith("selected")]
+    if len(selected_candidates) != 1:
+        errors.append("proposal-candidates.jsonl requires exactly one selected direction")
+    seen_candidate_claims: set[str] = set()
+    for index, item in enumerate(candidates, start=1):
+        missing = {
+            "candidate_id", "status", "knowledge_question", "knowledge_claim",
+            "mechanism", "decisive_test", "scientific_consequence",
+        } - set(item)
+        if missing:
+            errors.append(f"proposal candidate row {index} missing fields: {', '.join(sorted(missing))}")
+            continue
+        normalized_claim = re.sub(r"\s+", " ", str(item["knowledge_claim"]).strip().lower())
+        if not normalized_claim:
+            errors.append(f"proposal candidate row {index} has an empty knowledge claim")
+        elif normalized_claim in seen_candidate_claims:
+            errors.append(f"proposal candidate row {index} duplicates another knowledge claim")
+        seen_candidate_claims.add(normalized_claim)
+        for field in ("knowledge_question", "mechanism", "decisive_test", "scientific_consequence"):
+            if not str(item[field]).strip():
+                errors.append(f"proposal candidate row {index} has empty {field}")
     if not claims:
         errors.append("proposal-claims.jsonl contains no atomic contribution claims")
+    for index, item in enumerate(claims, start=1):
+        missing = {"claim_id", "type", "status", "claim", "evidence", "scientific_consequence"} - set(item)
+        if missing:
+            errors.append(f"proposal claim row {index} missing fields: {', '.join(sorted(missing))}")
+            continue
+        if item.get("status") != "withdrawn" and (not item.get("evidence") or not str(item.get("scientific_consequence", "")).strip()):
+            errors.append(f"retained proposal claim lacks evidence or scientific consequence: {item.get('claim_id')}")
     if not rivals:
         errors.append("proposal-rivals.jsonl contains no competing mechanism")
-    fatal_threats = [item for item in threats if item.get("severity") == "fatal" and item.get("status") != "resolved"]
+    for index, item in enumerate(rivals, start=1):
+        missing = {"rival_id", "mechanism", "distinguishing_pattern"} - set(item)
+        if missing:
+            errors.append(f"proposal rival row {index} missing fields: {', '.join(sorted(missing))}")
+    if not threats:
+        errors.append("proposal-threats.jsonl contains no threat analysis")
+    valid_threat_classes = {"proposal-fatal", "empirical-dependency", "paper-stage"}
+    valid_threat_statuses = {"open", "mitigated", "resolved", "deferred"}
+    for index, item in enumerate(threats, start=1):
+        missing = {"threat_id", "class", "category", "severity", "status", "threat", "mitigation"} - set(item)
+        if missing:
+            errors.append(f"proposal threat row {index} missing fields: {', '.join(sorted(missing))}")
+            continue
+        if item.get("class") not in valid_threat_classes:
+            errors.append(f"proposal threat row {index} has invalid class")
+        if item.get("status") not in valid_threat_statuses:
+            errors.append(f"proposal threat row {index} has invalid status")
+    fatal_threats = [item for item in threats if item.get("class") == "proposal-fatal" and item.get("status") != "resolved"]
     if fatal_threats:
-        errors.append("proposal-threats.jsonl contains unresolved fatal threats")
+        errors.append("proposal-threats.jsonl contains unresolved proposal-fatal threats")
     required_cycles = {
         "candidate-comparison", "novelty-collision", "mechanism-falsification",
-        "protocol-feasibility", "adversarial-review",
+        "protocol-feasibility", "paper-architecture", "adversarial-review",
     }
     seen_cycles: set[str] = set()
+    full_cycle_rounds: list[int] = []
+    full_cycle_fields = {
+        "round", "breadth_review", "depth_review", "novelty_review",
+        "mechanism_review", "identification_review", "paper_review",
+    }
     iteration_fields = {
         "iteration_id", "proposal_id", "cycle_type", "question", "inputs", "finding",
         "decision", "proposal_changed", "change_summary", "unresolved", "next_action",
@@ -392,7 +560,8 @@ def proposal_errors(root: Path) -> list[str]:
         if missing:
             errors.append(f"proposal iteration row {index} missing fields: {', '.join(sorted(missing))}")
             continue
-        seen_cycles.add(str(item["cycle_type"]))
+        if item.get("proposal_id") == current_proposal_id:
+            seen_cycles.add(str(item["cycle_type"]))
         if not isinstance(item["proposal_changed"], bool):
             errors.append(f"proposal iteration row {index} has non-boolean proposal_changed")
         for field in ("question", "finding", "decision", "change_summary", "next_action"):
@@ -402,9 +571,28 @@ def proposal_errors(root: Path) -> list[str]:
             errors.append(f"proposal iteration row {index} requires evidence inputs")
         if not isinstance(item["unresolved"], list):
             errors.append(f"proposal iteration row {index} unresolved must be a list")
+        if item.get("proposal_id") == current_proposal_id and item.get("cycle_type") == "full-proposal-cycle":
+            missing_full = full_cycle_fields - set(item)
+            if missing_full:
+                errors.append(f"full proposal cycle row {index} missing fields: {', '.join(sorted(missing_full))}")
+                continue
+            if not isinstance(item["round"], int) or item["round"] < 1:
+                errors.append(f"full proposal cycle row {index} has invalid round")
+            else:
+                full_cycle_rounds.append(item["round"])
+            for field in full_cycle_fields - {"round"}:
+                if not str(item[field]).strip():
+                    errors.append(f"full proposal cycle row {index} has empty {field}")
     missing_cycles = required_cycles - seen_cycles
     if missing_cycles:
-        errors.append(f"proposal iteration record missing cycles: {', '.join(sorted(missing_cycles))}")
+        errors.append(f"current proposal iteration record missing cycles: {', '.join(sorted(missing_cycles))}")
+    if len(full_cycle_rounds) != len(set(full_cycle_rounds)):
+        errors.append("current proposal has duplicate full-proposal-cycle round numbers")
+    distinct_full_rounds = sorted(set(full_cycle_rounds))
+    if len(distinct_full_rounds) < 5:
+        errors.append("current proposal requires at least five full-proposal-cycle rounds")
+    elif distinct_full_rounds[-5:] != list(range(distinct_full_rounds[-1] - 4, distinct_full_rounds[-1] + 1)):
+        errors.append("current proposal requires five consecutive full-proposal-cycle rounds")
     if errors:
         return errors
     search = (root / "search-log.md").read_text(encoding="utf-8")
@@ -416,22 +604,68 @@ def proposal_errors(root: Path) -> list[str]:
         errors.append("novelty saturation requires the last two directed rounds to record `Proposal changed: no`")
     if not re.search(r"(?im)^Saturation:\s*reached\s*$", search):
         errors.append("search-log.md requires `Saturation: reached` only after two stable rounds")
-    proposal = (root / "proposal.md").read_text(encoding="utf-8")
-    for label in ("Topic:", "Proposal ID:", "Search cutoff:", "Novelty status:", "Constructs:", "Assumptions:", "Mechanism:", "Competing explanations:", "Predictions:", "Falsifiers:"):
+    depth_breadth = (root / "proposal-depth-breadth.md").read_text(encoding="utf-8")
+    for label in (
+        "Proposal ID:", "Central thesis:", "Research-question tree:", "Necessary subquestions:",
+        "Contribution stack:", "Depth target:", "Depth chain:", "Competing explanations:",
+        "Decisive discriminator:", "Breadth floor:", "Confirmatory core:", "Boundary axes:",
+        "External-validity minimum:", "Breadth ceiling:", "Out of scope:", "Evidence package:",
+        "Expansion triggers:", "Stop-expansion rule:",
+    ):
+        if not re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*\S.*$", depth_breadth):
+            errors.append(f"proposal-depth-breadth.md missing field: {label}")
+    if markdown_field(depth_breadth, "Proposal ID:") != current_proposal_id:
+        errors.append("proposal-depth-breadth.md Proposal ID does not match proposal.md")
+    if not re.search(r"(?im)^\s*-?\s*Depth gate:\s*pass\s*$", depth_breadth):
+        errors.append("proposal-depth-breadth.md requires `Depth gate: pass`")
+    if not re.search(r"(?im)^\s*-?\s*Breadth gate:\s*pass\s*$", depth_breadth):
+        errors.append("proposal-depth-breadth.md requires `Breadth gate: pass`")
+    proposal = proposal_text
+    for label in (
+        "Topic:", "Proposal ID:", "Search cutoff:", "Proposal decision:", "Novelty status:",
+        "Empirical status:", "Execution readiness:", "Paper sufficiency:", "Depth gate:", "Breadth gate:",
+        "Knowledge question (Q):", "Knowledge claim (K):", "Mechanism (M):",
+        "Decisive test (D):", "Scientific consequence (C):", "Constructs:", "Assumptions:",
+        "Mechanism:", "Competing explanations:", "Predictions:", "Falsifiers:",
+        "Central thesis:", "Research-question tree:", "Contribution stack:",
+        "Confirmatory core:", "Boundary program:", "External-validity minimum:", "Expansion stop rule:",
+        "Positive outcome:", "Null outcome:", "Mixed outcome:", "Inconclusive outcome:",
+    ):
         if not re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*\S.*$", proposal):
             errors.append(f"proposal.md missing field: {label}")
+    scope = (root / "scope.md").read_text(encoding="utf-8")
+    if re.search(r"(?im)^\s*-?\s*Theory mode:\s*formal\s*$", scope):
+        for label in ("Formal statement:", "Proof obligations:", "Proof sketch:", "Counterexample search:", "Empirical corollaries:"):
+            if not re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*\S.*$", proposal):
+                errors.append(f"formal proposal missing theoretical precheck field: {label}")
+    if not re.search(r"(?im)^-?\s*Proposal decision:\s*pass\s*$", proposal):
+        errors.append("proposal.md requires `Proposal decision: pass` before theory-building")
     if not re.search(r"(?im)^-?\s*Novelty status:\s*audited\s*$", proposal):
         errors.append("proposal.md requires `Novelty status: audited` before theory-building")
+    if not re.search(r"(?im)^-?\s*Empirical status:\s*(not-run|pilot|tested)\s*$", proposal):
+        errors.append("proposal.md has invalid `Empirical status`")
+    if not re.search(r"(?im)^-?\s*Execution readiness:\s*(designed|deployable|blocked)\s*$", proposal):
+        errors.append("proposal.md has invalid `Execution readiness`")
+    if not re.search(r"(?im)^-?\s*Paper sufficiency:\s*proposal-ready\s*$", proposal):
+        errors.append("proposal.md requires `Paper sufficiency: proposal-ready` before theory-building")
+    if not re.search(r"(?im)^-?\s*Depth gate:\s*pass\s*$", proposal):
+        errors.append("proposal.md requires `Depth gate: pass` before theory-building")
+    if not re.search(r"(?im)^-?\s*Breadth gate:\s*pass\s*$", proposal):
+        errors.append("proposal.md requires `Breadth gate: pass` before theory-building")
     audit = (root / "proposal-audit.md").read_text(encoding="utf-8")
-    for label in ("Search cutoff:", "Databases:", "Query families:", "Uncovered scope:", "Novelty status:"):
+    for label in ("Search cutoff:", "Databases:", "Query families:", "Uncovered scope:", "Novelty status:", "Empirical dependencies:"):
         if not re.search(rf"(?im)^\s*-?\s*{re.escape(label)}\s*\S.*$", audit):
             errors.append(f"proposal-audit.md missing field: {label}")
+    if not re.search(r"(?im)^\s*-?\s*Proposal gate:\s*pass\s*$", audit):
+        errors.append("proposal-audit.md requires `Proposal gate: pass`")
     novelty_review = (root / "novelty-review.md").read_text(encoding="utf-8")
-    for label in ("Reviewer role:", "Reviewer stance:", "Equivalent-work criterion:", "Adversarial findings:", "Claim withdrawals:", "Unresolved threats:", "Independence statement:"):
+    for label in ("Reviewer role:", "Reviewer model:", "Reviewer context isolation:", "Independent search:", "Reviewer stance:", "Equivalent-work criterion:", "Adversarial findings:", "Claim withdrawals:", "Unresolved threats:", "Independence statement:"):
         if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", novelty_review):
             errors.append(f"novelty-review.md missing non-empty field: {label}")
     if not re.search(r"(?im)^Decision:\s*pass\s*$", novelty_review):
         errors.append("novelty-review.md requires `Decision: pass`")
+    if not re.search(r"(?im)^Independent search:\s*yes\s*$", novelty_review):
+        errors.append("novelty-review.md requires `Independent search: yes`")
     return errors
 
 
@@ -450,6 +684,28 @@ def theory_errors(root: Path) -> list[str]:
             errors.append(f"theory.md missing non-empty field: {label}")
     if not re.search(r"(?im)^\s*-?\s*Theory gate:\s*pass\s*$", theory):
         errors.append("theory.md requires `Theory gate: pass`")
+    mode_match = re.search(r"(?im)^\s*-?\s*Theory mode:\s*(formal|empirical-system)\s*$", theory)
+    if not mode_match:
+        errors.append("theory.md requires `Theory mode: formal|empirical-system`")
+    elif mode_match.group(1).lower() == "formal":
+        proof_files = (
+            "theory/formalization.md", "theory/proofs.md",
+            "theory/proof-audit.md", "theory/counterexamples.jsonl",
+        )
+        for relative in proof_files:
+            path = root / relative
+            if not path.is_file() or path.stat().st_size == 0:
+                errors.append(f"missing or empty formal-theory artifact: {relative}")
+        proof_audit_path = root / "theory/proof-audit.md"
+        if proof_audit_path.is_file():
+            proof_audit = proof_audit_path.read_text(encoding="utf-8")
+            if not re.search(r"(?im)^Proof gate:\s*pass\s*$", proof_audit):
+                errors.append("theory/proof-audit.md requires `Proof gate: pass`")
+            for label in ("Reviewer role:", "Reviewer model:", "Verification level:", "Independent reconstruction:", "Independence statement:", "Unresolved proof issues:"):
+                if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", proof_audit):
+                    errors.append(f"theory/proof-audit.md missing non-empty field: {label}")
+            if not re.search(r"(?im)^Independent reconstruction:\s*yes\s*$", proof_audit):
+                errors.append("theory/proof-audit.md requires `Independent reconstruction: yes`")
     try:
         claims = read_jsonl(root / "theory/claims.jsonl")
         predictions = read_jsonl(root / "theory/predictions.jsonl")
@@ -531,7 +787,7 @@ def scope_errors(root: Path) -> list[str]:
         return ["missing or empty: scope.md"]
     text = path.read_text(encoding="utf-8")
     labels = (
-        "Topic:", "Research question:", "Research type:", "Knowledge contribution:",
+        "Topic:", "Research question:", "Research type:", "Theory mode:", "Knowledge contribution:",
         "Unit of analysis:", "Intervention or comparison:", "Primary outcome:",
         "Population / system scope:", "In scope:", "Out of scope:",
         "Falsification condition:", "Data constraints:", "Model constraints:",
@@ -639,9 +895,15 @@ def protocol_errors(root: Path) -> list[str]:
     audit = (root / "experiments/protocol-audit.md").read_text(encoding="utf-8")
     if not re.search(r"(?im)^Protocol gate:\s*pass\s*$", audit):
         errors.append("experiments/protocol-audit.md requires `Protocol gate: pass`")
-    for label in ("Reviewer role:", "Reviewer stance:", "Unresolved threats:", "Independence statement:", "Execution authorization:"):
+    for label in ("Protocol ID:", "Protocol version:", "Reviewer role:", "Reviewer stance:", "Unresolved threats:", "Independence statement:", "Execution authorization:"):
         if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", audit):
             errors.append(f"experiments/protocol-audit.md missing non-empty field: {label}")
+    audit_id_match = re.search(r"(?im)^\s*Protocol ID:\s*(\S.+)$", audit)
+    audit_version_match = re.search(r"(?im)^\s*Protocol version:\s*(\d+)\s*$", audit)
+    if protocol_id_match and audit_id_match and audit_id_match.group(1).strip() != protocol_id_match.group(1).strip():
+        errors.append("protocol ID differs between protocol.md and protocol-audit.md")
+    if protocol_version_match and audit_version_match and audit_version_match.group(1) != protocol_version_match.group(1):
+        errors.append("protocol version differs between protocol.md and protocol-audit.md")
     experiment_output = root.parent / "outputs" / "03-理论分析与实验探究.md"
     if experiment_output.is_file():
         experiment_text = experiment_output.read_text(encoding="utf-8")
@@ -656,13 +918,14 @@ def command_init(args: argparse.Namespace) -> None:
     if (root / "research.json").exists() or (root / "state.json").exists() or (outer / "research.json").exists():
         raise SystemExit(f"research project already initialized: {outer}")
     root.mkdir(parents=True, exist_ok=True)
-    for directory in ("control", "review", "proposal", "theory", "experiments"):
+    for directory in ("control", "review", "proposal", "theory", "experiments", "paper"):
         (root.base / directory).mkdir(exist_ok=True)
     (outer / "outputs").mkdir(exist_ok=True)
     nonnegative("gpu-hours", args.gpu_hours)
     nonnegative("cost", args.cost)
     config = {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
+        "gate_policy_version": GATE_POLICY_VERSION,
         "topic": args.topic,
         "research_type": args.research_type,
         "created_at": now(),
@@ -670,10 +933,14 @@ def command_init(args: argparse.Namespace) -> None:
         "permissions": {name: False for name in PERMISSIONS},
     }
     state = {
-        "schema_version": 1,
+        "schema_version": SCHEMA_VERSION,
+        "policy_status": "current",
         "workflow_status": "in-progress",
         "research_stage": "initialized",
+        "proposal_decision": "not-assessed",
         "novelty_status": "not-assessed",
+        "empirical_status": "not-run",
+        "execution_readiness": "not-assessed",
         "iteration": 0,
         "protocol_version": None,
         "usage": {"gpu_hours": 0.0, "cost": 0.0},
@@ -693,6 +960,53 @@ def command_status(args: argparse.Namespace) -> None:
     print(json.dumps({"research": read_json(root / "research.json"), "state": read_json(root / "state.json")}, ensure_ascii=False, indent=2))
 
 
+def command_migrate_policy(args: argparse.Namespace) -> None:
+    root = project(args.directory)
+    verify_events(root)
+    config, state = read_json(root / "research.json"), read_json(root / "state.json")
+    previous = {"schema_version": config.get("schema_version"), "gate_policy_version": config.get("gate_policy_version")}
+    config.update({"schema_version": SCHEMA_VERSION, "gate_policy_version": GATE_POLICY_VERSION})
+    state.update({
+        "schema_version": SCHEMA_VERSION,
+        "policy_status": "migration-required",
+        "proposal_decision": "not-assessed",
+        "empirical_status": state.get("empirical_status", "not-run"),
+        "execution_readiness": "not-assessed",
+        "updated_at": now(),
+    })
+    write_json_atomic(root / "research.json", config); write_json_atomic(root / "state.json", state)
+    emit(root, "policy-migration-started", args.actor, {"previous": previous, "reason": args.reason})
+
+
+def command_revalidate_policy(args: argparse.Namespace) -> None:
+    root = project(args.directory)
+    verify_events(root)
+    config, state = read_json(root / "research.json"), read_json(root / "state.json")
+    if config.get("schema_version") != SCHEMA_VERSION or config.get("gate_policy_version") != GATE_POLICY_VERSION:
+        raise SystemExit("run migrate-policy first")
+    stage = state["research_stage"]
+    errors: list[str] = []
+    if stage not in {"initialized", "blocked", "terminated"} and STAGES.index(stage) >= STAGES.index("literature-mapping"):
+        errors += scope_errors(root)
+    if stage not in {"blocked", "terminated"} and STAGES.index(stage) >= STAGES.index("theory-building"):
+        errors += proposal_errors(root)
+    if stage not in {"blocked", "terminated"} and STAGES.index(stage) >= STAGES.index("experiment-protocol"):
+        errors += theory_errors(root)
+    if errors:
+        raise SystemExit("policy revalidation failed: " + "; ".join(errors))
+    if stage not in {"initialized", "problem-framing", "literature-mapping", "direction-audit", "blocked", "terminated"}:
+        metadata = proposal_metadata(root)
+        state.update({
+            "proposal_decision": "pass",
+            "novelty_status": "audited",
+            "empirical_status": later_empirical_status(state.get("empirical_status"), metadata.get("empirical_status")),
+            "execution_readiness": metadata.get("execution_readiness", "designed"),
+        })
+    state.update({"policy_status": "current", "updated_at": now()})
+    write_json_atomic(root / "state.json", state)
+    emit(root, "policy-revalidated", args.actor, {"stage": stage})
+
+
 def command_audit_proposal(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
@@ -701,7 +1015,16 @@ def command_audit_proposal(args: argparse.Namespace) -> None:
         raise SystemExit("proposal audit failed: " + "; ".join(errors))
     corpus = [item for item in read_jsonl(root / "literature/corpus.jsonl") if item.get("screening_status") == "included"]
     core = [item for item in corpus if item.get("role") == "core" and item.get("access_level") == "full-text"]
-    print(json.dumps({"status": "pass", "included": len(corpus), "core_full_text": len(core)}, ensure_ascii=False))
+    metadata = proposal_metadata(root)
+    print(json.dumps({
+        "status": "pass",
+        "proposal_decision": metadata.get("proposal_decision", "pass"),
+        "novelty_status": metadata.get("novelty_status", "audited"),
+        "empirical_status": metadata.get("empirical_status", "not-run"),
+        "execution_readiness": metadata.get("execution_readiness", "designed"),
+        "included": len(corpus),
+        "core_full_text": len(core),
+    }, ensure_ascii=False))
 
 
 def command_audit_theory(args: argparse.Namespace) -> None:
@@ -735,7 +1058,7 @@ def command_audit_pre_experiment(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
     state = read_json(root / "state.json")
-    errors = scope_errors(root) + proposal_errors(root) + theory_errors(root) + protocol_errors(root)
+    errors = scope_errors(root) + proposal_errors(root) + theory_errors(root) + protocol_errors(root) + novelty_refresh_errors(root, "pre-experiment")
     if state["research_stage"] != "experiment-protocol":
         errors.append(f"research stage must be experiment-protocol, got {state['research_stage']}")
     try:
@@ -750,6 +1073,7 @@ def command_audit_pre_experiment(args: argparse.Namespace) -> None:
 def command_transition(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
+    require_current_policy(root)
     state = read_json(root / "state.json")
     current = state["research_stage"]
     if args.target not in TRANSITIONS.get(current, set()):
@@ -768,7 +1092,7 @@ def command_transition(args: argparse.Namespace) -> None:
         if errors:
             raise SystemExit("theory audit failed: " + "; ".join(errors))
     if args.target == "pilot":
-        errors = protocol_errors(root)
+        errors = protocol_errors(root) + novelty_refresh_errors(root, "pre-experiment")
         if errors:
             raise SystemExit("protocol audit failed: " + "; ".join(errors))
     if args.target == "complete":
@@ -779,6 +1103,26 @@ def command_transition(args: argparse.Namespace) -> None:
     state["research_stage"] = args.target
     terminal_status = {"blocked": "blocked", "complete": "complete", "terminated": "terminated"}
     state["workflow_status"] = terminal_status.get(args.target, "in-progress")
+    if args.target in {"literature-mapping", "direction-audit"}:
+        state.update({"proposal_decision": "not-assessed", "execution_readiness": "not-assessed"})
+        if args.target == "literature-mapping":
+            state["novelty_status"] = "not-assessed"
+        elif state.get("novelty_status") == "audited":
+            state["novelty_status"] = "provisional"
+    if args.target == "theory-building":
+        metadata = proposal_metadata(root)
+        state.update({
+            "proposal_decision": "pass",
+            "novelty_status": "audited",
+            "empirical_status": later_empirical_status(state.get("empirical_status"), metadata.get("empirical_status")),
+            "execution_readiness": metadata.get("execution_readiness", "designed"),
+        })
+    if args.target == "experiment-protocol":
+        state["execution_readiness"] = "designed"
+    if args.target == "pilot":
+        state.update({"empirical_status": "pilot", "execution_readiness": "deployable"})
+    if args.target in {"main-experiment", "robustness-analysis", "evidence-audit", "artifact-building", "artifact-validation", "report-writing", "report-review", "complete"}:
+        state["empirical_status"] = "tested"
     if STAGES.index(args.target) < STAGES.index(current) and args.target not in {"blocked", "terminated"}:
         state["iteration"] += 1
     state["updated_at"] = now()
@@ -797,6 +1141,7 @@ def command_decide(args: argparse.Namespace) -> None:
 def command_freeze(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
+    require_current_policy(root)
     protocol = root / "experiments/protocol.md"
     if not protocol.is_file():
         raise SystemExit("missing experiments/protocol.md")
@@ -847,6 +1192,7 @@ def permission_required(config: dict[str, Any], permission: str) -> None:
 def command_experiment(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
+    require_current_policy(root)
     state = read_json(root / "state.json")
     require_stage(state, EXPERIMENT_STAGES, "register-experiment")
     verify_protocol(root)
@@ -861,6 +1207,7 @@ def command_experiment(args: argparse.Namespace) -> None:
 def command_run(args: argparse.Namespace) -> None:
     root = project(args.directory)
     verify_events(root)
+    require_current_policy(root)
     config = read_json(root / "research.json")
     state = read_json(root / "state.json")
     require_stage(state, RUN_STAGES, "register-run")
@@ -947,6 +1294,8 @@ def parser() -> argparse.ArgumentParser:
     init.add_argument("directory"); init.add_argument("--topic", required=True); init.add_argument("--research-type", required=True)
     init.add_argument("--gpu-hours", type=float, default=0.0); init.add_argument("--cost", type=float, default=0.0); init.add_argument("--actor", default="research-director"); init.set_defaults(func=command_init)
     status = commands.add_parser("status"); status.add_argument("directory"); status.set_defaults(func=command_status)
+    migrate = commands.add_parser("migrate-policy"); migrate.add_argument("directory"); migrate.add_argument("--reason", required=True); migrate.add_argument("--actor", default="orchestrator"); migrate.set_defaults(func=command_migrate_policy)
+    revalidate = commands.add_parser("revalidate-policy"); revalidate.add_argument("directory"); revalidate.add_argument("--actor", default="orchestrator"); revalidate.set_defaults(func=command_revalidate_policy)
     scope_audit = commands.add_parser("audit-scope"); scope_audit.add_argument("directory"); scope_audit.set_defaults(func=command_audit_scope)
     proposal_audit = commands.add_parser("audit-proposal"); proposal_audit.add_argument("directory"); proposal_audit.set_defaults(func=command_audit_proposal)
     theory_audit = commands.add_parser("audit-theory"); theory_audit.add_argument("directory"); theory_audit.set_defaults(func=command_audit_theory)

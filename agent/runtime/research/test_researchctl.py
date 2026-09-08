@@ -16,6 +16,7 @@ class ResearchControlTests(unittest.TestCase):
     SCOPE = """- Topic: test
 - Research question: does X affect Y
 - Research type: benchmark
+- Theory mode: formal
 - Knowledge contribution: mechanism
 - Unit of analysis: task
 - Intervention or comparison: X versus baseline
@@ -56,13 +57,14 @@ class ResearchControlTests(unittest.TestCase):
             "evidence.md": "C1 evidence",
             "research-directions.md": "directions",
             "selected-direction.md": "selected",
-            "theory.md": "- Proposal ID: P1\n- Theory version: 1\n- Theory gate: pass\nConstructs: agent score\nAssumptions: controlled setting\nMechanism: compression changes action selection\nCompeting explanations: generic accuracy loss\nPredictions: P1\nFalsifiers: no interaction\nExperiment mapping: E1\n",
+            "theory.md": "- Proposal ID: P1\n- Theory version: 1\n- Theory gate: pass\n- Theory mode: formal\nConstructs: agent score\nAssumptions: controlled setting\nMechanism: compression changes action selection\nCompeting explanations: generic accuracy loss\nPredictions: P1\nFalsifiers: no interaction\nExperiment mapping: E1\n",
             "theory-audit.md": "Theory gate: pass\nReviewer role: theory-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from theory construction\n",
-            "literature/coverage.md": "coverage",
+            "literature/coverage.md": "Coverage status: saturated\nCorpus size rationale: scoped corpus\nCore set rationale: nearest neighbors\nDirect-neighbor coverage: complete\n",
             "literature/nearest-neighbors.md": "nearest",
-            "proposal.md": "- Topic: test\n- Proposal ID: P1\n- Search cutoff: 2026-09-01\n- Novelty status: audited\nConstructs: agents\nAssumptions: controlled\nMechanism: test\nCompeting explanations: null\nPredictions: effect\nFalsifiers: no effect\n",
-            "proposal-audit.md": "Search cutoff: 2026-09-01\nDatabases: DBLP\nQuery families: task x mechanism\nUncovered scope: proprietary\nNovelty status: audited\n",
-            "novelty-review.md": "Reviewer role: adversarial-novelty-reviewer\nReviewer stance: skeptical\nEquivalent-work criterion: same knowledge contribution\nAdversarial findings: none equivalent\nClaim withdrawals: broad claims removed\nUnresolved threats: proprietary work\nIndependence statement: reviewed separately from proposal construction\nDecision: pass\n",
+            "proposal.md": "- Topic: test\n- Proposal ID: P1\n- Search cutoff: 2026-09-01\n- Proposal decision: pass\n- Novelty status: audited\n- Empirical status: not-run\n- Execution readiness: designed\n- Paper sufficiency: proposal-ready\n- Depth gate: pass\n- Breadth gate: pass\nKnowledge question (Q): does X affect Y\nKnowledge claim (K): X changes Y through a separable mechanism\nMechanism (M): compression changes evidence authority\nDecisive test (D): paired factorial intervention\nScientific consequence (C): distinguishes mechanism from generic degradation\nCentral thesis: compression changes error handling through a separable mechanism\nResearch-question tree: phenomenon, mechanism, and boundary\nContribution stack: measurement, mechanism, and decision principle\nConfirmatory core: paired factorial test\nBoundary program: context length and task type\nExternal-validity minimum: two model families and two task families\nExpansion stop rule: stop when no claim or threat changes\nConstructs: agents\nAssumptions: controlled\nMechanism: test\nCompeting explanations: generic accuracy loss\nPredictions: effect\nFalsifiers: no effect\nPositive outcome: supports the bounded mechanism\nNull outcome: bounds the mechanism effect\nMixed outcome: identifies a boundary condition\nInconclusive outcome: exposes power or measurement limits\nFormal statement: bounded error increases risk\nProof obligations: derive the bound\nProof sketch: condition on task state\nCounterexample search: degenerate tasks checked\nEmpirical corollaries: larger effect under long context\n",
+            "proposal-depth-breadth.md": "Proposal ID: P1\nCentral thesis: compression changes error handling through a separable mechanism\nResearch-question tree: phenomenon to mechanism to boundary\nNecessary subquestions: effect specificity, mechanism, boundary\nContribution stack: measurement, causal effect, mechanism, decision principle\nDepth target: mechanism and bounded design principle\nDepth chain: intervention to evidence state to action\nCompeting explanations: generic accuracy loss and parser failure\nDecisive discriminator: paired interaction and mechanism intervention\nBreadth floor: process, action, endpoint, and one boundary\nConfirmatory core: paired factorial test\nBoundary axes: context length and task family\nExternal-validity minimum: two model and task families\nBreadth ceiling: no unrelated memory or training studies\nOut of scope: humans and closed-model internals\nEvidence package: construct validation, core effect, mechanism, boundary, artifact\nExpansion triggers: add an axis only when a claim or fatal threat requires it\nStop-expansion rule: stop when additions change no claim, rival, threat, or boundary\nDepth gate: pass\nBreadth gate: pass\n",
+            "proposal-audit.md": "Search cutoff: 2026-09-01\nDatabases: DBLP\nQuery families: task x mechanism\nUncovered scope: proprietary\nNovelty status: audited\nEmpirical dependencies: manipulation and effect size remain not-run\nProposal gate: pass\n",
+            "novelty-review.md": "Reviewer role: adversarial-novelty-reviewer\nReviewer model: isolated-review-model\nReviewer context isolation: fresh context\nIndependent search: yes\nReviewer stance: skeptical\nEquivalent-work criterion: same knowledge contribution\nAdversarial findings: none equivalent\nClaim withdrawals: broad claims removed\nUnresolved threats: proprietary work\nIndependence statement: reviewed separately from proposal construction\nDecision: pass\n",
         }
         for name, content in files.items():
             path = self.internal / name
@@ -71,22 +73,25 @@ class ResearchControlTests(unittest.TestCase):
         outputs = self.root / "outputs"
         review = "## 60 篇论文形成的整体认识\nsummary\n## 仍然存在的问题\ngaps\n" + "\n".join("#### 研究动机\na\n#### 方法介绍\nb\n#### 总结归纳\nc" for _ in range(20))
         (outputs / "01-文献调研总结.md").write_text(review, encoding="utf-8")
-        proposal_sections = ("研究背景与问题重要性", "精确研究问题", "理论机制", "可证伪假设", "核心构念与测量", "最近邻与新颖性边界", "风险、失败结果与停止条件")
-        public_proposal = "新颖性审计: pass\n理论可行性审计: pass\n" + "\n".join(f"## {name}\ncontent" for name in proposal_sections)
+        proposal_sections = ("研究背景与问题重要性", "精确研究问题", "研究边界与必要广度", "论证深度与机制链", "理论机制", "可证伪假设", "核心构念与测量", "最近邻与新颖性边界", "完整论文证据包", "风险、失败结果与停止条件")
+        public_proposal = "Proposal decision: pass\nNovelty status: audited\nEmpirical status: not-run\nExecution readiness: designed\n新颖性审计: pass\n理论可行性审计: pass\n" + "\n".join(f"## {name}\ncontent" for name in proposal_sections)
         (outputs / "02-验证后Proposal.md").write_text(public_proposal, encoding="utf-8")
         registries = {
             "proposal-candidates.jsonl": [
-                {"candidate_id": "D1", "status": "selected", "knowledge_contribution": "mechanism"},
-                {"candidate_id": "D2", "status": "rejected", "knowledge_contribution": "benchmark"},
+                {"candidate_id": "D1", "status": "selected", "knowledge_question": "does X affect Y", "knowledge_claim": "X changes Y through mechanism M", "mechanism": "evidence compression", "decisive_test": "paired factorial intervention", "scientific_consequence": "identifies mechanism M"},
+                {"candidate_id": "D2", "status": "rejected", "knowledge_question": "when does X fail", "knowledge_claim": "risk follows a threshold", "mechanism": "decision cost", "decisive_test": "risk by cost intervention", "scientific_consequence": "identifies the boundary"},
+                {"candidate_id": "D3", "status": "reserve", "knowledge_question": "how often does X occur", "knowledge_claim": "natural incidence bounds deployed risk", "mechanism": "incidence times effect", "decisive_test": "naturalistic audit plus transport", "scientific_consequence": "bounds external relevance"},
             ],
             "proposal-claims.jsonl": [
-                {"claim_id": "PC1", "type": "mechanism", "status": "retained", "evidence": ["C1"]},
+                {"claim_id": "PC1", "type": "mechanism", "status": "retained", "claim": "X changes Y through a separable mechanism", "evidence": ["C1"], "scientific_consequence": "distinguishes mechanism from generic degradation"},
             ],
             "proposal-rivals.jsonl": [
                 {"rival_id": "R1", "mechanism": "generic accuracy loss", "distinguishing_pattern": "uniform degradation"},
             ],
             "proposal-threats.jsonl": [
-                {"threat_id": "T1", "severity": "major", "status": "mitigated", "mitigation": "paired control"},
+                {"threat_id": "T1", "class": "proposal-fatal", "category": "identification", "severity": "fatal", "status": "resolved", "threat": "the treatment may be confounded", "mitigation": "paired factorial control"},
+                {"threat_id": "T2", "class": "empirical-dependency", "category": "measurement", "severity": "major", "status": "deferred", "threat": "the manipulation may fail in practice", "mitigation": "pilot manipulation check"},
+                {"threat_id": "T3", "class": "paper-stage", "category": "external-validity", "severity": "major", "status": "open", "threat": "cross-model generality is unknown", "mitigation": "planned robustness study"},
             ],
             "proposal-iterations.jsonl": [
                 {
@@ -97,8 +102,23 @@ class ResearchControlTests(unittest.TestCase):
                 }
                 for index, cycle in enumerate((
                     "candidate-comparison", "novelty-collision", "mechanism-falsification",
-                    "protocol-feasibility", "adversarial-review",
+                    "protocol-feasibility", "paper-architecture", "adversarial-review",
                 ), start=1)
+            ] + [
+                {
+                    "iteration_id": f"F{index}", "proposal_id": "P1", "cycle_type": "full-proposal-cycle",
+                    "round": index, "question": "recheck the complete proposal", "inputs": ["C1"],
+                    "finding": "complete argument remains bounded", "decision": "retain",
+                    "proposal_changed": index < 5, "change_summary": "refined complete argument" if index < 5 else "converged",
+                    "unresolved": ["external validity"], "next_action": "continue" if index < 5 else "audit",
+                    "breadth_review": "necessary subquestions and scope tiers checked",
+                    "depth_review": "effect, mechanism, rival, and principle checked",
+                    "novelty_review": "functional neighbors checked",
+                    "mechanism_review": "distinct predictions checked",
+                    "identification_review": "paired controls and oracle checked",
+                    "paper_review": "core, boundary, negative result, and artifact path checked",
+                }
+                for index in range(1, 6)
             ],
         }
         for name, rows in registries.items():
@@ -117,6 +137,10 @@ class ResearchControlTests(unittest.TestCase):
         prediction = {"prediction_id": "P1", "hypothesis_id": "H1", "claim_ids": ["C1"], "observable": "interaction", "expected_pattern": "larger degradation on long trajectories", "rival_pattern": "uniform degradation", "scope": "tested models", "falsifier": "no interaction", "experiment_mapping": "factorial context experiment"}
         (theory_dir / "claims.jsonl").write_text(json.dumps(claim) + "\n", encoding="utf-8")
         (theory_dir / "predictions.jsonl").write_text(json.dumps(prediction) + "\n", encoding="utf-8")
+        (theory_dir / "formalization.md").write_text("definitions and theorem", encoding="utf-8")
+        (theory_dir / "proofs.md").write_text("complete proof", encoding="utf-8")
+        (theory_dir / "proof-audit.md").write_text("Proof gate: pass\nReviewer role: proof-skeptic\nReviewer model: isolated-review-model\nVerification level: manual-reconstruction\nIndependent reconstruction: yes\nIndependence statement: reviewed independently\nUnresolved proof issues: none\n", encoding="utf-8")
+        (theory_dir / "counterexamples.jsonl").write_text(json.dumps({"case_id": "CE1", "result": "not-found"}) + "\n", encoding="utf-8")
         (self.internal / "search-log.md").write_text("Round: 1\nProposal changed: yes\nRound: 2\nProposal changed: no\nRound: 3\nProposal changed: no\nSaturation: reached\n", encoding="utf-8")
         for stage in ("problem-framing", "literature-mapping", "direction-audit", "theory-building", "experiment-protocol"):
             self.invoke("transition", str(self.root), stage, "--reason", "test progression")
@@ -153,7 +177,7 @@ class ResearchControlTests(unittest.TestCase):
         design = {"protocol_id": "PR1", "protocol_version": 1, "research_type": "benchmark", "claims": ["C1"], "hypotheses": ["H1"], "predictions": ["P1"], "experimental_units": ["tasks"], "independent_variables": ["context"], "dependent_variables": ["score"], "controls": ["model"], "baselines": ["full precision"], "data_splits": ["test"], "leakage_checks": ["dedup"], "metrics": ["score"], "randomness": [1, 2, 3], "resource_budget": {"gpu_hours": 2}, "stopping_rules": ["fixed budget"]}
         (experiments / "design.json").write_text(json.dumps(design), encoding="utf-8")
         (experiments / "analysis-plan.md").write_text("Primary estimand: paired difference\nPrimary metrics: score\nAggregation unit: task\nUncertainty: bootstrap CI\nRandomness: three seeds\nMultiplicity: adjusted\nFailed runs: retained\nMissing data: reported\nExclusions: predeclared\nDecision rule: CI and effect\nExploratory boundary: labeled\n", encoding="utf-8")
-        (experiments / "protocol-audit.md").write_text("Protocol gate: pass\nReviewer role: protocol-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from protocol design\nExecution authorization: not granted\n", encoding="utf-8")
+        (experiments / "protocol-audit.md").write_text("Protocol ID: PR1\nProtocol version: 1\nProtocol gate: pass\nReviewer role: protocol-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from protocol design\nExecution authorization: not granted\n", encoding="utf-8")
         iterations = [
             {"iteration_id": f"TE{index}", "round": index, "cycle_type": "full-theory-experiment-cycle", "question": "full-cycle stress", "inputs": ["P1"], "finding": "bounded", "decision": "retain", "theory_review": "constructs checked", "rival_review": "rival differs", "identification_review": "controls checked", "experiment_review": "prediction mapped", "resource_review": "budget feasible", "paper_review": "positive and negative outcomes bounded", "theory_changed": index < 3, "protocol_changed": index < 4, "change_summary": "refined" if index < 4 else "no substantive change", "unresolved": [], "next_action": "continue" if index < 5 else "freeze"}
             for index in range(1, 6)
@@ -175,6 +199,10 @@ class ResearchControlTests(unittest.TestCase):
 
     def test_protocol_registry_budget_and_failure_preservation(self):
         self.advance_to_protocol()
+        state = json.loads((self.internal / "state.json").read_text(encoding="utf-8"))
+        self.assertEqual(state["proposal_decision"], "pass")
+        self.assertEqual(state["empirical_status"], "not-run")
+        self.assertEqual(state["execution_readiness"], "designed")
         self.write_protocol_artifacts()
         experiments = self.internal / "experiments"
         self.invoke("freeze-protocol", str(self.root))
@@ -182,7 +210,11 @@ class ResearchControlTests(unittest.TestCase):
         duplicate = self.invoke("register-experiment", str(self.root), "--id", "exp-1", "--purpose", "duplicate", ok=False)
         self.assertNotEqual(duplicate.returncode, 0)
         (experiments / "pilot.md").write_text("Pilot gate: pending\n", encoding="utf-8")
+        (self.internal / "proposal/novelty-refresh-pre-experiment.md").write_text("Search date: 2026-09-03\nDatabases: proceedings\nQuery families: nearest-neighbor refresh\nNew nearest neighbors: none\nClaim impact: unchanged\nRefresh decision: pass\n", encoding="utf-8")
         self.invoke("transition", str(self.root), "pilot", "--reason", "protocol frozen")
+        state = json.loads((self.internal / "state.json").read_text(encoding="utf-8"))
+        self.assertEqual(state["empirical_status"], "pilot")
+        self.assertEqual(state["execution_readiness"], "deployable")
         (self.internal / "configs").mkdir()
         (self.internal / "configs/1.json").write_text("{}", encoding="utf-8")
         (self.internal / "configs/2.json").write_text("{}", encoding="utf-8")
@@ -192,6 +224,17 @@ class ResearchControlTests(unittest.TestCase):
         self.assertEqual(outcomes[0]["status"], "failed")
         over_budget = self.invoke("register-run", str(self.root), "--id", "run-2", "--experiment", "exp-1", "--config", "configs/2.json", "--code-revision", "abc", "--environment", "env-1", "--gpu-hours", "3", ok=False)
         self.assertNotEqual(over_budget.returncode, 0)
+
+    def test_empirical_status_is_preserved_when_pilot_returns_to_protocol(self):
+        self.advance_to_protocol()
+        self.write_protocol_artifacts()
+        (self.internal / "proposal/novelty-refresh-pre-experiment.md").write_text("Search date: 2026-09-03\nDatabases: proceedings\nQuery families: nearest-neighbor refresh\nNew nearest neighbors: none\nClaim impact: unchanged\nRefresh decision: pass\n", encoding="utf-8")
+        self.invoke("freeze-protocol", str(self.root))
+        self.invoke("transition", str(self.root), "pilot", "--reason", "start pilot")
+        self.invoke("transition", str(self.root), "experiment-protocol", "--reason", "revise protocol")
+        state = json.loads((self.internal / "state.json").read_text(encoding="utf-8"))
+        self.assertEqual(state["empirical_status"], "pilot")
+        self.assertEqual(state["execution_readiness"], "designed")
 
     def test_protocol_tamper_is_rejected(self):
         self.advance_to_protocol()
@@ -224,6 +267,8 @@ class ResearchControlTests(unittest.TestCase):
         design = json.loads(design_path.read_text(encoding="utf-8"))
         design["protocol_version"] = 2
         design_path.write_text(json.dumps(design), encoding="utf-8")
+        audit_path = experiments / "protocol-audit.md"
+        audit_path.write_text(audit_path.read_text(encoding="utf-8").replace("Protocol version: 1", "Protocol version: 2"), encoding="utf-8")
         self.invoke("freeze-protocol", str(self.root))
         self.assertEqual((experiments / "protocols/v001.md").read_text(encoding="utf-8"), version_one)
         self.assertIn("Protocol version: 2", (experiments / "protocols/v002.md").read_text(encoding="utf-8"))
@@ -240,7 +285,7 @@ class ResearchControlTests(unittest.TestCase):
             (self.internal / name).write_text("evidence", encoding="utf-8")
         literature = self.internal / "literature"
         literature.mkdir()
-        (literature / "coverage.md").write_text("coverage", encoding="utf-8")
+        (literature / "coverage.md").write_text("Coverage status: saturated\nCorpus size rationale: scoped corpus\nCore set rationale: nearest neighbors\nDirect-neighbor coverage: complete\n", encoding="utf-8")
         (literature / "corpus.jsonl").write_text(json.dumps({"source_id": "p1"}) + "\n", encoding="utf-8")
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
         self.assertIn("missing fields", denied.stderr)
@@ -279,14 +324,30 @@ class ResearchControlTests(unittest.TestCase):
         denied = self.invoke("audit-protocol", str(self.root), ok=False)
         self.assertIn("does not cover theory predictions: P1", denied.stderr)
 
+    def test_protocol_audit_version_must_match_protocol(self):
+        self.advance_to_protocol()
+        self.write_protocol_artifacts()
+        audit_path = self.internal / "experiments/protocol-audit.md"
+        audit_path.write_text(audit_path.read_text(encoding="utf-8").replace("Protocol version: 1", "Protocol version: 2"), encoding="utf-8")
+        denied = self.invoke("audit-protocol", str(self.root), ok=False)
+        self.assertIn("protocol version differs between protocol.md and protocol-audit.md", denied.stderr)
+
     def test_pre_experiment_endpoint_requires_frozen_audited_protocol(self):
         self.advance_to_protocol()
         self.write_protocol_artifacts()
+        (self.internal / "proposal/novelty-refresh-pre-experiment.md").write_text("Search date: 2026-09-03\nDatabases: proceedings\nQuery families: nearest-neighbor refresh\nNew nearest neighbors: none\nClaim impact: unchanged\nRefresh decision: pass\n", encoding="utf-8")
         denied = self.invoke("audit-pre-experiment", str(self.root), ok=False)
         self.assertIn("freeze the protocol", denied.stderr)
         self.invoke("freeze-protocol", str(self.root))
         result = self.invoke("audit-pre-experiment", str(self.root))
         self.assertIn("ready-for-explicit-execution-decision", result.stdout)
+
+    def test_pre_experiment_requires_current_novelty_refresh(self):
+        self.advance_to_protocol()
+        self.write_protocol_artifacts()
+        self.invoke("freeze-protocol", str(self.root))
+        denied = self.invoke("audit-pre-experiment", str(self.root), ok=False)
+        self.assertIn("novelty-refresh-pre-experiment", denied.stderr)
 
     def test_proposal_gate_accepts_dynamic_corpus_count_heading(self):
         self.advance_to_protocol()
@@ -299,6 +360,22 @@ class ResearchControlTests(unittest.TestCase):
         )
         result = self.invoke("audit-proposal", str(self.root))
         self.assertIn('"status": "pass"', result.stdout)
+        self.assertIn('"empirical_status": "not-run"', result.stdout)
+
+    def test_proposal_gate_allows_unrun_empirical_dependencies(self):
+        self.advance_to_protocol()
+        result = self.invoke("audit-proposal", str(self.root))
+        self.assertIn('"proposal_decision": "pass"', result.stdout)
+        self.assertIn('"empirical_status": "not-run"', result.stdout)
+
+    def test_proposal_gate_rejects_unresolved_proposal_fatal(self):
+        self.advance_to_protocol()
+        threats_path = self.internal / "proposal-threats.jsonl"
+        threats = [json.loads(line) for line in threats_path.read_text(encoding="utf-8").splitlines()]
+        threats[0]["status"] = "open"
+        threats_path.write_text("".join(json.dumps(row) + "\n" for row in threats), encoding="utf-8")
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("unresolved proposal-fatal", denied.stderr)
 
     def test_proposal_gate_requires_every_reasoning_cycle(self):
         self.advance_to_protocol()
@@ -310,6 +387,52 @@ class ResearchControlTests(unittest.TestCase):
         )
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
         self.assertIn("protocol-feasibility", denied.stderr)
+
+    def test_proposal_gate_requires_depth_and_breadth_audit(self):
+        self.advance_to_protocol()
+        audit = self.internal / "proposal-depth-breadth.md"
+        audit.write_text(
+            audit.read_text(encoding="utf-8").replace("Depth gate: pass", "Depth gate: revise"),
+            encoding="utf-8",
+        )
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("Depth gate: pass", denied.stderr)
+
+    def test_proposal_gate_requires_five_full_cycles_for_current_proposal(self):
+        self.advance_to_protocol()
+        iterations = self.internal / "proposal-iterations.jsonl"
+        rows = [json.loads(line) for line in iterations.read_text(encoding="utf-8").splitlines()]
+        iterations.write_text(
+            "".join(
+                json.dumps(row) + "\n"
+                for row in rows
+                if row.get("cycle_type") != "full-proposal-cycle" or row.get("round") != 3
+            ),
+            encoding="utf-8",
+        )
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("five full-proposal-cycle", denied.stderr)
+
+    def test_old_proposal_cycles_cannot_satisfy_current_proposal_gate(self):
+        self.advance_to_protocol()
+        iterations = self.internal / "proposal-iterations.jsonl"
+        rows = [json.loads(line) for line in iterations.read_text(encoding="utf-8").splitlines()]
+        for row in rows:
+            if row["cycle_type"] in {
+                "candidate-comparison", "novelty-collision", "mechanism-falsification",
+                "protocol-feasibility", "paper-architecture", "adversarial-review",
+            }:
+                row["proposal_id"] = "P0"
+        iterations.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("current proposal iteration record missing cycles", denied.stderr)
+
+    def test_policy_migration_blocks_mutation_until_revalidated(self):
+        self.invoke("migrate-policy", str(self.root), "--reason", "gate policy upgraded")
+        denied = self.invoke("transition", str(self.root), "problem-framing", "--reason", "start", ok=False)
+        self.assertIn("migration-required", denied.stderr)
+        self.invoke("revalidate-policy", str(self.root))
+        self.invoke("transition", str(self.root), "problem-framing", "--reason", "start")
 
 
 if __name__ == "__main__":

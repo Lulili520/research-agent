@@ -77,9 +77,16 @@ if ((Test-Path -LiteralPath $runtime -PathType Leaf) -and $machineState) {
         if ($LASTEXITCODE -ne 0) { $errors.Add('experiment protocol failed design or analysis-plan audit') }
     }
 }
-foreach ($field in @('Workflow status:', 'Research stage:', 'Novelty status:', 'Iteration:', 'Last updated:')) {
+foreach ($field in @('Workflow status:', 'Research stage:', 'Proposal decision:', 'Novelty status:', 'Empirical status:', 'Execution readiness:', 'Iteration:', 'Last updated:')) {
     if ($state.IndexOf($field, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
         $errors.Add("state.md missing field: $field")
+    }
+}
+if ($machineState) {
+    foreach ($field in @('proposal_decision', 'novelty_status', 'empirical_status', 'execution_readiness')) {
+        if ($machineState.PSObject.Properties.Name -notcontains $field) {
+            $errors.Add("state.json missing independent research status: $field")
+        }
     }
 }
 
@@ -101,6 +108,18 @@ if ($isComplete) {
     $evidence = Require-File 'evidence.md'
     $artifact = Require-File 'artifact/README.md'
     $report = Require-File 'report.md'
+    $manuscript = Require-File 'paper/manuscript.md'
+    $paperClaims = Require-File 'paper/claims.jsonl'
+    $paperIterations = Require-File 'paper/iterations.jsonl'
+    $unifiedQualityAudit = Require-File 'paper/unified-quality-audit.md'
+    $qualityAudit = Require-File 'paper/quality-audit.json'
+    $noveltyRefresh = Require-File 'proposal/novelty-refresh-pre-paper.md'
+    $paperReview = Require-File 'paper/review.md'
+    $reproducibility = Require-File 'paper/reproducibility.md'
+    $submissionAuditPath = Join-Path $topicRoot 'outputs/04-论文与投稿审计.md'
+    if (-not (Test-Path -LiteralPath $submissionAuditPath -PathType Leaf)) {
+        $errors.Add('missing required artifact: outputs/04-论文与投稿审计.md')
+    }
 
     foreach ($term in @('Assumptions:', 'Competing explanations:', 'Predictions:', 'Falsifiers:', 'Experiment mapping:')) {
         if ($theory -and $theory.IndexOf($term, [System.StringComparison]::OrdinalIgnoreCase) -lt 0) {
@@ -119,6 +138,11 @@ if ($isComplete) {
     if ($results -and $results -notmatch '(?im)^Outcome:\s*(supported|refuted|mixed|inconclusive)\s*$') {
         $errors.Add('experiments/results.md does not expose a valid Outcome field')
     }
+    if ($paperReview -and $paperReview -notmatch '(?im)^Review decision:\s*(not-ready|major-revision|agent-review-cleared)\s*$') {
+        $errors.Add('paper/review.md does not expose a valid Review decision')
+    }
+    if ($paperClaims -and $paperClaims -notmatch '(?i)claim_id') { $errors.Add('paper/claims.jsonl exposes no claim IDs') }
+    if ($paperIterations -and $paperIterations -notmatch '(?i)cycle_type') { $errors.Add('paper/iterations.jsonl exposes no iteration cycle') }
     if ($search -and ($search -notmatch '(?i)query|search' -or $search -notmatch '\b20\d{2}-\d{2}-\d{2}\b')) {
         $errors.Add('search-log.md lacks dated queries')
     }

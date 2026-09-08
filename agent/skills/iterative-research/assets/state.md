@@ -3,7 +3,10 @@
 - Topic:
 - Workflow status: not-started
 - Research stage: problem-framing
+- Proposal decision: not-assessed
 - Novelty status: not-assessed
+- Empirical status: not-run
+- Execution readiness: not-assessed
 - Iteration: 0
 - Search cutoff:
 - Last updated: YYYY-MM-DD

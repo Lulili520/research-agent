@@ -16,6 +16,18 @@ Assumptions:
 
 Mechanism:
 
+## 形式化与证明
+
+- Theory mode: formal | empirical-system
+- Formal objects:
+- Definitions:
+- Theorem / proposition:
+- Assumptions:
+- Lemma dependency:
+- Proof location:
+- Tightness / boundary:
+- Counterexamples tested:
+
 ## 竞争解释
 
 Competing explanations:

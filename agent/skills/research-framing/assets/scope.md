@@ -3,6 +3,7 @@
 - Topic:
 - Research question:
 - Research type:
+- Theory mode: formal | empirical-system
 - Knowledge contribution:
 - Unit of analysis:
 - Intervention or comparison:

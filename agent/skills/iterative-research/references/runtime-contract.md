@@ -28,9 +28,11 @@ python agent/runtime/research/researchctl.py decide research/<topic> --decision 
 
 控制器拒绝非法跳转、空上游产物和缺少上游产物的转换。生产阶段与验收阶段分开；`complete` 会执行不可绕过的完整产物、协议和 run 终局检查。回退会增加 iteration；旧产物和失败理由不删除。
 
-进入文献映射前必须通过问题范围审计；进入 `theory-building` 前必须通过 Proposal 语料与新颖性审计；进入 `experiment-protocol` 前必须通过理论审计。理论审计要求稳定的 Claim/Hypothesis/Prediction 标识、至少一个竞争解释、不同于竞争解释的可观察预测、反证条件和实验映射。协议冻结前必须通过设计与分析计划审计，并覆盖全部理论预测。
+进入文献映射前必须通过问题范围审计；进入 `theory-building` 前必须通过 Proposal 实验前科学门禁；进入 `experiment-protocol` 前必须通过理论审计。Proposal 门禁要求四轴状态、`Q-K-M-D-C`、分层 threat register、结果—贡献矩阵和计划中的决定性实验，但不要求实验已经执行。理论审计要求稳定的 Claim/Hypothesis/Prediction 标识、至少一个竞争解释、不同于竞争解释的可观察预测、反证条件和实验映射。协议冻结前必须通过设计与分析计划审计，并覆盖全部理论预测。
 
-`audit-pre-experiment` 是实验前终点：它同时复核四道门禁、当前阶段和冻结协议一致性，成功状态为 `ready-for-explicit-execution-decision`。该状态不构成运行 Pilot、使用 GPU 或提交远端任务的授权。
+`control/state.json` 分别保存 `proposal_decision`、`novelty_status`、`empirical_status` 和 `execution_readiness`。旧项目升级 gate policy 后必须运行 `migrate-policy` 和 `revalidate-policy`，不能沿用旧 `pass` 的含义。
+
+`audit-pre-experiment` 是实验前终点：它同时复核四道门禁、实验前新颖性刷新、当前阶段和冻结协议一致性，成功状态为 `ready-for-explicit-execution-decision`。该状态不构成运行 Pilot、使用 GPU 或提交远端任务的授权。
 
 ## 协议与实验
 
@@ -41,7 +43,7 @@ python agent/runtime/research/researchctl.py register-run research/<topic> --id 
 python agent/runtime/research/researchctl.py finish-run research/<topic> --id run-001 --status failed --reason "OOM" --artifact runs/run-001
 ```
 
-协议冻结后按字节计算 SHA-256，并归档到 `experiments/protocols/vNNN.md`；任何改动都要求生成新版本。实验和 run 只能在匹配阶段登记，ID 不可重复。run 配置必须存在且记录 SHA-256，成功 run 必须提供实际产物及其 SHA-256。失败、超时、取消和无效运行同样写入 append-only outcome。注册 run 时执行权限、非负数值与预算检查；实际消耗超预算仍保留结果并显式标记。
+协议冻结后按字节计算 SHA-256，并归档到 `experiments/protocols/vNNN.md`；任何改动都要求生成新版本。`protocol-audit.md` 必须声明被审查的 Protocol ID/version，并与正文和结构化设计一致。实验和 run 只能在匹配阶段登记，ID 不可重复。run 配置必须存在且记录 SHA-256，成功 run 必须提供实际产物及其 SHA-256。失败、超时、取消和无效运行同样写入 append-only outcome。注册 run 时执行权限、非负数值与预算检查；实际消耗超预算仍保留结果并显式标记。
 
 所有变更命令使用 `.research/control/.research.lock` 串行执行。事件链可以发现非预期修改，但不是密码学签名或外部时间戳；具有文件写权限的攻击者仍可能重算整条链，因此不能把它表述为防篡改证明。
 
