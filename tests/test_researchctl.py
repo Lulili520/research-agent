@@ -9,10 +9,12 @@ from pathlib import Path
 from agent.runtime.research.researchctl import ResearchRoot
 
 
-SCRIPT = Path(__file__).with_name("researchctl.py")
+SCRIPT = Path(__file__).resolve().parents[1] / "agent/runtime/research/researchctl.py"
 
 
 class ResearchControlTests(unittest.TestCase):
+    TOPIC = "synthetic research question"
+    RESEARCH_TYPE = "benchmark"
     SCOPE = """- Topic: test
 - Research question: does X affect Y
 - Research type: benchmark
@@ -21,8 +23,8 @@ class ResearchControlTests(unittest.TestCase):
 - Unit of analysis: task
 - Intervention or comparison: X versus baseline
 - Primary outcome: score
-- Population / system scope: tested agents
-- In scope: agent evaluation
+- Population / system scope: systems under study
+- In scope: measurement validity
 - Out of scope: humans
 - Falsification condition: no effect
 - Data constraints: public data
@@ -36,7 +38,7 @@ class ResearchControlTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name) / "topic"
-        self.invoke("init", str(self.root), "--topic", "test topic", "--research-type", "benchmark", "--gpu-hours", "2", "--cost", "10")
+        self.invoke("init", str(self.root), "--topic", self.TOPIC, "--research-type", self.RESEARCH_TYPE, "--gpu-hours", "2", "--cost", "10")
         self.internal = ResearchRoot(self.root / ".research")
 
     def tearDown(self):
@@ -51,18 +53,18 @@ class ResearchControlTests(unittest.TestCase):
 
     def advance_to_protocol(self):
         files = {
-            "scope.md": self.SCOPE,
+            "scope.md": self.SCOPE.replace("Topic: test", "Topic: " + self.TOPIC).replace("Research type: benchmark", "Research type: " + self.RESEARCH_TYPE),
             "search-log.md": "Query: test\nDate: 2026-09-01",
             "literature.md": "literature",
             "evidence.md": "C1 evidence",
             "research-directions.md": "directions",
             "selected-direction.md": "selected",
-            "theory.md": "- Proposal ID: P1\n- Theory version: 1\n- Theory gate: pass\n- Theory mode: formal\nConstructs: agent score\nAssumptions: controlled setting\nMechanism: compression changes action selection\nCompeting explanations: generic accuracy loss\nPredictions: P1\nFalsifiers: no interaction\nExperiment mapping: E1\n",
+            "theory.md": "- Proposal ID: P1\n- Theory version: 1\n- Theory gate: pass\n- Theory mode: formal\nConstructs: outcome Y\nAssumptions: controlled setting\nMechanism: factor X changes outcome Y\nCompeting explanations: nonspecific change in Y\nPredictions: P1\nFalsifiers: no interaction\nExperiment mapping: E1\n",
             "theory-audit.md": "Theory gate: pass\nReviewer role: theory-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from theory construction\n",
             "literature/coverage.md": "Coverage status: saturated\nCorpus size rationale: scoped corpus\nCore set rationale: nearest neighbors\nDirect-neighbor coverage: complete\n",
             "literature/nearest-neighbors.md": "nearest",
-            "proposal.md": "- Topic: test\n- Proposal ID: P1\n- Search cutoff: 2026-09-01\n- Proposal decision: pass\n- Novelty status: audited\n- Empirical status: not-run\n- Execution readiness: designed\n- Paper sufficiency: proposal-ready\n- Depth gate: pass\n- Breadth gate: pass\nKnowledge question (Q): does X affect Y\nKnowledge claim (K): X changes Y through a separable mechanism\nMechanism (M): compression changes evidence authority\nDecisive test (D): paired factorial intervention\nScientific consequence (C): distinguishes mechanism from generic degradation\nCentral thesis: compression changes error handling through a separable mechanism\nResearch-question tree: phenomenon, mechanism, and boundary\nContribution stack: measurement, mechanism, and decision principle\nConfirmatory core: paired factorial test\nBoundary program: context length and task type\nExternal-validity minimum: two model families and two task families\nExpansion stop rule: stop when no claim or threat changes\nConstructs: agents\nAssumptions: controlled\nMechanism: test\nCompeting explanations: generic accuracy loss\nPredictions: effect\nFalsifiers: no effect\nPositive outcome: supports the bounded mechanism\nNull outcome: bounds the mechanism effect\nMixed outcome: identifies a boundary condition\nInconclusive outcome: exposes power or measurement limits\nFormal statement: bounded error increases risk\nProof obligations: derive the bound\nProof sketch: condition on task state\nCounterexample search: degenerate tasks checked\nEmpirical corollaries: larger effect under long context\n",
-            "proposal-depth-breadth.md": "Proposal ID: P1\nCentral thesis: compression changes error handling through a separable mechanism\nResearch-question tree: phenomenon to mechanism to boundary\nNecessary subquestions: effect specificity, mechanism, boundary\nContribution stack: measurement, causal effect, mechanism, decision principle\nDepth target: mechanism and bounded design principle\nDepth chain: intervention to evidence state to action\nCompeting explanations: generic accuracy loss and parser failure\nDecisive discriminator: paired interaction and mechanism intervention\nBreadth floor: process, action, endpoint, and one boundary\nConfirmatory core: paired factorial test\nBoundary axes: context length and task family\nExternal-validity minimum: two model and task families\nBreadth ceiling: no unrelated memory or training studies\nOut of scope: humans and closed-model internals\nEvidence package: construct validation, core effect, mechanism, boundary, artifact\nExpansion triggers: add an axis only when a claim or fatal threat requires it\nStop-expansion rule: stop when additions change no claim, rival, threat, or boundary\nDepth gate: pass\nBreadth gate: pass\n",
+            "proposal.md": "- Topic: test\n- Proposal ID: P1\n- Search cutoff: 2026-09-01\n- Proposal decision: pass\n- Novelty status: audited\n- Empirical status: not-run\n- Execution readiness: designed\n- Paper sufficiency: proposal-ready\n- Depth gate: pass\n- Breadth gate: pass\nKnowledge question (Q): does X affect Y\nKnowledge claim (K): X changes Y through a separable mechanism\nMechanism (M): factor X changes mediator M\nDecisive test (D): paired factorial intervention\nScientific consequence (C): distinguishes mechanism from generic degradation\nCentral thesis: factor X changes outcome Y through mechanism M\nResearch-question tree: phenomenon, mechanism, and boundary\nContribution stack: measurement, mechanism, and decision principle\nConfirmatory core: paired factorial test\nBoundary program: factor intensity and population\nExternal-validity minimum: necessary population and operating-condition boundaries\nExpansion stop rule: stop when no claim or threat changes\nConstructs: system under study\nAssumptions: controlled\nMechanism: test\nCompeting explanations: nonspecific change in Y\nPredictions: effect\nFalsifiers: no effect\nPositive outcome: supports the bounded mechanism\nNull outcome: bounds the mechanism effect\nMixed outcome: identifies a boundary condition\nInconclusive outcome: exposes power or measurement limits\nFormal statement: bounded error increases risk\nProof obligations: derive the bound\nProof sketch: condition on task state\nCounterexample search: degenerate tasks checked\nEmpirical corollaries: larger effect at increased X\n",
+            "proposal-depth-breadth.md": "Proposal ID: P1\nCentral thesis: factor X changes outcome Y through mechanism M\nResearch-question tree: phenomenon to mechanism to boundary\nNecessary subquestions: effect specificity, mechanism, boundary\nContribution stack: measurement, causal effect, mechanism, decision principle\nDepth target: mechanism and bounded design principle\nDepth chain: intervention X to mediator M to outcome Y\nCompeting explanations: nonspecific change in Y and parser failure\nDecisive discriminator: paired interaction and mechanism intervention\nBreadth floor: process, action, endpoint, and one boundary\nConfirmatory core: paired factorial test\nBoundary axes: factor intensity and population\nExternal-validity minimum: necessary population and operating-condition boundaries\nBreadth ceiling: no unrelated mechanisms or populations\nOut of scope: populations outside the declared scope\nEvidence package: construct validation, core effect, mechanism, boundary, artifact\nExpansion triggers: add an axis only when a claim or fatal threat requires it\nStop-expansion rule: stop when additions change no claim, rival, threat, or boundary\nDepth gate: pass\nBreadth gate: pass\n",
             "proposal-audit.md": "Search cutoff: 2026-09-01\nDatabases: DBLP\nQuery families: task x mechanism\nUncovered scope: proprietary\nNovelty status: audited\nEmpirical dependencies: manipulation and effect size remain not-run\nProposal gate: pass\n",
             "novelty-review.md": "Reviewer role: adversarial-novelty-reviewer\nReviewer model: isolated-review-model\nReviewer context isolation: fresh context\nIndependent search: yes\nReviewer stance: skeptical\nEquivalent-work criterion: same knowledge contribution\nAdversarial findings: none equivalent\nClaim withdrawals: broad claims removed\nUnresolved threats: proprietary work\nIndependence statement: reviewed separately from proposal construction\nDecision: pass\n",
         }
@@ -78,7 +80,7 @@ class ResearchControlTests(unittest.TestCase):
         (outputs / "02-验证后Proposal.md").write_text(public_proposal, encoding="utf-8")
         registries = {
             "proposal-candidates.jsonl": [
-                {"candidate_id": "D1", "status": "selected", "knowledge_question": "does X affect Y", "knowledge_claim": "X changes Y through mechanism M", "mechanism": "evidence compression", "decisive_test": "paired factorial intervention", "scientific_consequence": "identifies mechanism M"},
+                {"candidate_id": "D1", "status": "selected", "knowledge_question": "does X affect Y", "knowledge_claim": "X changes Y through mechanism M", "mechanism": "mediator M", "decisive_test": "paired factorial intervention", "scientific_consequence": "identifies mechanism M"},
                 {"candidate_id": "D2", "status": "rejected", "knowledge_question": "when does X fail", "knowledge_claim": "risk follows a threshold", "mechanism": "decision cost", "decisive_test": "risk by cost intervention", "scientific_consequence": "identifies the boundary"},
                 {"candidate_id": "D3", "status": "reserve", "knowledge_question": "how often does X occur", "knowledge_claim": "natural incidence bounds deployed risk", "mechanism": "incidence times effect", "decisive_test": "naturalistic audit plus transport", "scientific_consequence": "bounds external relevance"},
             ],
@@ -86,12 +88,12 @@ class ResearchControlTests(unittest.TestCase):
                 {"claim_id": "PC1", "type": "mechanism", "status": "retained", "claim": "X changes Y through a separable mechanism", "evidence": ["C1"], "scientific_consequence": "distinguishes mechanism from generic degradation"},
             ],
             "proposal-rivals.jsonl": [
-                {"rival_id": "R1", "mechanism": "generic accuracy loss", "distinguishing_pattern": "uniform degradation"},
+                {"rival_id": "R1", "mechanism": "nonspecific change in Y", "distinguishing_pattern": "uniform degradation"},
             ],
             "proposal-threats.jsonl": [
                 {"threat_id": "T1", "class": "proposal-fatal", "category": "identification", "severity": "fatal", "status": "resolved", "threat": "the treatment may be confounded", "mitigation": "paired factorial control"},
                 {"threat_id": "T2", "class": "empirical-dependency", "category": "measurement", "severity": "major", "status": "deferred", "threat": "the manipulation may fail in practice", "mitigation": "pilot manipulation check"},
-                {"threat_id": "T3", "class": "paper-stage", "category": "external-validity", "severity": "major", "status": "open", "threat": "cross-model generality is unknown", "mitigation": "planned robustness study"},
+                {"threat_id": "T3", "class": "paper-stage", "category": "external-validity", "severity": "major", "status": "open", "threat": "cross-population generality is unknown", "mitigation": "planned robustness study"},
             ],
             "proposal-iterations.jsonl": [
                 {
@@ -125,7 +127,7 @@ class ResearchControlTests(unittest.TestCase):
             (self.internal / name).write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
         with (self.internal / "literature/corpus.jsonl").open("w", encoding="utf-8") as stream:
             for index in range(50):
-                item = {"source_id": f"p{index}", "title": f"Paper {index}", "year": 2026, "stable_url": f"https://example.org/{index}", "identity_verified": True, "screening_status": "included", "access_level": "full-text" if index < 20 else "abstract", "role": "core" if index < 20 else "context", "relevance_reason": "test"}
+                item = {"source_id": f"p{index}", "title": f"Paper {index}", "year": 2026, "stable_url": f"https://example.org/{index}", "identity_verified": True, "screening_status": "included", "access_level": "full-text" if index < 20 else "abstract", "role": "core" if index < 20 else "factor X", "relevance_reason": "test"}
                 stream.write(json.dumps(item) + "\n")
         papers = self.internal / "papers"
         papers.mkdir(exist_ok=True)
@@ -133,8 +135,8 @@ class ResearchControlTests(unittest.TestCase):
             (papers / f"p{index}.md").write_text("full-text analysis", encoding="utf-8")
         theory_dir = self.internal / "theory"
         theory_dir.mkdir(exist_ok=True)
-        claim = {"hypothesis_id": "H1", "claim_ids": ["C1"], "constructs": ["agent score"], "assumptions": ["controlled"], "mechanism": "compression changes action selection", "competing_explanations": ["generic accuracy loss"]}
-        prediction = {"prediction_id": "P1", "hypothesis_id": "H1", "claim_ids": ["C1"], "observable": "interaction", "expected_pattern": "larger degradation on long trajectories", "rival_pattern": "uniform degradation", "scope": "tested models", "falsifier": "no interaction", "experiment_mapping": "factorial context experiment"}
+        claim = {"hypothesis_id": "H1", "claim_ids": ["C1"], "constructs": ["outcome Y"], "assumptions": ["controlled"], "mechanism": "factor X changes outcome Y", "competing_explanations": ["nonspecific change in Y"]}
+        prediction = {"prediction_id": "P1", "hypothesis_id": "H1", "claim_ids": ["C1"], "observable": "interaction", "expected_pattern": "larger change in Y under increased X", "rival_pattern": "uniform degradation", "scope": "tested models", "falsifier": "no interaction", "experiment_mapping": "factorial intervention experiment"}
         (theory_dir / "claims.jsonl").write_text(json.dumps(claim) + "\n", encoding="utf-8")
         (theory_dir / "predictions.jsonl").write_text(json.dumps(prediction) + "\n", encoding="utf-8")
         (theory_dir / "formalization.md").write_text("definitions and theorem", encoding="utf-8")
@@ -157,11 +159,11 @@ class ResearchControlTests(unittest.TestCase):
 - Hypotheses: H1
 - Predictions: P1
 - Experimental units: tasks
-- Independent variables: context length
+- Independent variables: factor X
 - Dependent variables: score
-- Controls: model family
+- Controls: system configuration
 - Confounders: task difficulty
-- Baselines: full precision
+- Baselines: reference method
 - Data splits: fixed test
 - Leakage checks: deduplication
 - Metrics: score
@@ -174,7 +176,7 @@ class ResearchControlTests(unittest.TestCase):
 - Deviations policy: version protocol
 """
         (experiments / "protocol.md").write_text(protocol, encoding="utf-8")
-        design = {"protocol_id": "PR1", "protocol_version": 1, "research_type": "benchmark", "claims": ["C1"], "hypotheses": ["H1"], "predictions": ["P1"], "experimental_units": ["tasks"], "independent_variables": ["context"], "dependent_variables": ["score"], "controls": ["model"], "baselines": ["full precision"], "data_splits": ["test"], "leakage_checks": ["dedup"], "metrics": ["score"], "randomness": [1, 2, 3], "resource_budget": {"gpu_hours": 2}, "stopping_rules": ["fixed budget"], "required_permissions": [], "research_materials": {"mode": "generated", "rationale": "controlled synthetic tasks"}}
+        design = {"protocol_id": "PR1", "protocol_version": 1, "research_type": self.RESEARCH_TYPE, "claims": ["C1"], "hypotheses": ["H1"], "predictions": ["P1"], "experimental_units": ["tasks"], "independent_variables": ["factor X"], "dependent_variables": ["score"], "controls": ["system configuration"], "baselines": ["reference method"], "data_splits": ["test"], "leakage_checks": ["dedup"], "metrics": ["score"], "randomness": [1, 2, 3], "resource_budget": {"gpu_hours": 2}, "stopping_rules": ["fixed budget"], "required_permissions": [], "research_materials": {"mode": "generated", "rationale": "controlled synthetic research units"}}
         (experiments / "design.json").write_text(json.dumps(design), encoding="utf-8")
         (experiments / "analysis-plan.md").write_text("Primary estimand: paired difference\nPrimary metrics: score\nAggregation unit: task\nUncertainty: bootstrap CI\nRandomness: three seeds\nMultiplicity: adjusted\nFailed runs: retained\nMissing data: reported\nExclusions: predeclared\nDecision rule: CI and effect\nExploratory boundary: labeled\n", encoding="utf-8")
         (experiments / "protocol-audit.md").write_text("Protocol ID: PR1\nProtocol version: 1\nProtocol gate: pass\nReviewer role: protocol-skeptic\nReviewer stance: skeptical\nUnresolved threats: external validity\nIndependence statement: reviewed separately from protocol design\nExecution authorization: not granted\n", encoding="utf-8")

@@ -11,15 +11,13 @@ agent/
   runtime/research/               通用状态机、检索工具与跨平台审计
   audit-*.ps1                    Windows 兼容入口，委托同一 Python 审计
   evals.md                        科研行为验收场景
-studies/
-  qhist/                          Q-HIST / ToolSandbox 专用代码、依赖、配置与测试
 research/<topic>/                 本地生成产物，Git 忽略
   outputs/                        用户阅读的成果
   .research/                      控制状态、文献、证据、协议、运行与论文源文件
 tests/                            通用工具及架构边界回归
 ```
 
-`agent/` 不导入或自动运行 `studies/` 的代码。课题实现可以独立部署，通过显式路径和 `researchctl.py` 登记协议与运行；通用 Agent 不预设模型、数据集或 GPU 环境。当前仓库不附带真实课题产物、模型或冻结实验工作区。
+本分支只维护与具体课题无关的计算机科学科研 Agent。研究对象、方法、数据、工具和资源由用户 topic 及冻结范围决定。课题实现及其依赖独立维护，通过显式路径和 `researchctl.py` 登记协议与运行；通用 Agent 不预设模型、数据集或 GPU 环境，也不附带真实课题产物、模型或冻结实验工作区。
 
 ## Linux 开发环境
 
@@ -34,7 +32,7 @@ python agent/runtime/research/researchctl.py --help
 python agent/runtime/research/audit.py --help
 ```
 
-默认测试包含控制平面、通用工具和 Q-HIST 的轻量单元测试。需要 ToolSandbox 的集成测试独立放置，安装与运行方式见 [Q-HIST 部署说明](studies/qhist/README.md)。模型推理及 GPU 实验不会由默认测试启动。
+默认测试只包含通用控制平面、门禁与工具测试，不启动模型推理或 GPU 实验。
 
 ## 科研流程与 Skills
 
@@ -84,20 +82,23 @@ python agent/runtime/research/audit.py iterative research/example
 
 格式和哈希校验不能证明科学正确性。修改 Skill 或科学门禁后，还需检查 [agent/evals.md](agent/evals.md) 中的路由、证据与授权行为。
 
+## 课题输入与适用性
+
+每个项目通过用户 topic 和 `.research/review/scope.md` 明确研究问题、研究类型、理论模式、材料、验证方法及资源。算法、系统、理论和实证研究共用证据与授权契约，但不共享预设方法或实验对象。模型、GPU、外部数据或统计分析不适用时，应说明理由及替代验证方式。通用运行时只依赖标准库；任何课题执行器与专用环境都由对应研究项目独立提供。
+
 ## 配置文献发现
 
 OpenAlex 采集工具接受调用方提供的 JSON 查询表和起始日期，不含默认课题：
 
 ```bash
-python agent/runtime/research/collect_openalex.py research/example/.research/review/literature/candidates.jsonl --queries studies/qhist/search-plan.json --from-date 2022-01-01 --mailto you@example.org
+python agent/runtime/research/collect_openalex.py research/example/.research/review/literature/candidates.jsonl --queries research/example/.research/review/search-plan.json --from-date 2022-01-01 --mailto you@example.org
 ```
 
-查询文件为非空 `{ "cluster": "query text" }` 对象。上述配置是 Q-HIST 示例，应替换为实际研究问题。每个查询只获取最多 `--per-query` 条候选（默认 35），不是分页穷尽检索，也不代替身份核验、全文阅读或新颖性审计。API 网络访问按实际检索任务执行。
+运行前在上述路径创建查询文件，内容为非空 `{ "cluster": "query text" }` 对象，例如 `{ "systems": "distributed consensus" }`；查询应围绕实际研究问题制定。每个查询只获取最多 `--per-query` 条候选（默认 35），不是分页穷尽检索，也不代替身份核验、全文阅读或新颖性审计。API 网络访问按实际检索任务执行。
 
-## 扩展与迁移
+## 扩展与课题边界
 
-新增通用能力优先放入独立 Skill；新增课题实现放入 `studies/<topic>/`，并附专用依赖、配置和部署说明。生成数据与结果仍进入 `research/`，不提交进 Agent 定义。
+新增通用能力优先放入独立 Skill；课题实现、专用依赖及部署说明在独立仓库或其他分支维护。研究配置、生成数据与结果进入本地 `research/`，不提交进 Agent 定义。
 
-原 `agent/runtime/experiment/` 已迁至 `studies/qhist/runtime/`，测试迁至 `studies/qhist/tests/`。历史版本之间仍有导入依赖，需整体部署。迁移不重写旧协议哈希或实验结果；已有冻结工作区按原版本保留，新源码部署须按科研协议重新验收。
 
 控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](docs/architecture.md)。`execution-contract-v5` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。

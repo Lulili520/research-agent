@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from agent.runtime.research import test_researchctl as fixtures
+import test_researchctl as fixtures
 from agent.runtime.research import researchctl as ctl
 from agent.runtime.research.audit import Audit
 

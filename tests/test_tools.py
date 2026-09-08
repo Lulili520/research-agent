@@ -1,6 +1,5 @@
 import ast
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -11,7 +10,6 @@ from urllib.parse import parse_qs, urlparse
 
 from agent.runtime.research.audit import Audit
 from agent.runtime.research.collect_openalex import load_queries, fetch
-from studies.qhist.deploy import stage, missing
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -91,24 +89,6 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(query['filter'], ['from_publication_date:2024-01-01'])
         self.assertEqual(query['per-page'], ['7'])
 
-    def test_deploy_preserves_source_and_refuses_overwrite(self):
-        with tempfile.TemporaryDirectory(prefix='qhist space ') as d:
-            workspace = Path(d)
-            stage(workspace)
-            source = REPO / 'studies/qhist/runtime/qhist_v14_spec.py'
-            self.assertEqual((workspace / 'code' / source.name).read_bytes(), source.read_bytes())
-            self.assertIn('precision-env/bin/python', missing(workspace, 14))
-            with self.assertRaises(ValueError):
-                stage(workspace)
-
-    def test_launcher_requires_explicit_workspace_before_writing(self):
-        env = dict(os.environ)
-        env.pop('QHIST_WORKSPACE', None)
-        result = subprocess.run(['bash', str(REPO / 'studies/qhist/runtime/run_qhist_v14_preflight.sh')],
-                                env=env, capture_output=True, text=True)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('QHIST_WORKSPACE', result.stderr)
-
     def test_agent_has_no_topic_imports(self):
         for path in (REPO / 'agent').rglob('*.py'):
             tree = ast.parse(path.read_text(encoding='utf-8-sig'))
@@ -118,7 +98,8 @@ class ToolTests(unittest.TestCase):
                     modules = [alias.name for alias in node.names]
                 elif isinstance(node, ast.ImportFrom):
                     modules = [node.module or '']
-                self.assertFalse(any(m.startswith(('studies', 'qhist', 'tool_sandbox')) for m in modules), path)
+                allowed = sys.stdlib_module_names | {'agent'} | {p.stem for p in (REPO / 'agent/runtime/research').glob('*.py')}
+                self.assertTrue(all(not m or m.split('.')[0] in allowed for m in modules), path)
 
 
 if __name__ == '__main__':

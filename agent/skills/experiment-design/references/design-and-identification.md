@@ -4,4 +4,6 @@
 
 数据划分、模型选择、提示模板、工具环境、验证器和预算都可能成为混杂因素。记录污染与泄漏检查、失败判定、任务天花板/地板以及测量可靠性。只在任务、划分、指标和资源条件兼容时比较数值。
 
-`experiments/design.json` 至少包含 `protocol_id`、`protocol_version`、`research_type`、`claims`、`hypotheses`、`predictions`、`experimental_units`、`independent_variables`、`dependent_variables`、`controls`、`baselines`、`data_splits`、`leakage_checks`、`metrics`、`randomness`、`resource_budget` 和 `stopping_rules`。
+`experiments/design.json` 至少包含 `protocol_id`、`protocol_version`、`research_type`、`claims`、`hypotheses`、`predictions`、`experimental_units`、`independent_variables`、`dependent_variables`、`controls`、`baselines`、`data_splits`、`leakage_checks`、`metrics`、`randomness`、`resource_budget` 、`stopping_rules`、`required_permissions` 和 `research_materials`。
+
+这些字段表达通用识别与验证要求，不预设研究对象。`research_type` 与当前项目一致；`research_materials` 按实际情况选择 external、generated 或 none。模型、随机化、数据划分等不适用时，在相应字段中写明理由与替代验证方式，不能复制历史课题的值充数。课题专用适配代码与软件依赖由该研究项目独立提供，通用运行时不导入它们。
