@@ -24,8 +24,12 @@ class Audit:
 
     def read(self, name: str) -> str:
         path = self.root / name
-        if name == 'report.md' and not path.is_file():
-            path = self.topic / 'outputs/01-文献调研总结.md'
+        if name == 'report.md':
+            public = self.topic / 'outputs/01-文献调研总结.md'
+            # Audit the delivered report, not a potentially stale internal index.
+            # Legacy projects without outputs/ may still use report.md.
+            if public.parent.is_dir() or not path.is_file():
+                path = public
         try:
             text = path.read_text(encoding='utf-8-sig')
             if not text.strip():

@@ -22,8 +22,11 @@ python agent/runtime/research/researchctl.py audit-pre-experiment research/<topi
 ## 阶段转换与决策
 
 ```bash
-python agent/runtime/research/researchctl.py transition research/<topic> literature-mapping --reason "scope frozen" --evidence scope.md
-python agent/runtime/research/researchctl.py decide research/<topic> --decision "select D2" --reason "distinguishing experiment is feasible" --alternative D1 --evidence selected-direction.md
+python agent/runtime/research/researchctl.py transition research/<topic> problem-framing --reason "start scoped design"
+# 写入并审查 research/<topic>/.research/review/scope.md 后：
+python agent/runtime/research/researchctl.py audit-scope research/<topic>
+python agent/runtime/research/researchctl.py transition research/<topic> literature-mapping --reason "scope frozen" --evidence research/<topic>/.research/review/scope.md
+python agent/runtime/research/researchctl.py decide research/<topic> --decision "select D2" --reason "distinguishing experiment is feasible" --alternative D1 --evidence research/<topic>/.research/proposal/selected-direction.md
 ```
 
 控制器拒绝非法跳转、空上游产物和缺少上游产物的转换。生产阶段与验收阶段分开；`complete` 会执行不可绕过的完整产物、协议和 run 终局检查。回退会增加 iteration；旧产物和失败理由不删除。
@@ -121,3 +124,23 @@ python agent/runtime/research/researchctl.py revalidate-policy research/<topic>
 迁移把旧配置、状态和当前协议锁保存到 `control/migrations/`。已进入实验或后续阶段的项目回到协议设计阶段；不会删除历史运行和结果，也不会给历史记录补造阶段、授权或证据。旧 run 缺少新版登记事件及阶段绑定时不能用于新版实证状态或 Pilot 门禁。
 
 补齐新设计字段，审计并冻结下一协议版本，登记有效执行授权后才能继续。旧版通过状态不可静默沿用。仍在运行的历史任务须先按真实情况登记终局，再冻结新协议；迁移不自动执行或重跑任何实验。
+
+
+## 持久证据任务
+
+`taskqueue.py` 仅管理已初始化项目的取证工作，不推进阶段、不授权或启动实验。所有变更均验证项目事件链与当前策略；待迁移项目只能查看队列，完成迁移和重验后再变更。宿主按研究价值选择下一任务；任务完成只表示已登记产物与验收解释，不表示科学门禁通过。
+
+```bash
+python agent/runtime/research/taskqueue.py research/example add read-source --question "原文是否支持当前主张？" --acceptance "定位正文、核查方法与限制" --inputs review/sources/paper.txt
+python agent/runtime/research/taskqueue.py research/example list
+python agent/runtime/research/taskqueue.py research/example claim read-source --owner reader
+# 宿主实际阅读并写入论文卡；使用 claim 返回的 token：
+python agent/runtime/research/taskqueue.py research/example finish read-source --token CLAIM_TOKEN --outputs review/papers/paper.md --note "已核对正文位置与限制，见论文卡"
+python agent/runtime/research/taskqueue.py research/example add synthesize --question "证据是否相互支持？" --acceptance "解释共识、冲突与访问缺口" --depends read-source
+```
+
+路径相对 `.research/`；输入与产物必须是非空文件，不能逃逸项目、使用 `control/` 或包含符号链接；本地来源需使用稳定的实际文件路径。仅登记实际依赖；远端来源应保存本地正文/版本记录再作为输入，队列不能自动感知网页变更。依赖只能引用已有任务，阻止循环；每次领取生成新凭证。文件内容、上游尝试版本或上游产物变化都会阻止旧结果复用，`list` 的 `usable/ready` 是当前版本的计算结果，`reasons` 区分输入变化、产物变化、依赖不可用和上游尝试变化。依赖图按拓扑顺序检查，每次操作内同一文件只校验一次，损坏记录或循环依赖会明确报错并保留原文件。
+
+失败使用 `fail ID --token TOKEN --note 原因`。来源永久丢失或决定放弃时，先核实外部工作已停止，再用 `cancel ID --note 对账发现及取消理由` 关闭任务；无需恢复已丢失输入。取消保留已有输入/产物哈希、撤销旧凭证并阻止下游继续。取消登记不会停止外部进程。中断后先检查原任务、现有产物及外部调用是否结束，再执行 `reconcile ID --note 对账发现及重试理由`；它归档旧尝试、更新现有输入的哈希并撤销旧凭证，重新领取后再做工作。改用其他输入或改变问题时建立新任务，保留旧记录。不得因等待超时直接重试外部提交，不得把反证标成工具失败。重复无新增依据的重试须返回范围/策略判断。
+
+`control/tasks.json` 将队列与尝试历史原子写入同一文档，并共用项目锁；写盘使用独占临时文件、文件 fsync 和原子替换，失败保留原文件并清理临时文件，不宣称具备断电后的跨文件事务保证；不保证外部工具恰好执行一次，没有自动心跳、租约回收或后台工作进程。来源修订只会使依赖结果不可复用，宿主仍须更新受影响的论文卡、主张和报告，并通过 `researchctl.py` 登记科学回退。

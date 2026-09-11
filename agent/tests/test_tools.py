@@ -15,6 +15,36 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 class ToolTests(unittest.TestCase):
+    def test_internal_summary_cannot_mask_invalid_public_delivery(self):
+        for public_text in (None, '', 'C1 reported 2026-09-02'):
+            with self.subTest(public_text=public_text), tempfile.TemporaryDirectory() as d:
+                topic = Path(d)
+                (topic / '.research').mkdir()
+                audit = Audit(topic)
+                contents = {
+                    'state.md': 'Workflow status: complete\nNovelty status: audited\n'
+                                'Search cutoff: 2026-09-01\nLast updated: 2026-09-01',
+                    'search-log.md': 'Query: test 2026-09-01 https://example.org',
+                    'literature.md': 'https://example.org/paper',
+                    'evidence.md': 'C1 reported 2026-09-01',
+                    'report.md': 'C1 reported 2026-09-01',
+                }
+                for name, text in contents.items():
+                    path = audit.root / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(text)
+                # Legacy layouts remain readable until a public delivery exists.
+                audit.review()
+                self.assertEqual(audit.errors, [])
+                (topic / 'outputs').mkdir()
+                if public_text is not None:
+                    (topic / 'outputs/01-文献调研总结.md').write_text(public_text)
+                audit = Audit(topic)
+                audit.review()
+                expected = 'cannot read report.md' if public_text is None else (
+                    'empty artifact: report.md' if not public_text else 'older')
+                self.assertTrue(any(expected in error for error in audit.errors), audit.errors)
+
     def test_review_accepts_public_report_and_detects_stale_state(self):
         with tempfile.TemporaryDirectory() as d:
             topic = Path(d)

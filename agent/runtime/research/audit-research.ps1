@@ -3,6 +3,6 @@ param(
     [string]$TopicDirectory
 )
 $ErrorActionPreference = 'Stop'
-$runtime = Join-Path $PSScriptRoot 'runtime/research/audit.py'
-& python $runtime iterative $TopicDirectory
+$runtime = Join-Path $PSScriptRoot 'audit.py'
+& python $runtime review $TopicDirectory
 exit $LASTEXITCODE

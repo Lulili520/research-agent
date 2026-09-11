@@ -12,11 +12,11 @@ import sys
 def main() -> int:
     agent = Path(__file__).resolve().parent
     if importlib.util.find_spec('pytest') is None:
-        print(f'Install test dependencies first: {sys.executable} -m pip install -r {agent / "requirements-dev.txt"}', file=sys.stderr)
+        print(f'Install test dependencies first: {sys.executable} -m pip install -r {agent / "tests" / "requirements.txt"}', file=sys.stderr)
         return 2
     environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
     return subprocess.call(
-        [sys.executable, '-m', 'pytest', '-c', str(agent / 'pytest.ini'), '-q', *sys.argv[1:]],
+        [sys.executable, '-m', 'pytest', '-c', str(agent / 'tests' / 'pytest.ini'), '-q', *sys.argv[1:]],
         cwd=agent,
         env=environment,
     )

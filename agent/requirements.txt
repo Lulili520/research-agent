@@ -1,2 +1,0 @@
-# Core runtime and audits use only the Python 3.11+ standard library.
-# Topic-specific dependencies are maintained outside this branch.
