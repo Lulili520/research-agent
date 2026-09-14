@@ -16,6 +16,6 @@
 
 ## 饱和判据
 
-广域发现不计入稳定性补检。每轮定向补检在 `review/search-log.md` 使用独立 `Round:` 块，记录查询、数据库、日期、发现数、去重后新增数、纳入数、直接竞争者以及 `Proposal changed: yes|no`。若为 `yes`，说明撤回或修改了什么，并将稳定性计数清零。只有最后连续两轮均为 `Proposal changed: no`，且两轮都覆盖精确组合、功能等价描述和最近工作/引文链，才能写 `Saturation: reached`；否则必须写 `Saturation: not-reached`。达到饱和时，`review/literature/coverage.md` 记录 `Coverage status: saturated`、`Corpus size rationale:`、`Core set rationale:` 与 `Direct-neighbor coverage:`。稳定两轮只是范围饱和的必要信号，不是“无人做过”的证明；进入实验前和论文审稿前都要刷新最近工作与引文链。
+范围饱和依据关键近邻、必要分支、竞争术语和反向证据的实际处理，而非固定稳定轮数。每项补检记录查询、来源、日期、实际返回、认识变化及未解决项；没有观察到的数量不填造。当前版本没有尚可取证且可能改变中心主张的关键缺口，经独立复核后才写`Saturation: reached`；否则保持`not-reached`。`coverage.md`记录范围、截止日期、取舍理由和直接近邻处理，绑定到当前验收。实质变化重新打开受影响要求，不累计或清零“稳定计数”。阶段性范围成立不证明绝对无人做过；实验前和论文审查前仍按时效刷新近邻。详见[验收要求](acceptance-criteria.md)。
 
 `access_level: full-text` 只说明全文可访问，不证明已深入分析。卡片须按 `paper-analysis` 记录实际深度和未解决问题。当前 runtime 对核心语料仅检查身份、全文标记与非空卡片等结构，不能据此自签精读完成。未饱和时如实记录 `Coverage status: not-saturated`，不为格式检查改为 saturated。

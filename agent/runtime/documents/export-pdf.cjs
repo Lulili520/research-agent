@@ -11,19 +11,19 @@ const escape = value => value.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;'
 async function main() {
   const args = process.argv.slice(2);
   if (args.includes('--help')) {
-    console.log('Usage: export-pdf.cjs INPUT.md OUTPUT.pdf --font FONT.ttf [--browser EXECUTABLE]');
+    console.log('Usage: export-pdf.cjs INPUT.md OUTPUT.pdf --font FONT.ttf [--heading-font FONT.ttf] [--browser EXECUTABLE]');
     return;
   }
   if (args.length < 4) throw new Error('Expected INPUT.md OUTPUT.pdf --font FONT.ttf (see --help)');
   const source = path.resolve(args[0]), output = path.resolve(args[1]);
   const opts = {};
   for (let i=2; i<args.length; i+=2) {
-    if (!['--font','--browser'].includes(args[i]) || !args[i+1]) throw new Error('Unknown or incomplete option: '+args[i]);
+    if (!['--font','--heading-font','--browser'].includes(args[i]) || !args[i+1]) throw new Error('Unknown or incomplete option: '+args[i]);
     opts[args[i]] = path.resolve(args[i+1]);
   }
   if (!opts['--font']) throw new Error('--font is required');
   if (source === output || !/\.md$/i.test(source) || !/\.pdf$/i.test(output)) throw new Error('Use distinct .md input and .pdf output');
-  for (const p of [source,opts['--font'],...(opts['--browser']?[opts['--browser']]:[])]) fs.accessSync(p,fs.constants.R_OK);
+  for (const p of [source,...Object.values(opts)]) fs.accessSync(p,fs.constants.R_OK);
   const { chromium } = require('playwright');
   const MarkdownIt = require('markdown-it');
   const katex = require('katex');
@@ -46,13 +46,18 @@ async function main() {
   if (errors.length) throw new Error('Math parse error: '+errors.join('\n'));
   const title = src.match(/^#\s+(.+)$/m)?.[1] || path.basename(source,'.md');
   const css = fs.readFileSync(path.join(__dirname,'print.css'),'utf8');
+  const provenance = {
+    style_sha256: digest(css),
+    exporter_sha256: digest(fs.readFileSync(__filename)),
+    font_files: [...new Set([opts['--font'], opts['--heading-font'] || opts['--font']])].map(file => ({file, sha256:digest(fs.readFileSync(file))}))
+  };
   const work = fs.mkdtempSync(path.join(os.tmpdir(),'research-pdf-'));
   fs.mkdirSync(path.dirname(output),{recursive:true});
   const pending = path.join(path.dirname(output),'.'+path.basename(output)+'.'+randomUUID()+'.tmp');
   let browser;
   try {
     const file = path.join(work,'report.html');
-    fs.writeFileSync(file,`<!doctype html><html lang="zh"><head><meta charset="utf-8"><title>${escape(title)}</title><base href="${pathToFileURL(path.dirname(source)+path.sep).href}"><link rel="stylesheet" href="${pathToFileURL(require.resolve('katex/dist/katex.min.css')).href}"><style>@font-face{font-family:ReportBody;src:url('${pathToFileURL(opts['--font']).href}')}\n${css}</style></head><body>${content}</body></html>`);
+    fs.writeFileSync(file,`<!doctype html><html lang="zh"><head><meta charset="utf-8"><title>${escape(title)}</title><base href="${pathToFileURL(path.dirname(source)+path.sep).href}"><link rel="stylesheet" href="${pathToFileURL(require.resolve('katex/dist/katex.min.css')).href}"><style>@font-face{font-family:ReportBody;src:url('${pathToFileURL(opts['--font']).href}');font-weight:100 900;font-display:block}@font-face{font-family:ReportHeading;src:url('${pathToFileURL(opts['--heading-font'] || opts['--font']).href}');font-weight:100 900;font-display:block}\n${css}</style></head><body>${content}</body></html>`);
     browser = await chromium.launch({headless:true,...(opts['--browser']?{executablePath:opts['--browser']}:{}),args:['--no-sandbox','--allow-file-access-from-files']});
     const page = await browser.newPage();
     const failed=[];
@@ -72,9 +77,10 @@ async function main() {
       }
     });
     await page.evaluate(async()=>{
-      await document.fonts.load('14px ReportBody');
+      await document.fonts.load('400 14px ReportBody');
+      await document.fonts.load('600 18px ReportHeading');
       await document.fonts.ready;
-      if (!document.fonts.check('14px ReportBody')) throw new Error('Body font did not load');
+      if (!document.fonts.check('400 14px ReportBody') || !document.fonts.check('600 18px ReportHeading')) throw new Error('Body font did not load');
       if ([...document.images].some(i=>!i.complete || i.naturalWidth===0)) throw new Error('An image did not load');
     });
     const audit = await page.evaluate(()=>({
@@ -87,7 +93,7 @@ async function main() {
     if (digest(fs.readFileSync(source)) !== digest(original)) throw new Error('Source changed during export; rerun');
     if (fs.readFileSync(pending).subarray(0,5).toString() !== '%PDF-') throw new Error('Invalid PDF output');
     fs.renameSync(pending,output);
-    console.log(JSON.stringify({output,source_sha256:digest(original),formulas:formulas.length,fonts:audit.fonts,bytes:fs.statSync(output).size}));
+    console.log(JSON.stringify({output,source_sha256:digest(original),pdf_sha256:digest(fs.readFileSync(output)),...provenance,formulas:formulas.length,fonts:audit.fonts,bytes:fs.statSync(output).size}));
   } finally {
     if (browser) await browser.close();
     fs.rmSync(work,{recursive:true,force:true});

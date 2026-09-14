@@ -89,17 +89,9 @@
 
 每个证据槽位标记 `required-before-main-experiment|required-before-paper|optional`。Proposal 阶段检查路径是否存在，不得把未来证据写成已获得。
 
-## 五、五轮全流程收敛
+## 五、由证据要求决定迭代
 
-顶会目标 Proposal 至少完成五轮 `full-proposal-cycle`。每轮都重新检查问题树、最近邻、深度链、必要广度、识别和论文证据包，但使用不同的主要攻击面：
-
-1. **问题与组合轮**：中心问题是否重要；候选及必要子问题是否构成一篇论文而非一项小实验。
-2. **近邻与范围轮**：最近邻是否覆盖核心；范围是否过窄、过宽或依靠术语差异。
-3. **机制与反例轮**：因果/形式链、rival、假设去除和区别性预测是否足够深。
-4. **证据与可行性轮**：决定性实验、测量、边界、外部效度、资源与 Artifact 是否形成最小完整证据包。
-5. **整合与反方轮**：以独立反方立场尝试删掉每个非必要部分并推翻剩余核心，确认正负结果均有知识价值。
-
-一轮只有在引入新的证据、反例、竞争解释、范围选择或识别压力时有效。措辞润色、重复检索或把同一检查拆成多条记录不计数。任一轮改变 Q/K/M/D/C、问题树或确认性核心，都要更新 Proposal 并在下一轮重新检查完整链；最后仍需两轮独立的新颖性稳定检索。
+按[七项验收要求](acceptance-criteria.md)复核当前版本，不设固定轮数。重点是具体问题、非等价知识增量、可反证机制、区分性检验、可行材料和必要边界。修订改变中心主张或证据时，重开受影响要求；旧版本审查不能直接继承。
 
 ## 六、内部审计产物
 
@@ -128,6 +120,6 @@ Depth gate: pass|revise
 Breadth gate: pass|revise
 ```
 
-`proposal/iterations.jsonl` 中每轮 `full-proposal-cycle` 除通用字段外还要记录：`round`、`breadth_review`、`depth_review`、`novelty_review`、`mechanism_review`、`identification_review` 和 `paper_review`。当前 Proposal ID 必须拥有连续五轮有效记录；旧 Proposal 的轮次不能替新 Proposal 通过门禁。
+`proposal/iterations.jsonl`保存真实任务、输入、认识变化、剩余缺口和下一动作，不以轮数验收。最终审查写入`proposal/acceptance.json`并绑定当前证据。
 
-只有 `Depth gate: pass`、`Breadth gate: pass`、五轮全流程完成且原有新颖性/反方门禁均通过时，才可写 `Paper sufficiency: proposal-ready`。
+只有`Depth gate: pass`、`Breadth gate: pass`及七项证据要求和独立审查共同通过，才可写`Paper sufficiency: proposal-ready`。

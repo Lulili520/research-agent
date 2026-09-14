@@ -15,3 +15,16 @@
 - Agent Laboratory：展示文献、实验和报告的端到端组织及人工反馈价值；其执行环节属于 Proposal 之后，不应被折叠进实验前通过标准。https://github.com/SamuelSchmidgall/AgentLaboratory
 
 流程只吸收这些来源支持的原则，不复制其系统设计，也不把会议 checklist、GitHub star、自动评分或模拟审稿分数当成录用预测器。
+
+## Proposal生成与停止：2026-09-11核查
+
+以下区分原始做法和本Agent的设计推论，不宣称七项验收已被外部研究验证为最优。
+
+- [DARPA Heilmeier Catechism](https://www.darpa.mil/about/heilmeier-catechism)：从清楚的目标、现有局限、新意与影响，追问风险、费用、时间和阶段检验。本Agent据此要求先说明问题及判定路径，不能从算法名称直接生成长方案。
+- [Registered Reports](https://www.cos.io/initiatives/registered-reports)：实验前审查问题和方法，并预设与结果方向无关的质量条件。本Agent据此区分检验是否有效与假设是否得到支持；不照搬投稿承诺，也不要求Proposal已有正结果。
+- [ICML 2026审稿说明](https://icml.cc/Conferences/2026/ReviewerInstructions)：可靠性、重要性和原创性分别判断，原创性可以来自对既有方法的新认识。本Agent按研究类型解释贡献，不强制新算法或因果中介；完成论文的结果要求不能全部移到方案阶段。
+- [AI Scientist官方生成代码](https://github.com/SakanaAI/AI-Scientist/blob/main/ai_scientist/generate_ideas.py)：反思次数上限与模型声明结束共同控制执行。本Agent将上限视为资源控制，不将模型自报完成当质量通过。此处核对公开main版本的生成与提前停止路径，不宣称完整代码审计。
+- [AI Scientist-v2 §3.2.1](https://arxiv.org/html/2504.08066v1)：实验阶段分别按原型执行、实验稳定或预算结束。本Agent借鉴阶段条件与资源边界分离；不将其数据集数量或实验阶段终点固化为所有Proposal标准。
+- [Agent Laboratory §4](https://arxiv.org/html/2501.04227v1)：所报告评价中自动评分高于人工评价。本Agent据此保留原文取证、意见处置及独立性说明；多次一致自评不是质量保证。该差异属于作者测试范围，不外推所有自动审查模型。
+
+上述映射是本项目的流程设计推论。运行时能核对文件、哈希与声明，无法自行证明读懂论文、独立审查真实发生或科学判断正确。

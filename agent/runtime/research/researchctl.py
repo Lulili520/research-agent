@@ -107,6 +107,7 @@ def command_migrate_policy(args: argparse.Namespace) -> None:
         "schema_version": SCHEMA_VERSION,
         "policy_status": "migration-required",
         "proposal_decision": "not-assessed",
+        "novelty_status": "not-assessed",
         "empirical_status": "not-run",
         "execution_readiness": "not-assessed",
         "updated_at": now(),

@@ -2,7 +2,7 @@
 
 ## 目的
 
-Proposal 不是一次生成的文本，而是一个在证据压力下逐步收缩或扩展的可证伪主张集合。六类专门推演保证每种认知任务被执行；五轮 `full-proposal-cycle` 保证修改后的完整 Proposal 被重新检查，而不是把六项检查各做一次就宣布收敛。重复搜索、改写措辞、增加引用数量不算独立迭代。
+Proposal随证据修订；停止与通过依据[七项验收要求](acceptance-criteria.md)。以下检查按缺口调度，不要求每类独占一轮，也不要求固定总轮数。重复搜索和文字润色不能替代证据。
 
 ## 内部产物
 
@@ -38,23 +38,13 @@ Proposal 不是一次生成的文本，而是一个在证据压力下逐步收�
 }
 ```
 
-`proposal_changed=true` 时，检索稳定性计数归零。`false` 必须说明本轮使用了什么新证据或新反证角度；没有新压力的“无变化”不计数。
+`proposal_changed=true` 时复核受影响要求及下游，绑定文件变化使旧验收失效。`false` 时说明检查了什么以及仍缺什么；轮次只留历史，不累计或清零稳定次数。
 
-## 五轮完整 Proposal 循环
+## 当前版本整体复核
 
-顶会目标研究至少执行五轮 `cycle_type=full-proposal-cycle`。每轮都要重新审查 Q/K/M/D/C、研究问题树、最近邻、深度链、必要广度、识别、资源和论文证据包，并填写 `round`、`breadth_review`、`depth_review`、`novelty_review`、`mechanism_review`、`identification_review` 与 `paper_review`。五轮的主要攻击面依次为：
+修改后核对受影响的Q/K/M/D/C、问题树、最近邻、机制与证据链。`full-proposal-cycle`可作为历史记录类型，但不要求数量、连续编号或最后若干轮不变。最终验收见`proposal/acceptance.json`：七项均有当前证据，审查独立且无致命缺口。没有新证据不必重复整个流程；存在关键缺口也不能仅因多轮无变化停止。
 
-1. 问题重要性、候选组合和必要子问题；
-2. 功能等价、新颖性边界和范围过窄/过宽；
-3. 机制、竞争解释、假设去除和反例；
-4. 决定性证据、测量、必要边界、外部效度与资源；
-5. 完整论文论证和不继承 Builder 结论的反方整合。
-
-五轮不是把同一段文字循环五次。每轮必须记录新的证据或压力、具体改动和仍未解决的威胁；未改变时也要说明经何种独立攻击仍保持。当前 Proposal ID 必须拥有连续的 1–5 轮，旧版本记录只能用于追踪。
-
-六类专门推演记录与五轮完整循环可以引用相同证据，但承担不同审计语义：前者证明每种认知操作确实做过，后者证明每次实质修改后完整论证仍成立。不得把一条记录复制成两类来凑数。
-
-## 六类必需推演轮
+## 六类证据检查任务
 
 ### 1. 候选竞争轮 `candidate-comparison`
 
@@ -83,7 +73,7 @@ Proposal 不是一次生成的文本，而是一个在证据压力下逐步收�
 
 ### 3. 机制与反证轮 `mechanism-falsification`
 
-为保留候选绘制最小因果结构或机制链，明确 treatment、mediator、outcome、confounder 和 selection。具体回答：
+按[研究类型](problem-to-proposal.md#按研究类型解释m与d)为候选建立机制、设计依据、测量效度或理论关系。因果主张才需要相应因果结构与识别条件，不强迫系统/测量研究虚构中介。具体回答：
 
 - 核心构念怎样操作化，何时不成立？
 - 至少两个竞争解释能否产生相同表面结果？
@@ -95,7 +85,7 @@ Proposal 不是一次生成的文本，而是一个在证据压力下逐步收�
 
 ### 4. 识别与可行性轮 `protocol-feasibility`
 
-先尝试设计能推翻理论的最小实验，再讨论完整 benchmark。具体检查：
+先设计能区分主张与替代解释的最小检验，再确定必要广度。以下按研究类型选取，不机械要求全部对照或GPU：
 
 - 处理变量是否真正独立，操纵检验是什么？
 - clean、sham、omission、negative control 和 positive control 是否足以排除混杂？
@@ -128,13 +118,13 @@ Proposal 不是一次生成的文本，而是一个在证据压力下逐步收�
   -> 机制与反证
   -> 识别与可行性
   -> 完整论文架构
-  -> 五轮完整 Proposal 循环
+  -> 当前版本整体证据复核
   -> 独立反方
        ├─ reject -> 回到候选竞争或停止
        ├─ revise -> 返回被指出的轮次
        └─ pass -> 新颖性稳定检索
                     ├─ changed -> 返回等价工作碰撞
-                    └─ 两轮 no/no -> audited 候选
+                    └─ 七项验收与范围证据成立 -> audited 候选
 ```
 
 迭代不是单向流水线。任何新论文改变最近邻、任何预测无法区分 rival、任何关键控制不可实施，都必须回退。
@@ -143,14 +133,14 @@ Proposal 不是一次生成的文本，而是一个在证据压力下逐步收�
 
 只有同时满足以下条件，Proposal 才可标为 `audited`：
 
-- 候选竞争、等价工作碰撞、机制与反证、识别与可行性、完整论文架构、独立反方六类轮次都有完整记录；
-- 当前 Proposal ID 具有连续五轮有效 `full-proposal-cycle`，且每轮重审深度与必要广度；
+- 六类检查的结论可回溯到当前证据，不要求拆分成指定数量的记录；
+- 当前 Proposal ID通过七项验收，方案与证据快照一致；
 - `depth-breadth.md` 的深度链、研究问题树、确认性核心、必要边界、最小外部效度和扩张停止规则完整，`Depth gate` 与 `Breadth gate` 均为 `pass`；
 - 当前原子贡献声明均有证据、最近邻差异和科学后果；
 - 每个核心机制至少有一个 rival、区别性预测和明确 falsifier；
 - threat register 中没有未解决的 `proposal-fatal`；`empirical-dependency` 和 `paper-stage` 已明确交接但允许保持 `open|deferred`；
 - 独立反方决策为 `pass`；
 - 当前 Proposal 的 `Proposal decision: pass` 与 `Paper sufficiency: proposal-ready`；
-- 最后连续两轮定向检索均为 `Proposal changed: no`，且 `Saturation: reached`。
+- 当前范围的直接近邻、反向证据和必要分支已处理，有可复核的`Saturation: reached`依据；不按无变化次数判断。
 
 达到文献数量或完成六类轮次不自动代表通过。若核心知识贡献在迭代中被覆盖，应保留审计记录、替换当前用户 Proposal，并回到候选竞争。

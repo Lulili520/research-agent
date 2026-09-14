@@ -4,7 +4,7 @@ from typing import Any
 from pathlib import Path
 
 SCHEMA_VERSION = 4
-GATE_POLICY_VERSION = "execution-contract-v6"
+GATE_POLICY_VERSION = "proposal-evidence-v7"
 
 LAYOUT = {
     "research.json": "control/project.json",

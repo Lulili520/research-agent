@@ -1,120 +1,111 @@
-# Research Proposal
+# 〔具体研究问题〕：研究方案
 
-- Topic:
-- Proposal ID:
-- Search cutoff:
-- Proposal decision: pass | revise | reject
-- Novelty status: exploratory | provisional | audited
-- Empirical status: not-run | pilot | tested
-- Execution readiness: designed | deployable | blocked
-- Quality standard: unified-top-tier
-- Target research community:
-- Paper sufficiency: insufficient | promising | proposal-ready
-- Depth gate: pass | revise
-- Breadth gate: pass | revise
-- Iteration status: candidate-comparison | novelty-collision | mechanism-falsification | protocol-feasibility | adversarial-review | stable
+> Proposal ID／版本／证据截止日期。明确正式方案或待修订草案；编辑日期与取证日期分开。
 
-## 0. Q-K-M-D-C 科学合同
+## 1. 当前方案介绍
 
-- Knowledge question (Q):
-- Knowledge claim (K):
-- Mechanism (M):
-- Decisive test (D):
-- Scientific consequence (C):
+开头直接用普通语言介绍方案本身：研究对象、具体问题、拟做的处理或方法、比较方式，以及最终希望获得什么知识。首次出现的术语就地解释；必要时使用有出处的短例子或明确标注的构造例子。读完这一节应能复述“准备做什么、为什么、怎样判断”。
 
-## 1. 问题与科学价值
+若用户要求结论先行，先概括拟提出的方案和拟回答的问题，不用“保留问题／继续修订”等审查处置代替方案介绍。区分已选定设计与仍在竞争的收紧方向；待检验假设和条件性预期不能写成已发生的实验结果。
 
-## 2. 精确研究问题
+介绍结束后用短段交代主要局限及尚未实验等状态；详细四轴状态、版本历史和技术门禁集中在第8节或内部记录。不可隐去会推翻方案的缺口，但不要让状态字段占据读者理解方案之前的位置。
 
-- Central thesis:
-- Research-question tree:
-- Necessary subquestions:
+## 2. 问题依据与科学价值
 
-## 2.1 研究边界与必要广度
+解释对象、条件、有来源的现象及现有解释，附关键来源定位；说明回答后改变什么认识或决策。真实案例与构造例子区分，不用单个例子证明普遍性。
 
-- Confirmatory core:
-- Boundary axes:
-- External-validity minimum:
-- Optional extensions:
-- Out of scope:
-- Expansion triggers:
-- Stop-expansion rule:
+## 3. 当前研究主张与适用范围
 
-## 3. 相关工作与最近近邻
+用可读叙述呈现Q（问题）、K（待检验知识主张）、M（机制或理论依据）、D（决定性检验）、C（科学后果），随后给出必要子问题。
 
-## 4. 核心差异及其科学后果
+交代分析单位、可观察终点、确认性核心、必要边界、最低外部效度、不负责事项、扩张触发与停止条件。形式研究按需给出命题、假设、证明义务与反例，不把完整内部表单复制进正文。
 
-## 4.1 原子贡献声明
+关键示意图说明信息流与证据链，紧接对应叙述；设计图不能冒充已运行系统。
 
-## 4.2 已撤回声明
+## 4. 已有工作与拟新增贡献
 
-## 5. 机制或理论依据
+集中比较最强近邻、已覆盖内容、拟增加的原子知识主张及其科学后果。未发现先例不等于创新已成立；已撤回主张只保留影响当前判断的摘要，详细历史移入附录或内部记录。
 
-- Constructs:
-- Assumptions:
-- Mechanism:
-- Competing explanations:
-- Depth target:
-- Depth chain:
-- Decisive discriminator:
+## 5. 材料与判定依据
 
-## 5.1 形式命题与证明义务
+说明构念如何操作化，材料版本、信息条件、选择方式、合法比较及可靠终点。理论、系统、测量研究选用相应证明对象或验证材料，不强制训练数据。
 
-- Formal statement:
-- Assumptions:
-- Non-triviality:
-- Proof obligations:
-- Proof sketch:
-- Closest theoretical results:
-- Counterexample search:
-- Empirical corollaries:
+区分已经具备、尚待核验和无法取得的条件。记录机制假设、最强竞争解释及判定失效条件。
 
-## 6. 可检验预测与反证条件
+## 6. 决定性检验设计
 
-- Predictions:
-- Rival patterns:
-- Falsifiers:
+| 待区分主张或解释 | 处理／对照及固定项 | 区分性预测 | 材料与判定位置 | 无法判定的条件 |
+|---|---|---|---|---|
 
-## 7. 决定性实验蓝图（未报告结果）
+解释基线、预算、误差或统计处理、必要广度与反证规则。按研究类型采用实验、证明或系统验证；没有实际结果时全部标为设计。所有解释都预测同样涨点的比较不构成决定性检验。
 
-## 8. 结果—贡献矩阵
+## 7. 可能结果及允许得出的结论
 
-- Positive outcome:
-- Null outcome:
-- Mixed outcome:
-- Inconclusive outcome:
+此处是条件性结果解释，不是已发生的结果。
 
-| 预先定义的结果模式 | 允许得出的知识结论 | 禁止的外推 |
+| 预先定义的结果模式 | 允许的知识结论 | 禁止的外推 |
 |---|---|---|
+| 支持／正向 | | |
+| 反驳／零效应 | | |
+| 混合／依赖条件 | | |
+| 无法判定 | | |
 
-## 9. 预期知识贡献与负结果价值
+## 8. 验收缺口、可行性与下一动作
 
-## 10. 风险、资源、伦理与授权边界
+| 状态轴 | 当前判断 | 依据或限制 |
+|---|---|---|
+| Proposal decision | pass / revise / reject | |
+| Novelty status | exploratory / provisional / audited | |
+| Empirical status | not-run / pilot / tested | |
+| Execution readiness | designed / deployable / blocked | |
 
-## 11. 威胁分层与后续实证依赖
+文稿判断与机器门禁不一致时明确区分。
 
-- Proposal-fatal threats:
-- Empirical dependencies:
-- Paper-stage requirements:
+区分proposal-fatal、empirical-dependency和paper-stage问题；列出最可能改变判断的下一证据动作与恢复／停止条件。实际效应未知不因not-run本身否决设计。
 
-## 12. 声明—证据索引
+简要交代资源估算、已具备资源、授权边界及适用的伦理约束。集中放置技术审查状态：Theory mode、Paper sufficiency、Depth gate、Breadth gate、当前七项证据验收及独立审查位置（proposal/acceptance.json等）。不以结构完整代替通过，不要求固定轮数。
 
-## 13. 迭代决策摘要
+## 附录与内部索引（按需要）
 
-## 14. 完整论文论证包（计划）
+详细候选竞争、声明—证据映射、版本变化、独立意见闭合、完整论文论证包和深度广度审查链接到内部记录。附录不得藏匿会改变开头结论的关键反证。已有章节能够清楚表达时不再复制表单或另设同义章节。
 
-- One-sentence claim:
-- Theory / mechanism pillar:
-- Decisive experiment:
-- Strongest baselines:
-- Required external validity:
-- Negative-result contribution:
-- Artifact path:
+### 内部运行时字段（不复制到用户报告）
 
-## 15. 深度—广度审计摘要
+内部`proposal/proposal.md`在可读正文后保存下列字段，按当前真实证据填写具体内容或对应正文位置；缺口如实写明。保留运行时字段名称，不能以表格替代要求行首字段的机器契约，也不能用位置索引冒充科学验收。用户报告不必与内部文件逐字相同，但科学主张、状态和证据必须一致。
 
-- Contribution stack:
-- Breadth floor:
-- Breadth ceiling:
-- Evidence package:
-- Five full-cycle convergence:
+```text
+Topic:
+Proposal ID:
+Search cutoff:
+Proposal decision:
+Novelty status:
+Empirical status:
+Execution readiness:
+Paper sufficiency:
+Depth gate:
+Breadth gate:
+Knowledge question (Q):
+Knowledge claim (K):
+Mechanism (M):
+Decisive test (D):
+Scientific consequence (C):
+Constructs:
+Assumptions:
+Mechanism:
+Competing explanations:
+Predictions:
+Falsifiers:
+Central thesis:
+Research-question tree:
+Contribution stack:
+Confirmatory core:
+Boundary program:
+External-validity minimum:
+Expansion stop rule:
+Positive outcome:
+Null outcome:
+Mixed outcome:
+Inconclusive outcome:
+```
+
+formal另保留`Formal statement:`、`Proof obligations:`、`Proof sketch:`、`Counterexample search:`、`Empirical corollaries:`。未到该阶段不生成虚假证明或通过状态。

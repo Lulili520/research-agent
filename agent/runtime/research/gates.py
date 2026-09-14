@@ -24,6 +24,12 @@ except ImportError:
         empirical_status, verified_outcomes, require_pilot_evidence, require_main_evidence)
 
 
+try:
+    from .proposal_acceptance import acceptance_errors
+except ImportError:
+    from proposal_acceptance import acceptance_errors
+
+
 def require_gates(root: Path, target: str) -> None:
     missing = [item for item in GATES.get(target, []) if not (root / item).is_file() or (root / item).stat().st_size == 0]
     if missing:
@@ -209,7 +215,7 @@ def proposal_errors(root: Path) -> list[str]:
     required_files = (
         "search-log.md", "literature/coverage.md", "literature/nearest-neighbors.md",
         "proposal-candidates.jsonl", "proposal-claims.jsonl", "proposal-rivals.jsonl",
-        "proposal-threats.jsonl", "proposal-iterations.jsonl",
+        "proposal-threats.jsonl",
         "proposal.md", "proposal-depth-breadth.md", "proposal-audit.md", "novelty-review.md",
     )
     for relative in required_files:
@@ -325,16 +331,6 @@ def proposal_errors(root: Path) -> list[str]:
     fatal_threats = [item for item in threats if item.get("class") == "proposal-fatal" and item.get("status") != "resolved"]
     if fatal_threats:
         errors.append("proposal-threats.jsonl contains unresolved proposal-fatal threats")
-    required_cycles = {
-        "candidate-comparison", "novelty-collision", "mechanism-falsification",
-        "protocol-feasibility", "paper-architecture", "adversarial-review",
-    }
-    seen_cycles: set[str] = set()
-    full_cycle_rounds: list[int] = []
-    full_cycle_fields = {
-        "round", "breadth_review", "depth_review", "novelty_review",
-        "mechanism_review", "identification_review", "paper_review",
-    }
     iteration_fields = {
         "iteration_id", "proposal_id", "cycle_type", "question", "inputs", "finding",
         "decision", "proposal_changed", "change_summary", "unresolved", "next_action",
@@ -344,8 +340,6 @@ def proposal_errors(root: Path) -> list[str]:
         if missing:
             errors.append(f"proposal iteration row {index} missing fields: {', '.join(sorted(missing))}")
             continue
-        if item.get("proposal_id") == current_proposal_id:
-            seen_cycles.add(str(item["cycle_type"]))
         if not isinstance(item["proposal_changed"], bool):
             errors.append(f"proposal iteration row {index} has non-boolean proposal_changed")
         for field in ("question", "finding", "decision", "change_summary", "next_action"):
@@ -355,39 +349,11 @@ def proposal_errors(root: Path) -> list[str]:
             errors.append(f"proposal iteration row {index} requires evidence inputs")
         if not isinstance(item["unresolved"], list):
             errors.append(f"proposal iteration row {index} unresolved must be a list")
-        if item.get("proposal_id") == current_proposal_id and item.get("cycle_type") == "full-proposal-cycle":
-            missing_full = full_cycle_fields - set(item)
-            if missing_full:
-                errors.append(f"full proposal cycle row {index} missing fields: {', '.join(sorted(missing_full))}")
-                continue
-            if not isinstance(item["round"], int) or item["round"] < 1:
-                errors.append(f"full proposal cycle row {index} has invalid round")
-            else:
-                full_cycle_rounds.append(item["round"])
-            for field in full_cycle_fields - {"round"}:
-                if not str(item[field]).strip():
-                    errors.append(f"full proposal cycle row {index} has empty {field}")
-    missing_cycles = required_cycles - seen_cycles
-    if missing_cycles:
-        errors.append(f"current proposal iteration record missing cycles: {', '.join(sorted(missing_cycles))}")
-    if len(full_cycle_rounds) != len(set(full_cycle_rounds)):
-        errors.append("current proposal has duplicate full-proposal-cycle round numbers")
-    distinct_full_rounds = sorted(set(full_cycle_rounds))
-    if len(distinct_full_rounds) < 5:
-        errors.append("current proposal requires at least five full-proposal-cycle rounds")
-    elif distinct_full_rounds[-5:] != list(range(distinct_full_rounds[-1] - 4, distinct_full_rounds[-1] + 1)):
-        errors.append("current proposal requires five consecutive full-proposal-cycle rounds")
-    if errors:
-        return errors
+    # Iterations document work; acceptance depends on current evidence, not counts.
+    errors.extend(acceptance_errors(root, current_proposal_id))
     search = (root / "search-log.md").read_text(encoding="utf-8")
-    rounds = re.findall(r"(?im)^Round:\s*\S+", search)
-    changes = [value.lower() for value in re.findall(r"(?im)^Proposal changed:\s*(yes|no)\s*$", search)]
-    if len(rounds) < 2 or len(changes) != len(rounds):
-        errors.append("every directed search round must record `Proposal changed: yes|no`")
-    if len(changes) < 2 or changes[-2:] != ["no", "no"]:
-        errors.append("novelty saturation requires the last two directed rounds to record `Proposal changed: no`")
     if not re.search(r"(?im)^Saturation:\s*reached\s*$", search):
-        errors.append("search-log.md requires `Saturation: reached` only after two stable rounds")
+        errors.append("search-log.md requires evidence-supported `Saturation: reached`")
     depth_breadth = (root / "proposal-depth-breadth.md").read_text(encoding="utf-8")
     for label in (
         "Proposal ID:", "Central thesis:", "Research-question tree:", "Necessary subquestions:",

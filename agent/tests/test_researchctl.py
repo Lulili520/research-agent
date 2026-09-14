@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 import subprocess
 import sys
@@ -7,6 +8,7 @@ import unittest
 from pathlib import Path
 
 from agent.runtime.research.researchctl import ResearchRoot
+from agent.runtime.research.proposal_acceptance import CRITERIA, REQUIRED_EVIDENCE
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / "agent/runtime/research/researchctl.py"
@@ -50,6 +52,22 @@ class ResearchControlTests(unittest.TestCase):
         if ok and result.returncode != 0:
             self.fail(result.stdout + result.stderr)
         return result
+
+    def write_proposal_acceptance(self):
+        # Synthetic review attestation, not a scientific evaluation.
+        snapshots = {}
+        for alias in REQUIRED_EVIDENCE:
+            path = self.internal / alias
+            snapshots[path.relative_to(Path(self.internal)).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        source = (self.internal / "proposal.md").relative_to(Path(self.internal)).as_posix()
+        self.acceptance = Path(self.internal) / "proposal/acceptance.json"
+        self.acceptance.write_text(json.dumps({
+            "version": 1, "proposal_id": "P1", "author": "builder", "reviewer": "independent-reviewer",
+            "reviewed_at": "2026-09-11", "independence_statement": "separate synthetic reviewer",
+            "decision": "pass", "open_fatal_issues": [], "snapshots": snapshots,
+            "criteria": {key: {"status": "pass", "rationale": "synthetic supported assessment",
+                                  "evidence": [{"path": source, "locator": "Q/K/M/D/C"}]} for key in CRITERIA},
+        }), encoding="utf-8")
 
     def advance_to_protocol(self):
         files = {
@@ -144,6 +162,7 @@ class ResearchControlTests(unittest.TestCase):
         (theory_dir / "proof-audit.md").write_text("Proof gate: pass\nReviewer role: proof-skeptic\nReviewer model: isolated-review-model\nVerification level: manual-reconstruction\nIndependent reconstruction: yes\nIndependence statement: reviewed independently\nUnresolved proof issues: none\n", encoding="utf-8")
         (theory_dir / "counterexamples.jsonl").write_text(json.dumps({"case_id": "CE1", "result": "not-found"}) + "\n", encoding="utf-8")
         (self.internal / "search-log.md").write_text("Round: 1\nProposal changed: yes\nRound: 2\nProposal changed: no\nRound: 3\nProposal changed: no\nSaturation: reached\n", encoding="utf-8")
+        self.write_proposal_acceptance()
         for stage in ("problem-framing", "literature-mapping", "direction-audit", "theory-building", "experiment-protocol"):
             self.invoke("transition", str(self.root), stage, "--reason", "test progression")
 
@@ -298,12 +317,12 @@ class ResearchControlTests(unittest.TestCase):
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
         self.assertIn("missing fields", denied.stderr)
 
-    def test_proposal_gate_rejects_unstable_final_search_rounds(self):
+    def test_proposal_gate_rejects_search_changed_since_acceptance(self):
         self.advance_to_protocol()
         search = self.internal / "search-log.md"
         search.write_text("Round: 1\nProposal changed: no\nRound: 2\nProposal changed: yes\nSaturation: reached\n", encoding="utf-8")
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
-        self.assertIn("last two directed rounds", denied.stderr)
+        self.assertIn("stale evidence", denied.stderr)
 
     def test_theory_gate_rejects_non_distinguishing_prediction(self):
         self.advance_to_protocol()
@@ -385,16 +404,13 @@ class ResearchControlTests(unittest.TestCase):
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
         self.assertIn("unresolved proposal-fatal", denied.stderr)
 
-    def test_proposal_gate_requires_every_reasoning_cycle(self):
+    def test_proposal_gate_requires_feasibility_evidence_not_named_cycles(self):
         self.advance_to_protocol()
-        iterations = self.internal / "proposal-iterations.jsonl"
-        rows = [json.loads(line) for line in iterations.read_text(encoding="utf-8").splitlines()]
-        iterations.write_text(
-            "".join(json.dumps(row) + "\n" for row in rows if row["cycle_type"] != "protocol-feasibility"),
-            encoding="utf-8",
-        )
+        data = json.loads(self.acceptance.read_text())
+        data["criteria"]["feasibility"]["status"] = "revise"
+        self.acceptance.write_text(json.dumps(data))
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
-        self.assertIn("protocol-feasibility", denied.stderr)
+        self.assertIn("criterion not passed: feasibility", denied.stderr)
 
     def test_proposal_gate_requires_depth_and_breadth_audit(self):
         self.advance_to_protocol()
@@ -406,34 +422,67 @@ class ResearchControlTests(unittest.TestCase):
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
         self.assertIn("Depth gate: pass", denied.stderr)
 
-    def test_proposal_gate_requires_five_full_cycles_for_current_proposal(self):
+    def test_proposal_acceptance_does_not_require_iteration_counts(self):
         self.advance_to_protocol()
-        iterations = self.internal / "proposal-iterations.jsonl"
-        rows = [json.loads(line) for line in iterations.read_text(encoding="utf-8").splitlines()]
-        iterations.write_text(
-            "".join(
-                json.dumps(row) + "\n"
-                for row in rows
-                if row.get("cycle_type") != "full-proposal-cycle" or row.get("round") != 3
-            ),
-            encoding="utf-8",
-        )
-        denied = self.invoke("audit-proposal", str(self.root), ok=False)
-        self.assertIn("five full-proposal-cycle", denied.stderr)
+        (self.internal / "proposal-iterations.jsonl").write_text("", encoding="utf-8")
+        (self.internal / "search-log.md").write_text("Round: one\nProposal changed: no\nSaturation: reached\n", encoding="utf-8")
+        self.write_proposal_acceptance()
+        self.invoke("audit-proposal", str(self.root))
 
-    def test_old_proposal_cycles_cannot_satisfy_current_proposal_gate(self):
+    def test_proposal_acceptance_rejects_missing_quality_even_after_many_rounds(self):
         self.advance_to_protocol()
-        iterations = self.internal / "proposal-iterations.jsonl"
-        rows = [json.loads(line) for line in iterations.read_text(encoding="utf-8").splitlines()]
-        for row in rows:
-            if row["cycle_type"] in {
-                "candidate-comparison", "novelty-collision", "mechanism-falsification",
-                "protocol-feasibility", "paper-architecture", "adversarial-review",
-            }:
-                row["proposal_id"] = "P0"
-        iterations.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+        data = json.loads(self.acceptance.read_text())
+        del data["criteria"]["identification"]
+        self.acceptance.write_text(json.dumps(data))
         denied = self.invoke("audit-proposal", str(self.root), ok=False)
-        self.assertIn("current proposal iteration record missing cycles", denied.stderr)
+        self.assertIn("all seven criteria", denied.stderr)
+
+    def test_proposal_acceptance_rejects_self_review_and_stale_proposal(self):
+        self.advance_to_protocol()
+        data = json.loads(self.acceptance.read_text())
+        data["reviewer"] = data["author"]
+        self.acceptance.write_text(json.dumps(data))
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("distinct from the author", denied.stderr)
+        self.write_proposal_acceptance()
+        proposal = self.internal / "proposal.md"
+        proposal.write_text(proposal.read_text() + "\nChanged central mechanism.\n")
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("stale evidence", denied.stderr)
+
+    def test_old_proposal_acceptance_cannot_satisfy_current_gate(self):
+        self.advance_to_protocol()
+        data = json.loads(self.acceptance.read_text())
+        data["proposal_id"] = "P0"
+        self.acceptance.write_text(json.dumps(data))
+        denied = self.invoke("audit-proposal", str(self.root), ok=False)
+        self.assertIn("different Proposal ID", denied.stderr)
+
+    def test_proposal_acceptance_rejects_invalid_or_unbound_evidence(self):
+        self.advance_to_protocol()
+        original = json.loads(self.acceptance.read_text())
+        for change, expected in [
+            (lambda d: d["criteria"]["problem"].update(evidence=[]), "lacks evidence"),
+            (lambda d: d["criteria"]["problem"].update(rationale=""), "lacks rationale"),
+            (lambda d: d["criteria"]["problem"].update(evidence=[{"path": "missing.md", "locator": "Q"}]), "unbound evidence"),
+            (lambda d: d["snapshots"].update({"../outside": "0" * 64}), "unsafe evidence path"),
+            (lambda d: d.update(open_fatal_issues=["unresolved identification"]), "fatal issues"),
+            (lambda d: d["snapshots"].pop("proposal/proposal.md"), "missing required snapshot"),
+        ]:
+            with self.subTest(expected=expected):
+                data = json.loads(json.dumps(original))
+                change(data)
+                self.acceptance.write_text(json.dumps(data))
+                denied = self.invoke("audit-proposal", str(self.root), ok=False)
+                self.assertIn(expected, denied.stderr)
+
+    def test_policy_migration_resets_previous_novelty_pass(self):
+        self.advance_to_protocol()
+        self.invoke("migrate-policy", str(self.root), "--reason", "new evidence acceptance")
+        state = json.loads((self.internal / "state.json").read_text())
+        self.assertEqual(state["proposal_decision"], "not-assessed")
+        self.assertEqual(state["novelty_status"], "not-assessed")
+        self.assertEqual(state["policy_status"], "migration-required")
 
     def test_policy_migration_blocks_mutation_until_revalidated(self):
         self.invoke("migrate-policy", str(self.root), "--reason", "gate policy upgraded")

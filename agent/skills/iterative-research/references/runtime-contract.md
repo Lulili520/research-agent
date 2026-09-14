@@ -54,7 +54,7 @@ python agent/runtime/research/researchctl.py finish-run research/<topic> --id ru
 
 ## execution-contract-v6：冻结、授权和运行证据
 
-当前 schema 为 4，门禁策略为 `execution-contract-v6`。Python 审计、阶段转换和迁移复核共用 `gates.py` 的阶段要求。
+当前 schema 为 4，门禁策略为 `proposal-evidence-v7`；下述v6执行契约继续适用。Python 审计、阶段转换和迁移复核共用 `gates.py` 的阶段要求。
 
 `freeze-protocol` 只在 `experiment-protocol` 阶段运行，且不能存在未登记终局的 run。冻结文件集合包含：`protocol.md`、`design.json`、`analysis-plan.md`、`protocol-audit.md`、范围、Proposal、理论正文、理论声明及预测。归档同时保存 `experiments/protocols/vNNN.md`、`vNNN.bundle/` 和 `vNNN.lock.json`，当前锁与 `protocol-frozen` 事件必须一致。冻结文件的正文、配置或分析方法发生变化都需要新版本，不能只保持 protocol.md 不变。
 
@@ -144,3 +144,11 @@ python agent/runtime/research/taskqueue.py research/example add synthesize --que
 失败使用 `fail ID --token TOKEN --note 原因`。来源永久丢失或决定放弃时，先核实外部工作已停止，再用 `cancel ID --note 对账发现及取消理由` 关闭任务；无需恢复已丢失输入。取消保留已有输入/产物哈希、撤销旧凭证并阻止下游继续。取消登记不会停止外部进程。中断后先检查原任务、现有产物及外部调用是否结束，再执行 `reconcile ID --note 对账发现及重试理由`；它归档旧尝试、更新现有输入的哈希并撤销旧凭证，重新领取后再做工作。改用其他输入或改变问题时建立新任务，保留旧记录。不得因等待超时直接重试外部提交，不得把反证标成工具失败。重复无新增依据的重试须返回范围/策略判断。
 
 `control/tasks.json` 将队列与尝试历史原子写入同一文档，并共用项目锁；写盘使用独占临时文件、文件 fsync 和原子替换，失败保留原文件并清理临时文件，不宣称具备断电后的跨文件事务保证；不保证外部工具恰好执行一次，没有自动心跳、租约回收或后台工作进程。来源修订只会使依赖结果不可复用，宿主仍须更新受影响的论文卡、主张和报告，并通过 `researchctl.py` 登记科学回退。
+
+## proposal-evidence-v7：Proposal证据验收
+
+取消Proposal固定完整循环次数及连续稳定检索次数，保留迭代历史。七项科学要求见[验收契约](../../research-proposal/references/acceptance-criteria.md)，运行时检查`proposal/acceptance.json`、当前方案和证据快照、独立审查声明及未解决致命威胁。证据改变需重新审查；哈希与字段验证不证明科学正确性或真实独立性。理论和实验执行门禁不由本次策略自动放宽。
+
+旧项目先`migrate-policy <topic> --reason "adopt proposal-evidence-v7"`，再`revalidate-policy <topic>`。迁移保存旧控制状态、重置旧门禁，不虚构新的通过记录；若新验收不足，返回受影响阶段补证。无需为旧项目补造历史循环。
+
+Proposal生成入口按问题缺口调度，详见[问题到方案](../../research-proposal/references/problem-to-proposal.md)。七项验收的`mechanism`键可承载系统设计依据、测量效度或形式关系，保留键名不代表所有研究必须进行因果中介分析；此次为语义说明，无新schema或机器门槛。

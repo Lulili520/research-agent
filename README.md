@@ -115,3 +115,5 @@ python agent/runtime/research/collect_openalex.py research/example/.research/rev
 
 
 控制平面的模块边界、本轮证据门禁及后续优化顺序见 [项目结构说明](agent/docs/architecture.md)。`execution-contract-v6` 将协议冻结、执行授权与运行证据统一校验；旧项目需要显式迁移，操作见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md#旧项目迁移)。
+
+Proposal按[七项证据要求](agent/skills/research-proposal/references/acceptance-criteria.md)验收，不设固定迭代或稳定检索轮数；新策略为`proposal-evidence-v7`，旧项目需显式迁移。

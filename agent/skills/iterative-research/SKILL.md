@@ -50,8 +50,8 @@ topic
 ```
 
 - `literature-mapping` 先调用 `research-proposal`；它复用 `review-protocol`（按需）、`scholarly-search`、`paper-analysis` 和 `evidence-synthesis`，形成覆盖充分且饱和的已核验语料与核心全文精读（默认预算分别为 50–100 与 20–30 篇）和 Proposal，不得把简短调研报告当作完成。
-- `direction-audit` 对 Proposal 做实验前科学审计。除语料覆盖、检索饱和、最近近邻差异和 `Q-K-M-D-C` 外，还必须形成研究问题树、贡献层级、深度链、确认性核心、必要边界、最小外部效度和扩张停止规则，并完成当前 Proposal 的五轮全流程复核（具体记录契约见 `research-proposal`，此处不另建一套轮次）。只有深度、广度、机制、可区分预测、反证条件和纸面识别路径共同通过 `researchctl.py audit-proposal` 后，才进入 `theory-building`。尚未执行实验是正常状态，不得作为拒绝原因。
-- Proposal 通过后调用 `theory-building`，并阅读[理论—实验契约](references/theory-to-experiment.md)。形式化证明不是所有研究的硬要求，但必须有明确机制、竞争解释、区分性预测、反证条件和实验映射；`researchctl.py audit-theory` 未通过时不得进入实验协议。
+- `direction-audit` 对 Proposal 做实验前科学审计。除语料覆盖、检索饱和、最近近邻差异和 `Q-K-M-D-C` 外，还必须形成研究问题树、贡献层级、深度链、确认性核心、必要边界、最小外部效度和扩张停止规则，并通过当前 Proposal 的七项证据验收（见 `research-proposal`，不设固定轮数）。只有深度、广度、机制、可区分预测、反证条件和纸面识别路径共同通过 `researchctl.py audit-proposal` 后，才进入 `theory-building`。尚未执行实验是正常状态，不得作为拒绝原因。
+- Proposal 通过后调用 `theory-building`，并阅读[理论—实验契约](references/theory-to-experiment.md)。形式化证明不是所有研究的硬要求；按研究类型给出机制、设计依据、测量效度或形式关系，以及适配的替代解释、区分性检验、反证条件和验证映射；`researchctl.py audit-theory` 未通过时不得进入实验协议。
 - 理论通过后调用 `experiment-design`，把全部核心预测映射为可反证的设计与预先分析计划；通过 `audit-protocol` 后冻结协议。冻结完成只表示“准备执行”，不会自动启动试点、GPU 或外部任务。
 - 用户要求继续执行时，进入试点和主实验前阅读[实验迭代规则](references/experimental-iteration.md)。正式协议冻结后，探索性分析与确认性实验必须分开。进入 Pilot 前用 `authorize-execution` 登记当前协议版本的用户指令证据；所需资源权限还必须与冻结设计中的 `required_permissions` 一致。登记只落实已有授权，不得凭 Skill 自行授予执行权限。
 - `artifact-building` 和 `report-writing` 负责生产，`artifact-validation` 和 `report-review` 负责验收，不能由“文件已经存在”冒充正在执行的生产阶段。
