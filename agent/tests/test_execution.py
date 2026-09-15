@@ -172,7 +172,12 @@ def test_migration_preserves_old_lock_and_requires_new_freeze(project):
 
 def test_protocol_does_not_require_topic_specific_sections_or_dataset_count(project):
     path = project.root / 'outputs/03-理论分析与实验探究.md'
-    path.write_text(path.read_text().replace('https://a.example https://b.example https://c.example', ''))
+    path.write_text(
+        path.read_text(encoding='utf-8').replace(
+            'https://a.example https://b.example https://c.example', ''
+        ),
+        encoding='utf-8',
+    )
     assert ctl.protocol_errors(project.internal) == []
     design_path = project.internal / 'experiments/design.json'
     design = json.loads(design_path.read_text())

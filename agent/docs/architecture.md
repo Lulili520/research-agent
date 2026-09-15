@@ -8,6 +8,7 @@
 agent/runtime/research/
   policy.py          schema/gate-policy 版本、文件布局、阶段与转换表
   storage.py         JSON/JSONL、项目锁、事件链和项目路径定位
+  stdio.py           Windows 安全的确定性 UTF-8 命令行输出
   execution.py       冻结文件集合、版本授权、run 产物核验和实证状态推导
   gates.py           科学材料的结构检查及统一阶段门禁
   researchctl.py     命令解析、状态变更和事件登记

@@ -8,13 +8,19 @@ from pathlib import Path
 import subprocess
 import sys
 
+try:
+    from .runtime.research.stdio import configure_utf8_stdio
+except ImportError:
+    from runtime.research.stdio import configure_utf8_stdio
+
 
 def main() -> int:
+    configure_utf8_stdio()
     agent = Path(__file__).resolve().parent
     if importlib.util.find_spec('pytest') is None:
         print(f'Install test dependencies first: {sys.executable} -m pip install -r {agent / "requirements-dev.txt"}', file=sys.stderr)
         return 2
-    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1')
     return subprocess.call(
         [sys.executable, '-m', 'pytest', '-c', str(agent / 'pytest.ini'), '-q', *sys.argv[1:]],
         cwd=agent,

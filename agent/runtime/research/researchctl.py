@@ -15,9 +15,11 @@ from typing import Any
 try:
     from .policy import (layout_path, ResearchRoot, SCHEMA_VERSION, GATE_POLICY_VERSION, LAYOUT, STAGES, TRANSITIONS, GATES, PERMISSIONS, EXPERIMENT_STAGES, RUN_STAGES, QUALITY_DIMENSIONS, EMPIRICAL_ORDER)
     from .storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, load_events, event_hash, emit, verify_events)
+    from .stdio import configure_utf8_stdio
 except ImportError:
     from policy import (layout_path, ResearchRoot, SCHEMA_VERSION, GATE_POLICY_VERSION, LAYOUT, STAGES, TRANSITIONS, GATES, PERMISSIONS, EXPERIMENT_STAGES, RUN_STAGES, QUALITY_DIMENSIONS, EMPIRICAL_ORDER)
     from storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, load_events, event_hash, emit, verify_events)
+    from stdio import configure_utf8_stdio
 
 
 try:
@@ -465,6 +467,7 @@ def parser() -> argparse.ArgumentParser:
 
 
 if __name__ == "__main__":
+    configure_utf8_stdio()
     arguments = parser().parse_args()
     if arguments.command in {"status", "verify-log", "audit-scope", "audit-proposal", "audit-theory", "audit-protocol", "audit-pre-experiment", "init"}:
         arguments.func(arguments)

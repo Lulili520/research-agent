@@ -23,17 +23,16 @@ research/<topic>/                 本地生成产物，Git 忽略
 
 本分支只维护与具体课题无关的计算机科学科研 Agent。研究对象、方法、数据、工具和资源由用户 topic 及冻结范围决定。课题实现及其依赖独立维护，通过显式路径和 `researchctl.py` 登记协议与运行；通用 Agent 不预设模型、数据集或 GPU 环境，也不附带真实课题产物、模型或冻结实验工作区。
 
-## Linux 开发环境
+## Windows 开发环境
 
-通用运行时仅依赖 Python 3.11+ 标准库，无需 GPU 或 PowerShell。从仓库根目录执行：
+通用运行时仅依赖 Python 3.11+ 标准库，无需 GPU。从 PowerShell 的仓库根目录执行；直接调用虚拟环境解释器可避免激活脚本受执行策略影响。命令行入口统一输出 UTF-8，PowerShell 审计入口优先使用 `agent/.venv` 中的解释器：
 
-```bash
-python3 -m venv agent/.venv
-source agent/.venv/bin/activate
-python -m pip install -r agent/requirements-dev.txt
-python agent/check.py
-python agent/runtime/research/researchctl.py --help
-python agent/runtime/research/audit.py --help
+```powershell
+python -m venv agent/.venv
+& agent/.venv/Scripts/python.exe -m pip install -r agent/requirements-dev.txt
+& agent/.venv/Scripts/python.exe agent/check.py
+& agent/.venv/Scripts/python.exe agent/runtime/research/researchctl.py --help
+& agent/.venv/Scripts/python.exe agent/runtime/research/audit.py --help
 ```
 
 默认测试只包含通用控制平面、门禁与工具测试，不启动模型推理或 GPU 实验。
@@ -59,9 +58,9 @@ python agent/runtime/research/audit.py --help
 
 初始化只建立状态，不开展检索或实验：
 
-```bash
-python agent/runtime/research/researchctl.py init research/example --topic "示例课题" --research-type benchmark --gpu-hours 0 --cost 0
-python agent/runtime/research/researchctl.py status research/example
+```powershell
+& agent/.venv/Scripts/python.exe agent/runtime/research/researchctl.py init research/example --topic "示例课题" --research-type benchmark --gpu-hours 0 --cost 0
+& agent/.venv/Scripts/python.exe agent/runtime/research/researchctl.py status research/example
 ```
 
 完整命令见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md)。状态机 schema 和 gate-policy 版本由运行时维护，旧项目须显式迁移并重新验收。
@@ -77,12 +76,12 @@ python agent/runtime/research/researchctl.py status research/example
 
 检索日志、来源和论文卡放在 `.research/review/`，机器状态和事件链放在 `.research/control/`，其他内部材料按 proposal、theory、experiments、runs、paper 等阶段保存。普通查找只创建实际需要的材料。
 
-```bash
-python agent/runtime/research/audit.py review research/example
-python agent/runtime/research/audit.py iterative research/example
+```powershell
+powershell -File agent/audit-research.ps1 research/example
+powershell -File agent/audit-iterative-research.ps1 research/example
 ```
 
-审计为只读操作；退出码 0 表示结构检查通过，1 表示不满足门禁，2 表示输入目录不存在。初始化项目尚未具备完整调研产物，不能期待通过调研完成审计。Windows 可继续使用 `agent/audit-research.ps1` 和 `agent/audit-iterative-research.ps1`，它们调用同一个 Python 实现。
+审计为只读操作；退出码 0 表示结构检查通过，1 表示不满足门禁，2 表示输入目录不存在。初始化项目尚未具备完整调研产物，不能期待通过调研完成审计。两个 PowerShell 入口调用同一个 Python 实现。
 
 格式和哈希校验不能证明科学正确性。修改 Skill 或科学门禁后，还需检查 [agent/evals.md](agent/evals.md) 中的路由、证据与授权行为。
 
@@ -94,8 +93,8 @@ python agent/runtime/research/audit.py iterative research/example
 
 OpenAlex 采集工具接受调用方提供的 JSON 查询表和起始日期，不含默认课题：
 
-```bash
-python agent/runtime/research/collect_openalex.py research/example/.research/review/literature/candidates.jsonl --queries research/example/.research/review/search-plan.json --from-date 2022-01-01 --mailto you@example.org
+```powershell
+& agent/.venv/Scripts/python.exe agent/runtime/research/collect_openalex.py research/example/.research/review/literature/candidates.jsonl --queries research/example/.research/review/search-plan.json --from-date 2022-01-01 --mailto you@example.org
 ```
 
 运行前在上述路径创建查询文件，内容为非空 `{ "cluster": "query text" }` 对象，例如 `{ "systems": "distributed consensus" }`；查询应围绕实际研究问题制定。每个查询只获取最多 `--per-query` 条候选（默认 35），不是分页穷尽检索，也不代替身份核验、全文阅读或新颖性审计。API 网络访问按实际检索任务执行。

@@ -9,6 +9,11 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+try:
+    from .stdio import configure_utf8_stdio
+except ImportError:
+    from stdio import configure_utf8_stdio
+
 
 def load_queries(path: Path) -> dict[str, str]:
     queries = json.loads(path.read_text(encoding="utf-8"))
@@ -39,6 +44,7 @@ def fetch(query: str, per_page: int, mailto: str, from_date: str) -> list[dict]:
 
 
 def main() -> None:
+    configure_utf8_stdio()
     parser = argparse.ArgumentParser()
     parser.add_argument("output")
     parser.add_argument("--mailto", required=True)

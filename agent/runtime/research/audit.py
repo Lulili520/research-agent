@@ -10,8 +10,10 @@ import re
 
 try:
     from . import gates as ctl
+    from .stdio import configure_utf8_stdio
 except ImportError:
     import gates as ctl
+    from stdio import configure_utf8_stdio
 
 
 class Audit:
@@ -120,6 +122,7 @@ class Audit:
 
 
 def main() -> int:
+    configure_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode', choices=('review', 'iterative'))
     parser.add_argument('directory', type=Path)

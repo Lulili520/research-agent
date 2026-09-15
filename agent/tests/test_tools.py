@@ -1,5 +1,6 @@
 import ast
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -15,6 +16,57 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 class ToolTests(unittest.TestCase):
+    def test_cli_output_is_utf8_under_a_cp936_process_environment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            topic = Path(directory) / 'topic'
+            unicode_topic = '研究 α→β 🧪'
+            environment = dict(
+                os.environ,
+                PYTHONDONTWRITEBYTECODE='1',
+                PYTHONUTF8='0',
+                PYTHONIOENCODING='cp936',
+            )
+            script = REPO / 'agent/runtime/research/researchctl.py'
+            initialized = subprocess.run(
+                [sys.executable, str(script), 'init', str(topic), '--topic', unicode_topic,
+                 '--research-type', 'theory'],
+                capture_output=True,
+                env=environment,
+            )
+            self.assertEqual(
+                initialized.returncode,
+                0,
+                initialized.stderr.decode('utf-8', errors='replace'),
+            )
+            status = subprocess.run(
+                [sys.executable, str(script), 'status', str(topic)],
+                capture_output=True,
+                env=environment,
+            )
+            self.assertEqual(status.returncode, 0, status.stderr.decode('utf-8', errors='replace'))
+            payload = json.loads(status.stdout.decode('utf-8'))
+            self.assertEqual(payload['research']['topic'], unicode_topic)
+
+            missing = Path(directory) / '缺失-🧪'
+            audit = subprocess.run(
+                [sys.executable, str(REPO / 'agent/runtime/research/audit.py'),
+                 'review', str(missing)],
+                capture_output=True,
+                env=environment,
+            )
+            self.assertEqual(audit.returncode, 2)
+            self.assertIn('🧪', audit.stdout.decode('utf-8'))
+
+            collect = subprocess.run(
+                [sys.executable, str(REPO / 'agent/runtime/research/collect_openalex.py'),
+                 str(Path(directory) / 'output.jsonl'), '--mailto', 'test@example.org',
+                 '--queries', str(missing / '查询.json'), '--from-date', '2026-01-01'],
+                capture_output=True,
+                env=environment,
+            )
+            self.assertEqual(collect.returncode, 2)
+            self.assertIn('🧪', collect.stderr.decode('utf-8'))
+
     def test_review_accepts_public_report_and_detects_stale_state(self):
         with tempfile.TemporaryDirectory() as d:
             topic = Path(d)

@@ -1,10 +1,12 @@
-name: Linux checks
+name: Windows checks
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
@@ -15,3 +17,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install -r agent/requirements-dev.txt
       - run: python agent/check.py
+      - name: Verify PowerShell audit wrappers
+        shell: pwsh
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          powershell -NoProfile -File agent/audit-research.ps1 research/__missing__
+          if ($LASTEXITCODE -ne 2) { throw "Unexpected review audit exit code: $LASTEXITCODE" }
+          powershell -NoProfile -File agent/audit-iterative-research.ps1 research/__missing__
+          if ($LASTEXITCODE -ne 2) { throw "Unexpected iterative audit exit code: $LASTEXITCODE" }
+          exit 0

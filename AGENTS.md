@@ -180,14 +180,14 @@ research/<topic-slug>/.research/
 
 完成长期研究前运行：
 
-```bash
-python agent/runtime/research/audit.py review research/<topic-slug>
+```powershell
+powershell -File agent/audit-research.ps1 research/topic-slug
 ```
 
 完成迭代科研前运行：
 
-```bash
-python agent/runtime/research/audit.py iterative research/<topic-slug>
+```powershell
+powershell -File agent/audit-iterative-research.ps1 research/topic-slug
 ```
 
 ## 扩展新能力
