@@ -14,11 +14,11 @@ from typing import Any
 
 try:
     from .policy import (layout_path, ResearchRoot, SCHEMA_VERSION, GATE_POLICY_VERSION, LAYOUT, STAGES, TRANSITIONS, GATES, PERMISSIONS, EXPERIMENT_STAGES, RUN_STAGES, QUALITY_DIMENSIONS, EMPIRICAL_ORDER)
-    from .storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, load_events, event_hash, emit, verify_events)
+    from .storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, require_project_scope, load_events, event_hash, emit, verify_events)
     from .stdio import configure_utf8_stdio
 except ImportError:
     from policy import (layout_path, ResearchRoot, SCHEMA_VERSION, GATE_POLICY_VERSION, LAYOUT, STAGES, TRANSITIONS, GATES, PERMISSIONS, EXPERIMENT_STAGES, RUN_STAGES, QUALITY_DIMENSIONS, EMPIRICAL_ORDER)
-    from storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, load_events, event_hash, emit, verify_events)
+    from storage import (project_lock, now, read_json, write_json_atomic, append_jsonl, read_jsonl, project, require_project_scope, load_events, event_hash, emit, verify_events)
     from stdio import configure_utf8_stdio
 
 
@@ -39,7 +39,9 @@ except ImportError:
 
 
 def command_init(args: argparse.Namespace) -> None:
-    outer = Path(args.directory).resolve()
+    # Initial creation may establish a new scope. If a process is already
+    # scoped, it must not create or inspect a sibling project.
+    outer = require_project_scope(args.directory, allow_unset=True)
     root = ResearchRoot(outer / ".research")
     if (root / "research.json").exists() or (root / "state.json").exists() or (outer / "research.json").exists():
         raise SystemExit(f"research project already initialized: {outer}")

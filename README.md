@@ -56,12 +56,16 @@ python -m venv agent/.venv
 
 正式研究通常预算纳入 50–100 篇、全文精读 20–30 篇，以覆盖与范围饱和为准，数量不替代质量。Proposal、实证状态和论文完成状态分开管理；未运行实验不导致 Proposal 自动失败。
 
-初始化只建立状态，不开展检索或实验：
+初始化只建立状态，不开展检索或实验。每个 PowerShell 会话先绑定唯一活动课题；绑定后控制器、审计器和采集器都会拒绝读取其他课题的历史：
 
 ```powershell
+$projectRoot = [IO.Path]::GetFullPath((Join-Path (Get-Location) 'research/example'))
+$env:RESEARCH_PROJECT_ROOT = $projectRoot
 & agent/.venv/Scripts/python.exe agent/runtime/research/researchctl.py init research/example --topic "示例课题" --research-type benchmark --gpu-hours 0 --cost 0
 & agent/.venv/Scripts/python.exe agent/runtime/research/researchctl.py status research/example
 ```
+
+`RESEARCH_PROJECT_ROOT` 必须是课题目录而不是仓库根目录。切换课题时应开启新的终端/Agent 上下文并重新绑定；不要在同一研究上下文中枚举或读取其他 `research/` 子目录。该约束隔离正常运行时的调研上下文和历史读写，但不替代 Windows ACL、独立账户或容器。
 
 完整命令见 [runtime contract](agent/skills/iterative-research/references/runtime-contract.md)。状态机 schema 和 gate-policy 版本由运行时维护，旧项目须显式迁移并重新验收。
 
@@ -94,7 +98,7 @@ powershell -File agent/audit-iterative-research.ps1 research/example
 OpenAlex 采集工具接受调用方提供的 JSON 查询表和起始日期，不含默认课题：
 
 ```powershell
-& agent/.venv/Scripts/python.exe agent/runtime/research/collect_openalex.py research/example/.research/review/literature/candidates.jsonl --queries research/example/.research/review/search-plan.json --from-date 2022-01-01 --mailto you@example.org
+& agent/.venv/Scripts/python.exe agent/runtime/research/collect_openalex.py research/example --output review/literature/candidates.jsonl --queries review/search-plan.json --from-date 2022-01-01 --mailto you@example.org
 ```
 
 运行前在上述路径创建查询文件，内容为非空 `{ "cluster": "query text" }` 对象，例如 `{ "systems": "distributed consensus" }`；查询应围绕实际研究问题制定。每个查询只获取最多 `--per-query` 条候选（默认 35），不是分页穷尽检索，也不代替身份核验、全文阅读或新颖性审计。API 网络访问按实际检索任务执行。

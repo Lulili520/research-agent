@@ -163,7 +163,7 @@ def completion_errors(root: Path) -> list[str]:
     paper_review = (root / "paper/review.md").read_text(encoding="utf-8")
     if not re.search(r"(?im)^Review decision:\s*agent-review-cleared\s*$", paper_review):
         errors.append("paper/review.md must record `Review decision: agent-review-cleared` before completion")
-    public_audit = root.parent / "outputs" / "04-论文与投稿审计.md"
+    public_audit = root.output("04-论文与投稿审计.md")
     if not public_audit.is_file() or public_audit.stat().st_size == 0:
         errors.append("missing or empty user deliverable: outputs/04-论文与投稿审计.md")
     return errors
@@ -203,7 +203,11 @@ def proposal_errors(root: Path) -> list[str]:
     if not core:
         errors.append("core full-text set is empty")
     for item in core:
-        card = root / "papers" / f"{item['source_id']}.md"
+        try:
+            card = root / f"papers/{item['source_id']}.md"
+        except ValueError:
+            errors.append(f"core paper source_id escapes the active project: {item['source_id']}")
+            continue
         if not card.is_file() or card.stat().st_size == 0:
             errors.append(f"core paper lacks a non-empty full-text analysis card: {item['source_id']}")
     required_files = (
@@ -216,12 +220,11 @@ def proposal_errors(root: Path) -> list[str]:
         path = root / relative
         if not path.is_file() or path.stat().st_size == 0:
             errors.append(f"missing or empty: {relative}")
-    public = root.parent / "outputs"
     for name in ("01-文献调研总结.md", "02-验证后Proposal.md"):
-        path = public / name
+        path = root.output(name)
         if not path.is_file() or path.stat().st_size == 0:
             errors.append(f"missing or empty user deliverable: outputs/{name}")
-    review_path = public / "01-文献调研总结.md"
+    review_path = root.output("01-文献调研总结.md")
     if review_path.is_file() and review_path.stat().st_size > 0:
         review = review_path.read_text(encoding="utf-8")
         motivation_count = len(re.findall(r"(?im)^####\s+研究动机\s*$", review))
@@ -233,7 +236,7 @@ def proposal_errors(root: Path) -> list[str]:
             errors.append("outputs/01-文献调研总结.md missing corpus-level synthesis section")
         if not re.search(r"(?im)^##\s+.*仍然存在的问题.*$", review):
             errors.append("outputs/01-文献调研总结.md missing section: 仍然存在的问题")
-    public_proposal = public / "02-验证后Proposal.md"
+    public_proposal = root.output("02-验证后Proposal.md")
     if public_proposal.is_file() and public_proposal.stat().st_size > 0:
         text = public_proposal.read_text(encoding="utf-8")
         public_statuses = {
@@ -554,7 +557,7 @@ def theory_errors(root: Path) -> list[str]:
     for label in ("Reviewer role:", "Reviewer stance:", "Unresolved threats:", "Independence statement:"):
         if not re.search(rf"(?im)^\s*{re.escape(label)}\s*\S.*$", audit):
             errors.append(f"theory-audit.md missing non-empty field: {label}")
-    public_proposal = root.parent / "outputs" / "02-验证后Proposal.md"
+    public_proposal = root.output("02-验证后Proposal.md")
     if not public_proposal.is_file() or public_proposal.stat().st_size == 0:
         errors.append("missing or empty user deliverable: outputs/02-验证后Proposal.md")
     else:
@@ -588,7 +591,7 @@ def protocol_errors(root: Path) -> list[str]:
         path = root / relative
         if not path.is_file() or path.stat().st_size == 0:
             errors.append(f"missing or empty: {relative}")
-    experiment_output = root.parent / "outputs" / "03-理论分析与实验探究.md"
+    experiment_output = root.output("03-理论分析与实验探究.md")
     if not experiment_output.is_file() or experiment_output.stat().st_size == 0:
         errors.append("missing or empty user deliverable: outputs/03-理论分析与实验探究.md")
     else:
@@ -705,7 +708,7 @@ def protocol_errors(root: Path) -> list[str]:
         errors.append("protocol ID differs between protocol.md and protocol-audit.md")
     if protocol_version_match and audit_version_match and audit_version_match.group(1) != protocol_version_match.group(1):
         errors.append("protocol version differs between protocol.md and protocol-audit.md")
-    experiment_output = root.parent / "outputs" / "03-理论分析与实验探究.md"
+    experiment_output = root.output("03-理论分析与实验探究.md")
     if experiment_output.is_file():
         experiment_text = experiment_output.read_text(encoding="utf-8")
         if not re.search(r"(?im)^\s*-?\s*实验协议审计:\s*pass\s*$", experiment_text):

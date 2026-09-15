@@ -4,6 +4,14 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $env:PYTHONUTF8 = '1'
+if (-not $env:RESEARCH_PROJECT_ROOT) {
+    $scopeCandidate = if ([IO.Path]::IsPathRooted($TopicDirectory)) {
+        $TopicDirectory
+    } else {
+        Join-Path (Get-Location).Path $TopicDirectory
+    }
+    $env:RESEARCH_PROJECT_ROOT = [IO.Path]::GetFullPath($scopeCandidate)
+}
 $runtime = Join-Path $PSScriptRoot 'runtime/research/audit.py'
 $venvPython = Join-Path $PSScriptRoot '.venv\Scripts\python.exe'
 if (Test-Path -LiteralPath $venvPython -PathType Leaf) {

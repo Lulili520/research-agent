@@ -11,6 +11,40 @@ try:
 except ImportError:
     from policy import ResearchRoot
 
+PROJECT_SCOPE_ENV = "RESEARCH_PROJECT_ROOT"
+
+
+def project_outer(path: str | os.PathLike[str]) -> Path:
+    """Normalize either a topic directory or its internal .research directory."""
+    outer = Path(path).resolve()
+    return outer.parent if outer.name == ".research" else outer
+
+
+def require_project_scope(
+    path: str | os.PathLike[str], *, allow_unset: bool = False
+) -> Path:
+    """Reject history access outside the research bound to this process.
+
+    This is a cooperative context boundary, not an operating-system ACL. The
+    check happens before project metadata is opened so a scoped process does
+    not disclose a sibling project's topic or history.
+    """
+    requested = project_outer(path)
+    configured = os.environ.get(PROJECT_SCOPE_ENV)
+    if not configured:
+        if not allow_unset:
+            raise SystemExit(
+                f"research project scope is not set; set {PROJECT_SCOPE_ENV} before reading history"
+            )
+    elif project_outer(configured) != requested:
+        raise SystemExit("research history isolation violation: requested project is outside the active scope")
+    for name in (".research", "outputs"):
+        expected = requested / name
+        if expected.exists() and expected.resolve() != expected:
+            raise SystemExit("research history isolation violation: project history redirects outside the active scope")
+    return requested
+
+
 @contextlib.contextmanager
 def project_lock(root: Path):
     """Serialize mutations within one project; the executor must use the same lock."""
@@ -66,7 +100,7 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def project(path: str) -> ResearchRoot:
-    outer = Path(path).resolve()
+    outer = require_project_scope(path)
     for base in (outer / ".research", outer):
         root = ResearchRoot(base)
         if (root / "research.json").is_file() and (root / "state.json").is_file():

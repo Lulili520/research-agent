@@ -2,6 +2,19 @@
 
 `agent/runtime/research/researchctl.py` 是 Research Agent 的确定性控制平面。Markdown 保存科研内容；JSON/JSONL 保存机器状态。不得手工覆盖 `control/events.jsonl`、`control/decisions.jsonl`、实验 registry 或 run outcome。
 
+## 活动项目与历史隔离
+
+每个运行时进程只能读取一个 Research 的历史。执行初始化之外的控制命令、Python 审计或 OpenAlex 采集前，先把 `RESEARCH_PROJECT_ROOT` 设置为当前课题目录的规范化绝对路径：
+
+```powershell
+$projectRoot = [IO.Path]::GetFullPath((Join-Path (Get-Location) 'research/topic-slug'))
+$env:RESEARCH_PROJECT_ROOT = $projectRoot
+```
+
+未设置该变量或命令中的项目目录与其不一致时，入口会在打开项目元数据前拒绝操作。项目内文件参数必须使用相对于 `.research/` 的路径，解析后的查询、来源、日志、证据和产物不得逃逸当前项目。Agent 同时不得通过 shell 或搜索工具绕过控制器读取兄弟项目；仓库级源码搜索应排除 `research/**`。切换课题应使用新的终端或 Agent 上下文并重新绑定，不能把上一课题的历史带入新上下文。
+
+这是协作式上下文隔离，用于防止调研历史串用和误写；它不是加密、ACL 或容器边界，不能阻止拥有工作区文件权限的恶意进程直接读取文件。
+
 ## 初始化与恢复
 
 ```powershell

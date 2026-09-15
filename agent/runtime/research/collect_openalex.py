@@ -5,13 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
 try:
+    from .storage import project, project_lock
     from .stdio import configure_utf8_stdio
 except ImportError:
+    from storage import project, project_lock
     from stdio import configure_utf8_stdio
 
 
@@ -43,22 +46,40 @@ def fetch(query: str, per_page: int, mailto: str, from_date: str) -> list[dict]:
         return json.load(response)["results"]
 
 
+def review_path(root, relative: str, *, must_exist: bool = False) -> Path:
+    """Return a path confined to the active project's review history."""
+    path = root / relative
+    review = root / "review"
+    if not path.is_relative_to(review):
+        raise ValueError("literature collection paths must stay inside the active project's review directory")
+    if must_exist and (not path.is_file() or path.stat().st_size == 0):
+        raise ValueError(f"missing or empty project review file: {relative}")
+    return path
+
+
 def main() -> None:
     configure_utf8_stdio()
     parser = argparse.ArgumentParser()
-    parser.add_argument("output")
+    parser.add_argument("directory", help="active research project directory")
+    parser.add_argument("--output", default="review/literature/candidates.jsonl",
+                        help="project-relative JSONL path under review/")
     parser.add_argument("--mailto", required=True)
     parser.add_argument("--per-query", type=int, default=35)
-    parser.add_argument("--queries", type=Path, required=True, help="JSON object mapping cluster names to queries")
+    parser.add_argument("--queries", default="review/search-plan.json", help="project-relative JSON search plan under review/")
     parser.add_argument("--from-date", required=True, help="inclusive publication date, YYYY-MM-DD")
     args = parser.parse_args()
     from datetime import date
     try:
+        root = project(args.directory)
+        query_path = review_path(root, args.queries, must_exist=True)
+        output_path = review_path(root, args.output)
+        if output_path == query_path:
+            raise ValueError("output must not overwrite the search plan")
         date.fromisoformat(args.from_date)
-        queries = load_queries(args.queries)
+        queries = load_queries(query_path)
         if not 1 <= args.per_query <= 200:
             raise ValueError("--per-query must be between 1 and 200")
-    except (ValueError, OSError) as error:
+    except (ValueError, OSError, SystemExit) as error:
         parser.error(str(error))
     records: dict[str, dict] = {}
     for cluster, query in queries.items():
@@ -83,13 +104,15 @@ def main() -> None:
                 item["clusters"].append(cluster)
             if query not in item["queries"]:
                 item["queries"].append(query)
-    path = Path(args.output)
-    path.parent.mkdir(parents=True, exist_ok=True)
     ordered = sorted(records.values(), key=lambda item: (-len(item["clusters"]), -item["cited_by_count"], -(item["year"] or 0), item["title"] or ""))
-    with path.open("w", encoding="utf-8", newline="\n") as stream:
-        for item in ordered:
-            stream.write(json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n")
-    print(json.dumps({"candidates": len(ordered), "output": str(path)}, ensure_ascii=False))
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output_path.with_name(output_path.name + ".new")
+    with project_lock(root):
+        with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+            for item in ordered:
+                stream.write(json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n")
+        os.replace(temporary, output_path)
+    print(json.dumps({"candidates": len(ordered), "output": args.output}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

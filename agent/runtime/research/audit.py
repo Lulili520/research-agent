@@ -10,16 +10,18 @@ import re
 
 try:
     from . import gates as ctl
+    from .storage import require_project_scope
     from .stdio import configure_utf8_stdio
 except ImportError:
     import gates as ctl
+    from storage import require_project_scope
     from stdio import configure_utf8_stdio
 
 
 class Audit:
     def __init__(self, topic: Path):
-        self.topic = topic
-        self.base = topic / '.research' if (topic / '.research').is_dir() else topic
+        self.topic = require_project_scope(topic)
+        self.base = self.topic / '.research' if (self.topic / '.research').is_dir() else self.topic
         self.root = ctl.ResearchRoot(self.base)
         self.errors: list[str] = []
         self.warnings: list[str] = []
@@ -27,13 +29,13 @@ class Audit:
     def read(self, name: str) -> str:
         path = self.root / name
         if name == 'report.md' and not path.is_file():
-            path = self.topic / 'outputs/01-文献调研总结.md'
+            path = self.root.output('01-文献调研总结.md')
         try:
             text = path.read_text(encoding='utf-8-sig')
             if not text.strip():
                 self.errors.append(f'empty artifact: {name}')
             return text
-        except (OSError, UnicodeError) as error:
+        except (OSError, UnicodeError, ValueError) as error:
             self.errors.append(f'cannot read {name}: {error}')
             return ''
 
@@ -127,12 +129,14 @@ def main() -> int:
     parser.add_argument('mode', choices=('review', 'iterative'))
     parser.add_argument('directory', type=Path)
     args = parser.parse_args()
-    if not args.directory.is_dir():
+    try:
+        topic = require_project_scope(args.directory)
+    except SystemExit as error:
+        print(f'ERROR: {error}')
+        return 2
+    if not topic.is_dir():
         print(f'ERROR: topic directory does not exist: {args.directory}')
         return 2
-    topic = args.directory.resolve()
-    if topic.name == '.research':
-        topic = topic.parent
     audit = Audit(topic)
     getattr(audit, 'review' if args.mode == 'review' else 'iterative')()
     for warning in audit.warnings:

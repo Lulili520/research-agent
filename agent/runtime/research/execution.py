@@ -25,7 +25,10 @@ def artifact_path(root, relative: str) -> Path:
     if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
         raise SystemExit(f'artifact must be a relative project path: {relative}')
     base = Path(root).resolve()
-    path = (root / relative).resolve()
+    try:
+        path = (root / relative).resolve()
+    except ValueError:
+        raise SystemExit(f'missing, empty or out-of-project artifact: {relative}') from None
     if not path.is_relative_to(base) or not path.is_file() or path.stat().st_size == 0:
         raise SystemExit(f'missing, empty or out-of-project artifact: {relative}')
     return path

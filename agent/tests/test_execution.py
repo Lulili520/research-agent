@@ -1,8 +1,10 @@
 """Adversarial workflow regressions using only temporary projects and fake run artifacts."""
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -73,8 +75,9 @@ def test_missing_lock_fails_shared_gate_and_audit(project):
     enter_pilot(project)
     (project.internal / 'experiments/protocol.lock.json').unlink()
     assert any('protocol.lock' in e or 'freeze the protocol' in e for e in ctl.stage_errors(project.internal, 'pilot'))
-    audit = Audit(project.root)
-    audit.iterative()
+    with patch.dict(os.environ, {'RESEARCH_PROJECT_ROOT': str(project.root.resolve())}):
+        audit = Audit(project.root)
+        audit.iterative()
     assert any('protocol.lock' in e or 'freeze the protocol' in e for e in audit.errors)
 
 

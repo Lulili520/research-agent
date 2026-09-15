@@ -44,8 +44,13 @@ class ResearchControlTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def invoke(self, *args, ok=True):
-        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+    def invoke(self, *args, ok=True, scope=None):
+        active = self.root if scope is None else Path(scope)
+        env = dict(
+            os.environ,
+            PYTHONDONTWRITEBYTECODE="1",
+            RESEARCH_PROJECT_ROOT=str(active.resolve()),
+        )
         result = subprocess.run([sys.executable, str(SCRIPT), *args], text=True, capture_output=True, env=env)
         if ok and result.returncode != 0:
             self.fail(result.stdout + result.stderr)
@@ -257,7 +262,8 @@ class ResearchControlTests(unittest.TestCase):
     def test_negative_budget_and_wrong_stage_are_rejected(self):
         denied = self.invoke("register-experiment", str(self.root), "--id", "exp-1", "--purpose", "too early", ok=False)
         self.assertIn("not allowed", denied.stderr)
-        denied = self.invoke("init", str(self.root.parent / "bad"), "--topic", "bad", "--research-type", "benchmark", "--gpu-hours", "-1", ok=False)
+        bad = self.root.parent / "bad"
+        denied = self.invoke("init", str(bad), "--topic", "bad", "--research-type", "benchmark", "--gpu-hours", "-1", ok=False, scope=bad)
         self.assertIn("non-negative", denied.stderr)
 
     def test_protocol_versions_are_archived(self):

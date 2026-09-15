@@ -53,10 +53,35 @@ class ResearchRoot:
     """Path-like project root that centralizes the internal artifact layout."""
 
     def __init__(self, base: Path):
-        self.base = base
+        self.base = Path(base).resolve()
+
+    def path(self, relative: str | os.PathLike[str]) -> Path:
+        """Resolve one project-relative path without allowing history escape."""
+        mapped = Path(layout_path(os.fspath(relative)))
+        if mapped.is_absolute():
+            raise ValueError("research project paths must be relative")
+        candidate = (self.base / mapped).resolve()
+        if not candidate.is_relative_to(self.base):
+            raise ValueError("research project path escapes the active project")
+        return candidate
+
+    def output(self, relative: str | os.PathLike[str] = "") -> Path:
+        """Resolve one user-output path without following links to a sibling."""
+        outer = self.base.parent if self.base.name == ".research" else self.base
+        expected = outer / "outputs"
+        output_root = expected.resolve()
+        if output_root != expected:
+            raise ValueError("research output directory escapes the active project")
+        requested = Path(os.fspath(relative))
+        if requested.is_absolute():
+            raise ValueError("research output paths must be relative")
+        candidate = (output_root / requested).resolve()
+        if not candidate.is_relative_to(output_root):
+            raise ValueError("research output path escapes the active project")
+        return candidate
 
     def __truediv__(self, relative: str | os.PathLike[str]) -> Path:
-        return self.base / layout_path(os.fspath(relative))
+        return self.path(relative)
 
     def __fspath__(self) -> str:
         return os.fspath(self.base)

@@ -25,6 +25,7 @@ class ToolTests(unittest.TestCase):
                 PYTHONDONTWRITEBYTECODE='1',
                 PYTHONUTF8='0',
                 PYTHONIOENCODING='cp936',
+                RESEARCH_PROJECT_ROOT=str(topic.resolve()),
             )
             script = REPO / 'agent/runtime/research/researchctl.py'
             initialized = subprocess.run(
@@ -48,19 +49,20 @@ class ToolTests(unittest.TestCase):
             self.assertEqual(payload['research']['topic'], unicode_topic)
 
             missing = Path(directory) / '缺失-🧪'
+            missing_environment = dict(environment, RESEARCH_PROJECT_ROOT=str(missing.resolve()))
             audit = subprocess.run(
                 [sys.executable, str(REPO / 'agent/runtime/research/audit.py'),
                  'review', str(missing)],
                 capture_output=True,
-                env=environment,
+                env=missing_environment,
             )
             self.assertEqual(audit.returncode, 2)
             self.assertIn('🧪', audit.stdout.decode('utf-8'))
 
             collect = subprocess.run(
                 [sys.executable, str(REPO / 'agent/runtime/research/collect_openalex.py'),
-                 str(Path(directory) / 'output.jsonl'), '--mailto', 'test@example.org',
-                 '--queries', str(missing / '查询.json'), '--from-date', '2026-01-01'],
+                 str(topic), '--output', 'review/output.jsonl', '--mailto', 'test@example.org',
+                 '--queries', 'review/缺失-🧪.json', '--from-date', '2026-01-01'],
                 capture_output=True,
                 env=environment,
             )
@@ -70,26 +72,27 @@ class ToolTests(unittest.TestCase):
     def test_review_accepts_public_report_and_detects_stale_state(self):
         with tempfile.TemporaryDirectory() as d:
             topic = Path(d)
-            audit = Audit(topic)
-            contents = {
-                'state.md': 'Workflow status: complete\nNovelty status: audited\nSearch cutoff: 2026-09-01\nLast updated: 2026-09-01',
-                'search-log.md': 'Query: test 2026-09-01 https://example.org',
-                'literature.md': 'https://example.org/paper',
-                'evidence.md': 'C1 reported 2026-09-01',
-            }
-            for name, text in contents.items():
-                path = audit.root / name
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(text)
-            (topic / 'outputs').mkdir()
-            report = topic / 'outputs/01-文献调研总结.md'
-            report.write_text('C1 reported 2026-09-01')
-            audit.review()
-            self.assertEqual(audit.errors, [])
-            report.write_text('C1 reported 2026-09-02')
-            audit = Audit(topic)
-            audit.review()
-            self.assertTrue(any('older' in e for e in audit.errors))
+            with patch.dict(os.environ, {'RESEARCH_PROJECT_ROOT': str(topic.resolve())}):
+                audit = Audit(topic)
+                contents = {
+                    'state.md': 'Workflow status: complete\nNovelty status: audited\nSearch cutoff: 2026-09-01\nLast updated: 2026-09-01',
+                    'search-log.md': 'Query: test 2026-09-01 https://example.org',
+                    'literature.md': 'https://example.org/paper',
+                    'evidence.md': 'C1 reported 2026-09-01',
+                }
+                for name, text in contents.items():
+                    path = audit.root / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(text)
+                (topic / 'outputs').mkdir()
+                report = topic / 'outputs/01-文献调研总结.md'
+                report.write_text('C1 reported 2026-09-01')
+                audit.review()
+                self.assertEqual(audit.errors, [])
+                report.write_text('C1 reported 2026-09-02')
+                audit = Audit(topic)
+                audit.review()
+                self.assertTrue(any('older' in e for e in audit.errors))
 
     def test_iterative_audit_rejects_tampering_and_false_completion(self):
         with tempfile.TemporaryDirectory() as d:
@@ -97,28 +100,29 @@ class ToolTests(unittest.TestCase):
             subprocess.run([sys.executable, str(REPO / 'agent/runtime/research/researchctl.py'),
                             'init', str(topic), '--topic', 'test', '--research-type', 'benchmark'],
                            check=True, capture_output=True)
-            audit = Audit(topic)
-            (audit.root / 'state.md').write_text(
-                'Workflow status: in-progress\nResearch stage: initialized\n'
-                'Proposal decision: revise\nNovelty status: exploratory\n'
-                'Empirical status: not-run\nExecution readiness: designed\n'
-                'Iteration: 0\nLast updated: 2026-09-08\n')
-            audit.iterative()
-            self.assertEqual(audit.errors, [])
-            events = audit.root / 'events.jsonl'
-            entries = [json.loads(line) for line in events.read_text().splitlines()]
-            entries[0]['actor'] = 'tampered'
-            events.write_text('\n'.join(json.dumps(e) for e in entries) + '\n')
-            audit = Audit(topic)
-            audit.iterative()
-            self.assertTrue(any('verify_events: event log integrity failure' in e for e in audit.errors))
-            state_path = audit.root / 'state.json'
-            state = json.loads(state_path.read_text())
-            state.update(research_stage='complete', workflow_status='complete')
-            state_path.write_text(json.dumps(state))
-            audit = Audit(topic)
-            audit.iterative()
-            self.assertTrue(any('missing' in e for e in audit.errors))
+            with patch.dict(os.environ, {'RESEARCH_PROJECT_ROOT': str(topic.resolve())}):
+                audit = Audit(topic)
+                (audit.root / 'state.md').write_text(
+                    'Workflow status: in-progress\nResearch stage: initialized\n'
+                    'Proposal decision: revise\nNovelty status: exploratory\n'
+                    'Empirical status: not-run\nExecution readiness: designed\n'
+                    'Iteration: 0\nLast updated: 2026-09-08\n')
+                audit.iterative()
+                self.assertEqual(audit.errors, [])
+                events = audit.root / 'events.jsonl'
+                entries = [json.loads(line) for line in events.read_text().splitlines()]
+                entries[0]['actor'] = 'tampered'
+                events.write_text('\n'.join(json.dumps(e) for e in entries) + '\n')
+                audit = Audit(topic)
+                audit.iterative()
+                self.assertTrue(any('verify_events: event log integrity failure' in e for e in audit.errors))
+                state_path = audit.root / 'state.json'
+                state = json.loads(state_path.read_text())
+                state.update(research_stage='complete', workflow_status='complete')
+                state_path.write_text(json.dumps(state))
+                audit = Audit(topic)
+                audit.iterative()
+                self.assertTrue(any('missing' in e for e in audit.errors))
 
     def test_queries_are_caller_supplied_and_validated(self):
         with tempfile.TemporaryDirectory() as d:
