@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">细粒度轨迹训练：从执行证据到学习收益与共享成本选择</title>
+<desc id="desc">成功和失败日志拆成真实历史及完整动作，经重放与续跑核验构成候选池。当前模型和训练侧参考集提供价值分数，实测前后向提供共享成本，选择器输出动作掩码，在完整历史上执行监督训练。所有费用纳入评测。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker></defs>
+<rect width="1200" height="660" rx="20" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK SC,Microsoft YaHei,sans-serif">
+<text x="40" y="48" font-size="25" font-weight="700" fill="#0f172a">把训练预算分给“值得一起学”的局部动作</text>
+<text x="40" y="79" font-size="16" fill="#475569">研究候选示意 · 尚未运行模型实验 · 不把失败结局直接变成每步负标签</text>
+<g fill="#fff" stroke="#cbd5e1" stroke-width="2">
+<rect x="40" y="125" width="245" height="145" rx="12"/>
+<rect x="330" y="125" width="300" height="145" rx="12"/>
+<rect x="690" y="125" width="460" height="145" rx="12"/>
+<rect x="40" y="335" width="280" height="170" rx="12"/>
+<rect x="390" y="335" width="350" height="170" rx="12" stroke="#2563eb"/>
+<rect x="810" y="335" width="340" height="170" rx="12" stroke="#059669"/>
+</g>
+<g fill="#0f172a" font-size="20" font-weight="700">
+<text x="60" y="159">① 解析真实轨迹</text><text x="350" y="159">② 用执行证据构建候选池</text>
+<text x="710" y="159">③ 按当前模型估计学习收益</text>
+<text x="60" y="371">测量共享历史成本</text><text x="410" y="371">④ 在预算内选择动作组合</text>
+<text x="830" y="371">⑤ 执行局部监督训练</text>
+</g>
+<g fill="#475569" font-size="17">
+<text x="60" y="197">成功 / 失败日志</text><text x="60" y="228">完整历史 ＋ 完整动作</text>
+<text x="350" y="197">重放 · 学生续跑 · 替代修复</text><text x="350" y="228">无完成证据 → 保留“未确定”</text>
+<text x="710" y="197">训练侧参考题 → 目标梯度 → 动作分数</text><text x="710" y="228">可完成 ≠ 值得学；评分费用单独记录</text>
+<text x="60" y="409">固定训练后端，测前后向</text><text x="60" y="440">同轨迹多个目标共用前缀</text><text x="60" y="477">不是仅数被监督的Token</text>
+<text x="410" y="409">动作包：目标、末端、分数、成本</text><text x="410" y="440">固定目标数 ＋ 时间 / 显存约束</text><text x="410" y="477">输出：选哪些动作，读到哪里</text>
+<text x="830" y="409">全部既往历史保持可见</text><text x="830" y="440">只监督选中动作，正常反传</text><text x="830" y="477">更新模型，按规则重新评分</text>
+</g>
+<g fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)">
+<path d="M285 200H321"/><path d="M630 200H681"/>
+<path d="M920 270V299H565V326"/><path d="M320 420H381"/><path d="M740 420H801"/>
+</g>
+<rect x="40" y="552" width="1110" height="70" rx="12" fill="#e8eef8"/>
+<text x="60" y="580" font-size="18" font-weight="700" fill="#1e3a5f">检验贡献：强选择器也用同一共享后端；相同掩码对比分别 / 共享执行</text>
+<text x="60" y="608" font-size="17" fill="#334155">同时看闭环成功、错误恢复、条件决策与总费用；若收益只来自已有计算复用，就撤回新选择机制主张。</text>
+</g></svg>
