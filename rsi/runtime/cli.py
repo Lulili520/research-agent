@@ -1,4 +1,4 @@
-"""独立 RSI 的命令行；本地运行不要求外部服务。"""
+"""RSI 命令行：管理研究项目、证据、任务、评审与版本历史。"""
 
 from __future__ import annotations
 

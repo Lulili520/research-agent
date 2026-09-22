@@ -1,5 +1,5 @@
-# Local research inputs and generated task artifacts
-/research/
+# Research reports and figures are versioned; runtime state and downloads stay local
+research/**/.rsi/
 research/**/sources/*
 research/**/downloads/*
 

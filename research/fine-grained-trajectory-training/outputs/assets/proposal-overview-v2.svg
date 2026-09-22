@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="530" viewBox="0 0 1100 530">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#64748b"/></marker></defs>
+<rect width="1100" height="530" rx="18" fill="#f8fafc"/>
+<g font-family="Noto Sans CJK SC,Microsoft YaHei,sans-serif" fill="#0f172a">
+<text x="40" y="44" font-size="24" font-weight="700">同一轨迹，分开控制三件事</text>
+<text x="40" y="73" font-size="15" fill="#475569">方案示意 · 未经实验验证 · 输入与正确动作监督固定，只干预计算路径</text>
+<rect x="40" y="100" width="1020" height="82" rx="10" fill="#e2e8f0"/>
+<text x="58" y="128" font-size="18" font-weight="600">完整历史：任务 → 错误动作 → 工具观察 / 新条件 → 正确恢复动作</text>
+<text x="58" y="157" font-size="16">输入保留：全部可见前缀　　监督目标：仅核验正确输出　　反传位置：单独分配预算</text>
+<rect x="40" y="222" width="235" height="122" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+<text x="58" y="252" font-size="18" font-weight="600">固定训练目标</text>
+<text x="58" y="279" font-size="15">同一输入、初始化、样本顺序</text>
+<text x="58" y="304" font-size="15">同一 shifted action loss</text>
+<text x="58" y="329" font-size="15">强制保留预测位置 t−1</text>
+<rect x="310" y="222" width="265" height="122" rx="10" fill="#dcfce7" stroke="#86efac"/>
+<text x="328" y="252" font-size="18" font-weight="600">只改变上下文反传</text>
+<text x="328" y="279" font-size="15">随机 / 必要 / 无关 / 评分</text>
+<text x="328" y="304" font-size="15">R/N/U/S：同激活位置预算</text>
+<text x="328" y="329" font-size="15">参照：D全部 / A仅必需路径</text>
+<rect x="610" y="222" width="220" height="122" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
+<text x="628" y="252" font-size="18" font-weight="600">先核实现等价性</text>
+<text x="628" y="279" font-size="15">前向一致；全选梯度一致</text>
+<text x="628" y="304" font-size="15">稀疏门与效率版梯度一致</text>
+<text x="628" y="329" font-size="15">不是只加一个层后 detach</text>
+<rect x="865" y="222" width="195" height="122" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+<text x="883" y="252" font-size="18" font-weight="600">再测能力与资源</text>
+<text x="883" y="279" font-size="15">条件辨别、闭环恢复</text>
+<text x="883" y="304" font-size="15">任务成功、能力保持</text>
+<text x="883" y="329" font-size="15">显存、时间、总成本</text>
+<g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"><path d="M275 283H305"/><path d="M575 283H605"/><path d="M830 283H860"/><path d="M550 184V209H155V217"/></g>
+<rect x="40" y="385" width="1020" height="105" rx="10" fill="#fff" stroke="#cbd5e1"/>
+<text x="58" y="414" font-size="18" font-weight="600">什么结果会改变路线？</text>
+<text x="58" y="442" font-size="16">必要上下文有稳定额外价值 → 才开发选择器；随机已非劣 → 用简单方案；区间太宽 → 无法判定</text>
+<text x="58" y="468" font-size="16">只省显存但更慢 → 限缩为显存效率；标签和打分成本过高 → 放弃复杂路线，不包装为加速</text>
+</g></svg>

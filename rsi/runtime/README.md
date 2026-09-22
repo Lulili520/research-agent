@@ -1,6 +1,6 @@
 # 运行时接口
 
-本实现独立于旧工程，Python 3.10+ 标准库。SQLite 事务事件是机器事实源，材料以 SHA256 快照保存。框架不提供模型账号、联网搜索服务或隐式实验授权。
+运行时使用 Python 3.10+ 标准库。SQLite 事务事件是机器事实源，材料以 SHA256 快照保存。模型和检索工具由宿主或 Worker 适配器提供；实验执行须另行授权。
 
 ## 两种运行方式
 
@@ -18,13 +18,13 @@ python -m rsi maintain research/example
 python -m rsi audit research/example
 ```
 
-`init` 创建负责人任务；不存在模型时不会伪造后续研究。`maintain` 为新报告安排评审，为来源变化安排更新；评审产生的问题自动生成整改任务。`run` 调用 Worker 处理这些任务，直到独立内审通过、真实阻塞或本轮任务预算用尽。
+`init` 创建项目状态与负责人任务。`maintain` 为新报告安排评审，为来源变化安排更新；评审产生的问题自动生成整改任务。`run` 调用 Worker 处理这些任务，直到独立内审通过、遇到阻塞或执行预算用尽；缺少所需 Worker 时返回阻塞原因。
 
 pending → running → completed / blocked / failed。中断遗留 running 需要 `recover <project> <task> --reason '核验结果' --retry|--cancel`，以免重复具有外部副作用的动作。完成任务不自动关闭 finding。输入过期的 pending 任务取消并回到重规划，旧运行结果不能直接覆盖新证据。
 
 ## Team
 
-配置保存在用户指定路径，不是内置模型默认值。例如：
+Team 配置由调用方提供，保存在显式指定的路径。接口格式如下：
 
 ```json
 {
@@ -116,7 +116,7 @@ reviewer 响应必须包含 review，不能同时改写材料或分派自己的�
 
 检查名由任务决定，以上仅示例，不是所有科研类型的固定题库。独立评审须提交 `reader_check`：相同 `audience`、`method: "model-text-audit"`、非空 `limitations`，以及 `exercises`。每个练习含 `check_id`、实际 `question`、`response`、`result`（supported/partial/failed）、定位**当前报告**的 `evidence`、`gaps` 和 `outside_knowledge` 字符串数组。检查覆盖声明任务；需要未提供背景或有缺口时不得 supported。未通过的练习还须提供 `finding_refs`，引用本次 major/fatal finding 唯一的 `review_note_id`；该 finding 带相同 `reader_check_id` 并引用当前正文，不能以另一项无关问题代替解释整改。普通来源核验依旧保留，不能由本项替代。
 
-程序检查版本、记录和缺口的一致性，不知道读者真的懂了多少，也不能自动证明关联finding的自然语言处置充分。当前接口只记录模型文本审计；真实人类理解研究需另有受试和结果证据，不能把 method 字符串换成人类试验。状态会单列 `reader`，历史报告没有契约则显示 `not-assessed`，不追溯宣称通过。新增此可选契约不改写旧事件；变更或移除既有报告契约必须在 metadata 提供 `reader_contract_change_reason`，并产生新版本重新评审。`restore`保留当前读者要求，只恢复旧内容和原来源；若用户确实改变读者目标，应显式capture新契约而非借恢复旧稿绕过。
+程序检查版本、记录和缺口的一致性，不能测量真实读者的理解程度，也不能自动证明关联 finding 的处置充分。此接口记录模型文本审计；真实人类理解研究需另有受试和结果证据。状态中的 `reader` 单列正文检查结果；报告未声明读者契约时显示 `not-assessed`。契约的增加、变更或移除均保留版本历史；变更或移除既有契约必须在 metadata 提供 `reader_contract_change_reason`，并产生新版本重新评审。`restore` 保留当前读者要求，恢复指定版本的内容与来源；若用户改变读者目标，应通过 `capture` 显式更新契约。
 
 dim 名称见 [contracts.py](contracts.py) 与 [内容评估](../skills/research-review/references/evaluation-and-evolution.md)。引用仅有格式正确不等于内容支持，评审者必须真正核验。
 
@@ -133,7 +133,7 @@ python -m rsi restore research/example literature 1 --actor maintainer --reason 
 
 检查点保存证据、知识和质量状态，可用多个 `--parent` 表示分支合并。恢复旧内容产生新版本，原依赖不被暗换为新来源，旧验收不会复活。
 
-Agent 版本库放用户指定的独立目录，如仓库 `.rsi-history/`，不是新科研课题：
+Agent 版本库保存在用户指定的目录，如 `.rsi-history/`，用于保存系统快照与对照评估：
 
 ```bash
 python -m rsi system --library .rsi-history snapshot --root . --label baseline --hypothesis '固定改进前基线' --author maintainer
@@ -149,10 +149,10 @@ snapshot 保存实际 AGENTS、运行时、Skills 和测试的内容，不把 Gi
 
 评估 JSON 的 `attachments` 是附件名到实际本地文件路径的映射，必须包含 protocol、cases、judge；对应哈希必须与文件内容一致。budget_evidence 和每对的 baseline_output/candidate_output/evidence/blind_mapping 引用附件名。运行时把附件完整保存为内容快照，不能只填一句“已经比较”。评估原始输入、输出、盲化映射及成本记录随版本库一起审计。blind_mapping 是评估完成后的归档，不能提前提供给评审。
 
-结果记录目前由独立评估者提供；程序不能替你生成领域专家真值，也不证明填入的成本/盲评声明真实。发现退步或无法判断时拒绝自动 adopt。promote/rollback 只改变历史库的接纳记录；checkout 仅导出到全新目录，不覆盖工作树，不隐式运行旧代码。
+结果记录由独立评估者提供；程序校验记录一致性，不能证明领域判断、成本或盲评声明真实。发现退步或无法判断时拒绝 adopt。`promote/rollback` 只改变历史库的接纳记录；`checkout` 将指定版本导出到全新目录，保留当前工作树，代码执行仍需显式调用。
 
 ## 审计边界
 
 audit 校验事件链、快照及输出是否与已登记正文一致。结构一致性与科学质量分别显示。SQLite + 原始哈希提供事务/篡改检测，但持有全部数据库写权限者可重写整个历史；这不是可信第三方签名或多租户安全系统。
 
-当前版本没有声称实现供应商原生适配、真实在线检索服务、跨主机任务租约、实验资源调度或无人监督的自动代码部署。需要这些能力时单独接入并验证，不能以接口存在冒充已实现。
+模型供应商与在线检索服务需通过 Worker 适配器接入。跨主机任务租约、实验资源调度和自动代码部署不在运行时的实现范围内，需由相应扩展提供并验证。

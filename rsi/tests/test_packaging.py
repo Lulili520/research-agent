@@ -1,7 +1,8 @@
-"""只检查可维护性与独立性，不把格式校验称为科学验收。"""
+"""检查文档链接、角色能力入口与运行时依赖边界。"""
 import ast
 from pathlib import Path
 import re
+import sys
 import unittest
 
 from rsi.runtime.contracts import SKILLS
@@ -24,17 +25,24 @@ class PackagingTests(unittest.TestCase):
                 target = target.split("#", 1)[0]
                 self.assertTrue((path.parent / target).is_file(), f"{path}: broken link {target}")
 
-    def test_new_runtime_has_no_old_imports(self):
-        for path in (ROOT / "rsi").rglob("*.py"):
+    def test_runtime_dependencies_are_standard_library_or_local(self):
+        paths = [ROOT / "rsi/__init__.py", ROOT / "rsi/__main__.py",
+                 *(ROOT / "rsi/runtime").rglob("*.py")]
+        for path in paths:
             tree = ast.parse(path.read_text(encoding="utf-8"))
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
                     imports = [alias.name for alias in node.names]
                 elif isinstance(node, ast.ImportFrom):
+                    if node.level:
+                        continue
                     imports = [node.module or ""]
                 else:
                     continue
-                self.assertFalse(any(name == "agent" or name.startswith("agent.") for name in imports))
+                for name in imports:
+                    package = name.split(".", 1)[0]
+                    self.assertTrue(package == "rsi" or package in sys.stdlib_module_names,
+                                    f"{path}:{node.lineno}: unsupported runtime dependency {name}")
 
 
 if __name__ == "__main__":

@@ -126,10 +126,10 @@ class ReaderContractTests(unittest.TestCase):
             self.engine.capture({"key": "literature", "kind": "literature", "content": "x",
                 "parents": [ref(self.src)], "metadata": {"reader_contract": bad}}, "writer")
 
-    def test_old_reports_are_not_silently_reader_approved(self):
-        old = self.engine.capture({"key": "literature", "kind": "literature", "content": "旧风格合成报告",
-            "parents": [ref(self.src)], "metadata": {"reader_contract_change_reason": "测试旧兼容语义"}}, "writer")
-        self.engine.review(review_record(self.engine.store.read(), old), "critic")
+    def test_reports_without_contract_are_not_reader_approved(self):
+        target = self.engine.capture({"key": "literature", "kind": "literature", "content": "未声明读者契约的合成报告",
+            "parents": [ref(self.src)], "metadata": {"reader_contract_change_reason": "测试移除读者契约后的未评估状态"}}, "writer")
+        self.engine.review(review_record(self.engine.store.read(), target), "critic")
         status = report_status(self.engine.store.read(), "literature")
         self.assertEqual(status["reader"]["status"], "not-assessed")
 
