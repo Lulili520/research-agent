@@ -20,3 +20,6 @@ __pycache__/
 .venvs/
 .pytest_cache/
 .coverage
+
+# Local recursive-improvement version library (immutable snapshots and evaluations)
+/.rsi-history/
